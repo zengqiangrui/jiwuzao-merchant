@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<style>
+			button {
+				display: inline-block;
+				padding: 6px 12px;
+				font-size: 14px;
+				line-height: 1.42857143;
+				text-align: center;
+				cursor: pointer;
+				border: 1px solid transparent;
+				border-radius: 4px;
+				color: #fff;
+				background-color: #5bc0de;
+			}
+
+			.main {
+				width: 1000px;
+				margin: 100px auto;
+			}
+
+			#step {
+				margin-bottom: 60px;
+			}
+
+			.btns {
+				float: left;
+			}
+
+			.info {
+				float: left;
+				height: 34px;
+				line-height: 34px;
+				margin-left: 40px;
+				font-size: 28px;
+				font-weight: bold;
+				color: #928787;
+			}
+
+			.info span {
+				color: red;
+			}
+		</style>
+		<link rel="stylesheet" type="text/css" href="../../css/settle/jquery.step.css" />
+		<script src="https://cdn.bootcss.com/jquery/3.4.0/jquery.min.js"></script>
+		<script src="https://cdn.bootcss.com/vue/2.6.10/vue.min.js"></script>
+		<script src="../../js/settle/jquery.step.min.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+	<body>
+		<div id="app">
+			<div id="step"></div>
+
+			<div id="" v-if="stepData.index==0">
+				我是div0
+			</div>
+			<div id="" v-if="stepData.index==1">
+				我是div1
+			</div>
+			<div id="" v-if="example.stepData.index==2">
+				我是div2
+			</div>
+			<div id="" v-if="example.stepData.index==3">
+				我是div3
+			</div>
+			<div class="btns">
+				<button id="prevBtn" @click="prev">上一步</button>
+				<button id="nextBtn">下一步</button>
+				<!-- <button id="btn1">跳到第二步</button>
+				<button id="btn2">跳到第三步</button> -->
+			</div>
+			<div class="info">index：<span id="index"></span></div>
+		</div>
+	</body>
+
+	<script type="text/javascript">
+		var example = {
+			stepData: {
+				index: 3,
+				time: 500,
+				title: ["阅读需知", "实名认证", "店铺认证", "已完成"]
+			},
+		}
+
+		var vm = new Vue({
+			el: "#app",
+			data() {
+				return example;
+			},
+			methods: {
+				prev(){
+					$step.prevStep();
+					var index = example.stepData.index
+				}
+			}
+		})
+
+		var $step = $("#step");
+		var $index = $("#index");
+		$step.step(example.stepData);
+		$index.text($step.getIndex());
+		// $("#prevBtn").on("click", function() {
+		// 	$step.prevStep();
+		// 	$index.text($step.getIndex());
+		// });
+		$("#nextBtn").on("click", function() {
+			$step.nextStep();
+			$index.text($step.getIndex());
+		});
+		// $("#btn1").on("click", function() {
+		// 	$step.toStep(1);
+		// 	$index.text($step.getIndex());
+		// });
+		// $("#btn2").on("click", function() {
+		// 	$step.toStep(2);
+		// 	$index.text($step.getIndex());
+		// });
+	</script>
+</html>
