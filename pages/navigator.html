@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<title>Title</title>
+		<link rel="stylesheet" href="../css/common.css">
+		<script src="https://cdn.bootcss.com/jquery/3.4.0/jquery.min.js"></script>
+		<style>
+			body {
+				border-top: 1px solid;
+			}
+
+			ul {
+				width: 100%;
+				padding-top: 50px;
+			}
+
+			ul li {
+				color: #B5B5B5;
+				width: 100%;
+				height: 50px;
+				line-height: 50px;
+				border-bottom: 1px solid rgba(107, 108, 109, 0.19);
+				position: relative;
+			}
+
+			ul li a {
+				display: block;
+				width: 100%;
+				height: 50px;
+				color: #B5B5B5;
+				background: transparent;
+				text-shadow: none;
+				font-size: 15px;
+				text-decoration: none;
+				float: left;
+				padding-left: 50px;
+				cursor: pointer;
+			}
+
+			ul li a:hover {
+				/* background: #1cc09f; */
+				background: darkgray;
+				color: white;
+				text-decoration: none;
+			}
+
+			ul li a:hover {}
+
+
+			#cl1-i {
+				width: 100%;
+				/* height: 50px; */
+				background-color: #283643;
+			}
+
+			#cl2-i {
+				width: 100%;
+			
+				background-color: #283643;
+			}
+
+			#cl3-i {
+				width: 100%;
+				/* height: 150px; */
+				background-color: #283643;
+			}
+			
+			.div-inner{
+				width: 100%;
+				text-align: center;
+			}
+			.div-inner a{
+				width: 100%;
+				display: block;
+				background: transparent;
+				text-shadow: none;
+				font-size: 12px;
+				text-decoration: none;
+				color: #B5B5B5;
+			}
+			
+			.div-inner a:hover{
+				/* background: darkgray; */
+				background: transparent;
+				color: white;
+				text-decoration: none;
+			}
+		</style>
+	</head>
+
+	<body style="background:#283643;">
+
+		<ul>
+			<li><a id="cl1" target="mainFrame">店铺管理</a></li>
+			<div id="cl1-i" hidden="hidden">
+				<div class="div-inner">
+					<a href="/jiwuzao-merchant/pages/store/settle.html" target="mainFrame">我要入驻</a>
+				</div>
+				<div class="div-inner">
+					<a href="/jiwuzao-merchant/pages/store/settle.html" target="mainFrame">店铺详情</a>
+				</div>
+			</div>
+			<li><a id="cl2" target="mainFrame">Class管理</a></li>
+			<div id="cl2-i" hidden="hidden">
+
+			</div>
+			<li><a id="cl3" target="mainFrame">Class管理</a></li>
+			<div id="cl3-i" hidden="hidden">
+			</div>
+		</ul>
+
+	</body>
+	<script>
+		$(function() {
+			$("#cl1").click(function() {
+				$("#cl1-i").fadeToggle()
+			});
+			$("#cl2").click(function() {
+				$("#cl2-i").fadeToggle()
+			});
+			$("#cl3").click(function() {
+				$("#cl3-i").fadeToggle()
+			});
+		});
+	</script>
+
+</html>
