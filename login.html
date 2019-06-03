@@ -47,29 +47,12 @@
 			</div>
 
 			<div class="container">
-				<input name="phone" placeholder="请输入手机号" />
-				<input name="password" type="password" placeholder="请输入密码" />
+				<label for="phone">手机号</label><input id="phone" name="phone" placeholder="请输入手机号" />
+				<input id="password" name="password" type="password" placeholder="请输入密码" />
 				<div id="slide" style="position: relative"></div>
 			</div>
 		</div>
 
-		<!-- 		<script>
-			var example = {
-				phone: "",
-				password: ""
-			}
-			new Vue({
-				el: "#app",
-				data() {
-					return example
-				},
-				methods: {
-					show() {
-						console.log(example.name)
-					}
-				}
-			})
-		</script> -->
 		<script type="text/javascript">
 			jigsaw.init(document.getElementById('slide'), function() {
 				//处理拼图成功事件
