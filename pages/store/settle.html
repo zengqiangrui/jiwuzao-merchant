@@ -60,6 +60,9 @@
 		</style>
 		<link rel="stylesheet" type="text/css" href="../../css/settle/jquery.step.css" />
 		<link rel="stylesheet" type="text/css" href="../../dist/css/layui.css" />
+		<link rel="stylesheet" href="control/css/zyUpload.css" type="text/css">
+		<script src="https://cdn.bootcss.com/jquery/3.4.0/jquery.min.js"></script>
+		<script src="https://cdn.bootcss.com/vue/2.6.10/vue.min.js"></script>
 	</head>
 
 	<body>
@@ -101,7 +104,8 @@
 					<div class="layui-form-item">
 						<label class="layui-form-label">手机号码</label>
 						<div class="layui-input-block">
-							<input type="text" maxlength="11" name="trueName" required lay-verify="phone" placeholder="请输入手机号" autocomplete="off" class="layui-input">
+							<input type="text" maxlength="11" name="phone" required lay-verify="phone" placeholder="请输入手机号" autocomplete="off"
+							 class="layui-input">
 						</div>
 					</div>
 					<div class="layui-form-item">
@@ -110,8 +114,28 @@
 							<input type="text" name="idcard" required lay-verify="idcard" placeholder="请输入身份证号" autocomplete="off" class="layui-input">
 						</div>
 					</div>
-					
-				
+
+
+
+					<div class="layui-form-item">
+						<label class="layui-form-label">身份证正面图片</label>
+						<div class="layui-input-block">
+							<input type="file" v-model="idfront" @change="addFront" name="frontIdCardPhoto" />
+						</div>
+						
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">身份证背面图片</label>
+						<div class="layui-input-block">
+							<input type="file" v-model="idfront" @change="addFront" name="backIdCardPhoto" />
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">手持身份证图片</label>
+						<div class="layui-input-block">
+							<input type="file" v-model="idfront" @change="addFront" name="handIdCardPhoto" />
+						</div>
+					</div>
 
 					<div class="layui-form-item">
 						<div class="layui-input-block">
@@ -135,10 +159,58 @@
 
 			</div>
 			<div id="" v-if="stepData.index==2">
-				我是div2
+				<form class="layui-form" action="">
+					<div class="layui-form-item">
+						<label class="layui-form-label">店铺名称</label>
+						<div class="layui-input-block">
+							<input type="text" name="storeName" required lay-verify="required" placeholder="请输入店铺名称" autocomplete="off"
+							 class="layui-input">
+						</div>
+					</div>
+					<!-- <div class="layui-form-item">
+						<label class="layui-form-label">店铺图标</label>
+						<div class="layui-input-block">
+							<input type="text" name="storeIcon" required lay-verify="required" placeholder="请输入" autocomplete="off"
+							 class="layui-input">
+						</div>
+					</div> -->
+					<div class="layui-form-item">
+						<label class="layui-form-label">店铺介绍</label>
+						<div class="layui-input-block">
+							<input type="text" name="storeIntro" required lay-verify="required" placeholder="请输入店铺介绍" autocomplete="off"
+							 class="layui-input">
+						</div>
+					</div>
+
+					<div class="layui-form-item">
+						<label class="layui-form-label">身份证号码</label>
+						<div class="layui-input-block">
+							<input type="text" name="idcard" required lay-verify="idcard" placeholder="请输入身份证号" autocomplete="off" class="layui-input">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">身份证正面图片</label>
+						<div class="layui-input-block">
+							<input type="file" v-model="idfront" @change="addFront" name="idfront" />
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">身份证背面图片</label>
+						<div class="layui-input-block">
+							<input type="file" v-model="idfront" @change="addFront" name="idfront" />
+						</div>
+					</div>
+
+					<div class="layui-form-item">
+						<div class="layui-input-block">
+							<button class="layui-btn layui-btn-warm" lay-submit lay-filter="formDemo">立即提交</button>
+							<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+						</div>
+					</div>
+				</form>
 			</div>
 			<div id="" v-if="stepData.index==3">
-				我是div3
+				已完成
 			</div>
 			<div class="btns">
 				<button id="prevBtn" class="layui-btn layui-btn-normal" @click="prev">上一步</button>
@@ -149,10 +221,14 @@
 		</div>
 	</body>
 
-
-	<script src="https://cdn.bootcss.com/jquery/3.4.0/jquery.min.js"></script>
-	<script src="https://cdn.bootcss.com/vue/2.6.10/vue.min.js"></script>
 	<script src="../../js/settle/jquery.step.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../plugins/fileup/core/zyFile.js"></script>
+
+	<script src="../../plugins/fileup/control/js/zyUpload.js"></script>
+
+	<!-- 引用初始化JS -->
+
+	<script src="../../plugins/fileup/core/jq22.js"></script>
 	<script src="../../js/kboot.js" type="text/javascript" charset="utf-8"></script>
 	<script type="text/javascript">
 		var example = {
@@ -161,6 +237,7 @@
 				time: 400,
 				title: ["阅读需知", "实名认证", "店铺认证", "已经完成"]
 			},
+			idfront: ''
 		}
 
 		var vm = new Vue({
@@ -172,6 +249,11 @@
 				example.stepData.index = 1
 			},
 			methods: {
+				addFront(res) {
+					console.log(res)
+					console.log(example.idfront)
+				},
+
 				prev() {
 					$step.prevStep();
 					example.stepData.index = $step.getIndex()
