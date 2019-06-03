@@ -5,11 +5,9 @@
 		<title>登录</title>
 		<link rel="stylesheet" type="text/css" href="css/login/jigsaw.css" />
 		<script src="https://cdn.bootcss.com/jquery/3.4.0/jquery.min.js"></script>
-		<script src="js/login/jigsaw.js" type="text/javascript" charset="utf-8"></script>
-		<!-- <script src="https://cdn.90so.net/layui/2.4.5/layui.js"></script> -->
+		<script src="https://cdn.90so.net/layui/2.4.5/layui.js"></script>
 		<script src="https://cdn.bootcss.com/layer/2.3/layer.js"></script>
 		<script src="https://cdn.bootcss.com/vue/2.6.10/vue.min.js"></script>
-		<script src="js/usual.js" type="text/javascript" charset="utf-8"></script>
 		<style>
 			.container {
 		  width: 310px;
@@ -41,22 +39,22 @@
 	</head>
 	<body>
 		<div id="app">
-
 			<div class="head">
 				欢迎登录极物造商家端
 			</div>
-
 			<div class="container">
-				<input name="phone" placeholder="请输入手机号" />
-				<input name="password" type="password" placeholder="请输入密码" />
-				<div id="slide" style="position: relative"></div>
+				<input name="phone" placeholder="请输入手机号"  v-model="phone"/>
+				<input id="pwd" name="password" type="password" placeholder="请输入密码" v-model="pwd"/>
+				<div id="slide" style="position: relative;display: none;"></div>
 			</div>
 		</div>
-
-		<!-- 		<script>
+		<script src="js/environment.js"></script>
+		<script src="js/kboot.js"></script>
+		<script src="js/login/jigsaw.js" type="text/javascript" charset="utf-8"></script>
+		<script>
 			var example = {
 				phone: "",
-				password: ""
+				pwd: ""
 			}
 			new Vue({
 				el: "#app",
@@ -69,12 +67,8 @@
 					}
 				}
 			})
-		</script> -->
-		<script type="text/javascript">
-			jigsaw.init(document.getElementById('slide'), function() {
-				//处理拼图成功事件
-				var phone = $("input[name='phone']").val()
-
+			$("#pwd").focus(function(){
+				$("#slide").css("display","block")
 			})
 		</script>
 	</body>
