@@ -393,7 +393,7 @@ function uploadImg(success,style){
 					}else{
 						styleUrl = null
 					}
-					console.log(success)
+					console.log(s)
 					success(url,square,styleUrl)
 				}
 			})
