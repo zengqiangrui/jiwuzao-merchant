@@ -1,0 +1,130 @@
+<template>
+	<div class="container" v-bind:class="{active:isActive}">
+		<div v-for="(item,index) in imgs" class="image-item">
+			<div v-if="!item.url" class="div-add" :style='!item.style?"width:100px;height":item.style' @click="addImg(index)">
+				<div class="description">{{item.msg}}</div>
+			</div>
+			<div v-else class="img-show" :style="item.style">
+				<img :src="item.url" style="width: 100%; height: 100%;">
+				<div class="close" @click="deleteImg(index)"></div>
+			</div>
+		</div>
+	</div>
+</template>
+
+<script>
+	var example = {
+		isActive: true,
+	}
+
+	module.exports = {
+		props: ["imgs"],
+		data: function() {
+			return example
+		},
+		mounted() {
+			var imgs = this.imgs
+			if (imgs.length == 1) {
+				example.isActive = false
+			}
+		},
+		methods: {
+			addImg(index) {
+				var imgs = this.imgs
+				uploadImg(function(url) {
+					imgs[index].url = url
+				})
+				this.$emit("getImgs", imgs)
+			},
+			deleteImg(index){
+				var imgs = this.imgs
+				imgs[index].url = ""
+				this.$emit("getImgs", imgs)
+			}
+		}
+	}
+</script>
+
+<style>
+	.container {
+		padding: 20px;
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: space-around;
+		margin: 20px;
+	}
+
+	.active {
+		border: 2px dashed black;
+		border-radius: 16px;
+	}
+
+	.description {
+		z-index: -1;
+		font-weight: 100;
+		width: 100%;
+		height: 100%;
+		text-align: center;
+		/* line-height: 150px; */
+	}
+	
+/* 	.description p{
+		bottom: 0;
+	} */
+
+	.image-item {
+		/* 		width: 100px;
+		height: 100px; */
+		margin: 10px;
+		border: 1px solid black;
+	}
+	
+	.image-item:hover{
+		background: #E8E8E8;
+	}
+
+	.div-add {
+		width: 100%;
+		height: 100%;
+		background: url(/jiwuzao-merchant/img/icons/add.png) no-repeat center;
+		background-size: 50px 50px;
+		cursor: pointer;
+	}
+
+	.img-show{
+		position: relative;
+	}
+
+	.close {
+		width: 20px;
+		height: 20px;
+		/*方便相对于父元素进行定位*/
+		position: absolute;
+		top: 10px;
+		right: 10px;
+		border: 1px solid black;
+		border-radius: 100%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		cursor: pointer;
+	}
+
+	.close::before,
+	.close::after {
+		content: "";
+		height: 16px;
+		width: 1.5px;
+		background: black;
+	}
+
+	.close::before {
+		transform: rotate(45deg);
+		/*进行旋转*/
+	}
+
+	.close::after {
+		transform: rotate(-45deg);
+	}
+</style>

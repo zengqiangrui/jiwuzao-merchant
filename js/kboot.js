@@ -357,6 +357,7 @@ function handleRequest(request,success){
 }
 
 function uploadImg(success,style){
+	console.log(1)
 	var input = document.createElement("input");
 	input.type = "file";
 	input.click();
@@ -370,6 +371,12 @@ function uploadImg(success,style){
 			layer.msg('上传格式不正确')
 			return
 		}
+		//验证图片大小
+		if(file.size>1024*1024*2){
+			layer.msg("图片大小不能超过2m")
+			return false
+		}
+		
 		var request = post(false,major + '/upload/upToken',{'suffix':suffix})
 		handleRequest(request,function(result){
 			var token = result.data.upToken
@@ -393,7 +400,6 @@ function uploadImg(success,style){
 					}else{
 						styleUrl = null
 					}
-					console.log(s)
 					success(url,square,styleUrl)
 				}
 			})
@@ -450,7 +456,7 @@ function createPage(pageId,limit,path,data,success){
 				}else{
 					handleRequest(post(true,path,data),function(result){
 						success(result.data.content)
-					})	
+					})
 				}
 			}
 		  });
