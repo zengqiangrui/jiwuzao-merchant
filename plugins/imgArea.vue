@@ -1,12 +1,12 @@
 <template>
-	<div class="container" v-bind:class="{active:isActive}">
+	<div class="container" v-bind:class='{area:isActive}'>
 		<div v-for="(item,index) in imgs" class="image-item">
-			<div v-if="!item.url" class="div-add" :style='!item.style?"width:100px;height":item.style' @click="addImg(index)">
+			<div v-if="!item.url" class="div-add" :style='item.style' @click="addImg(index)">
 				<div class="description">{{item.msg}}</div>
 			</div>
 			<div v-else class="img-show" :style="item.style">
 				<img :src="item.url" style="width: 100%; height: 100%;">
-				<div class="close" @click="deleteImg(index)"></div>
+				<div class="close" v-show="item.showDelete" @click="deleteImg(index)"></div>
 			</div>
 		</div>
 	</div>
@@ -16,7 +16,6 @@
 	var example = {
 		isActive: true,
 	}
-
 	module.exports = {
 		props: ["imgs"],
 		data: function() {
@@ -33,11 +32,13 @@
 				var imgs = this.imgs
 				uploadImg(function(url) {
 					imgs[index].url = url
+					console.log("upimg",imgs[index].url)
 				})
 				this.$emit("getImgs", imgs)
 			},
 			deleteImg(index){
 				var imgs = this.imgs
+				delImgs(imgs[index].url)
 				imgs[index].url = ""
 				this.$emit("getImgs", imgs)
 			}
@@ -55,7 +56,7 @@
 		margin: 20px;
 	}
 
-	.active {
+	.area{
 		border: 2px dashed black;
 		border-radius: 16px;
 	}
@@ -66,18 +67,11 @@
 		width: 100%;
 		height: 100%;
 		text-align: center;
-		/* line-height: 150px; */
 	}
 	
-/* 	.description p{
-		bottom: 0;
-	} */
-
 	.image-item {
-		/* 		width: 100px;
-		height: 100px; */
 		margin: 10px;
-		border: 1px solid black;
+		border: 2px solid black;
 	}
 	
 	.image-item:hover{

@@ -64,7 +64,6 @@
 				display: flex;
 				align-items: center;
 				justify-content: center;
-				/* padding: 50px; */
 				border: 4px dashed #272636;
 				border-radius: 10px;
 				margin-bottom: 10px;
@@ -94,8 +93,11 @@
 		</style>
 		<link rel="stylesheet" type="text/css" href="../../css/store/jquery.step.css" />
 		<link rel="stylesheet" type="text/css" href="../../dist/css/layui.css" />
-		<script src="../../js/environment.js" type="text/javascript" charset="utf-8"></script>
 		<script src="https://cdn.bootcss.com/jquery/3.4.0/jquery.min.js"></script>
+		<script src="../../js/environment.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/store/jquery.step.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../dist/layui.all.js"></script>
+		<script src="../../js/kboot.js" type="text/javascript" charset="utf-8"></script>
 		<script src="https://cdn.bootcss.com/vue/2.6.10/vue.min.js"></script>
 		<script src="https://unpkg.com/http-vue-loader"></script>
 	</head>
@@ -103,149 +105,143 @@
 	<body>
 		<div id="app">
 			<div id="step" style="width: 100%;"></div>
-			<div id="need-know" v-if="stepData.index==0">
+			<div id="need-know" v-show="example.stepData.index==0">
 				<p>1.重复铺货式开店淘宝会对重复发链接的宝贝进行判定，如果说淘宝系统看到你店铺内的链接相同，或者是宝贝的标题主图全部相同的话，就会判定你为重复铺货。那么什么是重复铺货式开店呢？给我说几家店铺的实际经营人都是同一个人，而且出售的商品都相同的话，这就会判定为重复铺货式开店。2018年之后重复铺货和重复铺货式开店，都已经进入严查的范围，淘宝被下架的产品已经有很多，所以在重复铺货方面大家一定要注意。2.虚假交易虚假交易最为大家所熟知的方式就是刷单，据我们所知，淘宝出台的关于刷单的规则已经有200条左右。另外在淘宝检测越来越精准化的条件下，淘宝会根据不同的标签检测出更多的刷单行为，刷单一旦被检测到，警告是最小的处罚，严重的可能店铺都无法经营，所以想要吸引流量，还是走正常途径，避开虚假交易哦。3.偷换宝贝偷换宝贝属于违规行为中经常出现的情况，一些商品销量不高之后，店家偷偷把它换成另外的商品，但是销量和基础依然是该商品的，这种情况下，商家就避免了新品再重新提高销量的步骤。但是所经营的商品也是完全不同的两个商品。在2018年这种同款产品的现象也成为严厉打击的对象，大家如果要更换产品的或者是标题之类，可以1到2天的间隔时间来慢慢的进行更换，这样就可以避免被淘宝误判为偷换宝贝了。4.SKU淘宝会根据不同的商品给他匹配不同的SKU,但是有的店家会通过产品的质量不同而进行产品更换，一旦淘宝的系统发现商品
 					与SKU不匹配的时候，就会把你的产品判断为作弊，这个时候，也会影响你店铺的信誉。5.错放类目就是字面上的意思，可能你本身经营的是男装，却把自己的类目放置到了女装之中，这时候淘宝就会判定你是违规，这个只需要我们细心一点就可以避免。6.价格方面不符合比如说一个产品，你设置的价格非常低，并且还设置了免邮。举个例子，一件冬天的羽绒服，店铺设置的价格是五块钱，还免费给顾客邮寄到家。或者说你的邮费本身正常价格是十块钱左右，但是你却设置为一百元。这两种情况的价格不符合，都会导致淘宝直接给您的店铺降权，所以这种投机取巧的行为还是不要做。
 					1.重复铺货式开店淘宝会对重复发链接的宝贝进行判定，如果说淘宝系统看到你店铺内的链接相同，或者是宝贝的标题主图全部相同的话，就会判定你为重复铺货。那么什么是重复铺货式开店呢？给我说几家店铺的实际经营人都是同一个人，而且出售的商品都相同的话，这就会判定为重复铺货式开店。2018年之后重复铺货和重复铺货式开店，都已经进入严查的范围，淘宝被下架的产品已经有很多，所以在重复铺货方面大家一定要注意。2.虚假交易虚假交易最为大家所熟知的方式就是刷单，据我们所知，淘宝出台的关于刷单的规则已经有200条左右。另外在淘宝检测越来越精准化的条件下，淘宝会根据不同的标签检测出更多的刷单行为，刷单一旦被检测到，警告是最小的处罚，严重的可能店铺都无法经营，所以想要吸引流量，还是走正常途径，避开虚假交易哦。3.偷换宝贝偷换宝贝属于违规行为中经常出现的情况，一些商品销量不高之后，店家偷偷把它换成另外的商品，但是销量和基础依然是该商品的，这种情况下，商家就避免了新品再重新提高销量的步骤。但是所经营的商品也是完全不同的两个商品。在2018年这种同款产品的现象也成为严厉打击的对象，大家如果要更换产品的或者是标题之类，可以1到2天的间隔时间来慢慢的进行更换，这样就可以避免被淘宝误判为偷换宝贝了。4.SKU淘宝会根据不同的商品给他匹配不同的SKU,但是有的店家会通过产品的质量不同而进行产品更换，一旦淘宝的系统发现商品
 					与SKU不匹配的时候，就会把你的产品判断为作弊，这个时候，也会影响你店铺的信誉。5.错放类目就是字面上的意思，可能你本身经营的是男装，却把自己的类目放置到了女装之中，这时候淘宝就会判定你是违规，这个只需要我们细心一点就可以避免。6.价格方面不符合比如说一个产品，你设置的价格非常低，并且还设置了免邮。举个例子，一件冬天的羽绒服，店铺设置的价格是五块钱，还免费给顾客邮寄到家。或者说你的邮费本身正常价格是十块钱左右，但是你却设置为一百元。这两种情况的价格不符合，都会导致淘宝直接给您的店铺降权，所以这种投机取巧的行为还是不要做。
 				</p>
 				<div style="display: flex;align-items: center;justify-content: center ; height: 50px;width: 100%;"><input id="needknow"
-					 style="zoom: 200%;" type="checkbox" name="admit" value="admit" /><label for="needknow">我已仔细阅读并同意</label></div>
+					 style="zoom: 200%;" :checked="needKnow" type="checkbox" name="admit" value="admit" /><label for="needknow">我已仔细阅读并同意</label></div>
 			</div>
-			<div id="verify-name" v-if="stepData.index==1">
-				<img-area></img-area>
+			<div id="verify-name" v-show="example.stepData.index==1">
 				<form class="layui-form" action="">
-					<div class="layui-form-item">
-						<label class="layui-form-label">匠人艺名</label>
-						<div class="layui-input-block">
-							<input type="text" name="verifyName" required lay-verify="required" placeholder="请输入艺名" autocomplete="off" class="layui-input">
-						</div>
-					</div>
-
 					<div class="layui-form-item">
 						<label class="layui-form-label">真实姓名</label>
 						<div class="layui-input-block">
-							<input type="text" name="trueName" required lay-verify="required" placeholder="请输入真实姓名" autocomplete="off" class="layui-input">
-						</div>
-					</div>
-
-					<div class="layui-form-item">
-						<label class="layui-form-label">性别</label>
-						<div class="layui-input-block">
-							<input type="radio" name="sex" value="男" title="男" checked>
-							<input type="radio" name="sex" value="女" title="女">
-						</div>
-					</div>
-
-					<div class="layui-form-item">
-						<label class="layui-form-label">手机号码</label>
-						<div class="layui-input-block">
-							<input type="text" maxlength="11" name="phone" required lay-verify="phone" placeholder="请输入手机号" autocomplete="off"
-							 class="layui-input">
-						</div>
-					</div>
-					
-					<div class="layui-form-item">
-						<label class="layui-form-label">身份证号码</label>
-						<div class="layui-input-block">
-							<input type="text" name="idcard" required lay-verify="idcard" placeholder="请输入身份证号" autocomplete="off" class="layui-input">
-						</div>
-					</div>
-
-					<div class="layui-row">
-						<div class="layui-col-md4">
-							<label class="layui-form-label">身份证正面</label>
-							<div class="idcard-area">
-								<div v-if="!idcard.front" data-type="front" class="div-add" @click="addImg"></div>
-								<img v-else :src="idcard.front" style="width: 100%;height: 100%;">
-							</div>
-						</div>
-						<div class="layui-col-md4">
-							<label class="layui-form-label">身份证背面</label>
-							<div class="idcard-area">
-								<div v-if="!idcard.back" data-type="back" class="div-add" @click="addImg"></div>
-								<img v-else :src="idcard.back" style="width: 100%;height: 100%;">
-							</div>
-						</div>
-						<div class="layui-col-md4">
-							<label class="layui-form-label">手持身份证</label>
-							<div class="idcard-area">
-								<div v-if="!idcard.handle" data-type="handle" class="div-add" @click="addImg"></div>
-								<img v-else :src="idcard.handle" style="width: 100%;height: 100%;cursor: pointer;">
-							</div>
-						</div>
-					</div>
-
-					<div class="layui-form-item">
-						<div class="layui-input-block">
-							<button class="layui-btn layui-btn-warm" lay-submit lay-filter="formDemo">立即提交</button>
-							<button type="reset" class="layui-btn layui-btn-primary">重置</button>
-						</div>
-					</div>
-
-				</form>
-
-				<script src="../../dist/layui.all.js"></script>
-				<script>
-					layui.use('form', function() {
-						var form = layui.form;
-
-						//监听提交
-						form.on('submit(formDemo)', function(data) {
-							layer.msg(JSON.stringify(data.field));
-							return false;
-						});
-					});
-				</script>
-
-			</div>
-			<div id="" v-if="stepData.index==2">
-				<form class="layui-form" action="">
-					<div class="layui-form-item">
-						<label class="layui-form-label">店铺名称</label>
-						<div class="layui-input-block">
-							<input type="text" name="storeName" required lay-verify="required" placeholder="请输入店铺名称" autocomplete="off"
-							 class="layui-input">
-						</div>
-					</div>
-
-					<div class="layui-form-item">
-						<label class="layui-form-label">店铺介绍</label>
-						<div class="layui-input-block">
-							<input type="text" name="storeIntro" required lay-verify="required" placeholder="请输入店铺介绍" autocomplete="off"
-							 class="layui-input">
+							<input type="text" name="trueName" :disabled="disabled" :value="example.trueName" required lay-verify="name"
+							 placeholder="请输入真实姓名" autocomplete="off" class="layui-input">
 						</div>
 					</div>
 
 					<div class="layui-form-item">
 						<label class="layui-form-label">身份证号码</label>
 						<div class="layui-input-block">
-							<input type="text" name="idcard" required lay-verify="idcard" placeholder="请输入身份证号" autocomplete="off" class="layui-input">
+							<input type="text" name="idcard" :disabled="disabled" :value="example.idcard" required lay-verify="idcard"
+							 placeholder="请输入身份证号" autocomplete="off" class="layui-input">
 						</div>
 					</div>
-					<!-- 					<div class="layui-form-item">
-						<label class="layui-form-label">身份证正面</label>
+
+					<div class="layui-form-item">
+						<!--图片输入，身份证正面，背面，手持-->
+						<img-area :imgs="idcards" />
+					</div>
+
+					<div class="layui-form-item">
+						<label class="layui-form-label">银行卡号</label>
 						<div class="layui-input-block">
-							<input type="file" v-model="idfront" @change="addFront" name="idfront" />
+							<input type="number" name="bankNo" :disabled="disabled" :value="example.bankNo" required lay-verify="required"
+							 placeholder="请输入银行卡号" autocomplete="off" class="layui-input">
 						</div>
 					</div>
 					<div class="layui-form-item">
-						<label class="layui-form-label">身份证背面</label>
+						<label class="layui-form-label">开户名</label>
 						<div class="layui-input-block">
-							<input type="file" v-model="idfront" @change="addFront" name="idfront" />
+							<input type="text" name="bankTrueName" :disabled="disabled" :value="example.bankTrueName" required lay-verify="name"
+							 placeholder="请输入开户名" autocomplete="off" class="layui-input">
 						</div>
-					</div> -->
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">开户行</label>
+						<div class="layui-input-block">
+							<!--开户行-->
+							<select name="openingBank" v-if="example.disabled" :value="example.openingBank">
+								<option value="">请选择开户行</option>
+								<option value="ICBC">工商银行</option>
+								<option value="ABC">农业银行</option>
+								<option value="BOC">中国银行</option>
+								<option value="CCB">建设银行</option>
+								<option value="CMB">招商银行</option>
+								<option value="PSBC">邮储银行</option>
+								<option value="BCM">交通银行</option>
+								<option value="SPDB">浦发银行</option>
+								<option value="CMBC">民生银行</option>
+								<option value="CIB">兴业银行</option>
+								<option value="PABC">平安银行</option>
+								<option value="CNCB">中信银行</option>
+								<option value="HXB">华夏银行</option>
+								<option value="CGB">广发银行</option>
+								<option value="CEB">光大银行</option>
+								<option value="BOB">北京银行</option>
+								<option value="NBCB">宁波银行</option>
+								<option value="BOSC">上海银行</option>
+							</select>
+							<select v-else name="openingBank" :disabled="true">
+								<option selected="example.openingBank == 'ICBC'" value="ICBC">工商银行</option>
+								<option selected="example.openingBank == 'ABC'" value="ABC">农业银行</option>
+								<option selected="example.openingBank == 'BOC'" value="BOC">中国银行</option>
+								<option selected="example.openingBank == 'CCB'" value="CCB">建设银行</option>
+								<option selected="example.openingBank == 'CMB'" value="CMB">招商银行</option>
+								<option selected="example.openingBank == 'PSBC'" value="PSBC">邮储银行</option>
+								<option selected="example.openingBank == 'BCM'" value="BCM">交通银行</option>
+								<option selected="example.openingBank == 'SPDB'" value="SPDB">浦发银行</option>
+								<option selected="example.openingBank == 'CMBC'" value="CMBC">民生银行</option>
+								<option selected="example.openingBank == 'CIB'" value="CIB">兴业银行</option>
+								<option selected="example.openingBank == 'PABC'" value="PABC">平安银行</option>
+								<option selected="example.openingBank == 'CNCB'" value="CNCB">中信银行</option>
+								<option selected="example.openingBank == 'HXB'" value="HXB">华夏银行</option>
+								<option selected="example.openingBank == 'CGB'" value="CGB">广发银行</option>
+								<option selected="example.openingBank == 'CEB'" value="CEB">光大银行</option>
+								<option selected="example.openingBank == 'BOB'" value="BOB">北京银行</option>
+								<option selected="example.openingBank == 'NBCB'" value="NBCB">宁波银行</option>
+								<option selected="example.openingBank == 'BOSC'" value="BOSC">上海银行</option>
+							</select>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">公司名称</label>
+						<div class="layui-input-block">
+							<input type="text" name="companyName" :disabled="disabled" :value="example.companyName" required lay-verify="companyName"
+							 placeholder="请输入公司名称" autocomplete="off" class="layui-input">
+						</div>
+					</div>
+
+					<div class="layui-form-item">
+						<label class="layui-form-label">统一社会信用代码</label>
+						<div class="layui-input-block">
+							<input type="text" name="uscc" :disabled="disabled" :value="example.uscc" required lay-verify="uscc" placeholder="请输入统一社会信用代码"
+							 autocomplete="off" class="layui-input">
+						</div>
+					</div>
+
+					<div class="layui-form-item">
+						<label class="layui-form-label">营业执照</label>
+						<div class="layui-input-block">
+							<img-area :imgs="businessLicense" />
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<div class="layui-card">
+							<div class="layui-card-header">其他认证信息</div>
+							<div class="layui-card-body" v-if="tipsShow">
+								请传入其他可以用于认证的图片，食品安全许可等
+							</div>
+						</div>
+						<img-area :imgs="otherImgs" />
+					</div>
 
 					<div class="layui-form-item">
 						<div class="layui-input-block">
-							<button class="layui-btn layui-btn-warm" lay-submit lay-filter="formDemo">立即提交</button>
-							<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+							<button class="layui-btn layui-btn-warm" :disabled="disabled" lay-submit lay-filter="formDemo">立即提交</button>
 						</div>
 					</div>
 				</form>
 			</div>
-			<div id="" v-if="stepData.index==3">
-				已完成
+			<div id="" v-show="example.stepData.index==2">
+
+			</div>
+			<div id="" v-show="example.stepData.index==3">
+				{{verifyMsg}}
 			</div>
 			<div class="btns">
 				<button id="prevBtn" class="layui-btn layui-btn-normal" @click="prev">上一步</button>
@@ -254,21 +250,118 @@
 		</div>
 	</body>
 
-	<script src="../../js/store/jquery.step.min.js" type="text/javascript" charset="utf-8"></script>
-	<script src="../../js/kboot.js" type="text/javascript" charset="utf-8"></script>
 	<script type="text/javascript">
 		var example = {
+			needKnow:false,
+			verifyMsg: "",
+			disabled: false,
+			merchant: null,
+			trueName: "",
+			idcard: "",
+			bankNo: "",
+			bankTrueName: "",
+			openingBank: "",
+			companyName: "",
+			uscc: "",
+			tipsShow: false,
+			selected: "",
 			stepData: {
 				index: 0,
 				time: 400,
-				title: ["阅读须知", "实名认证", "店铺认证", "认证完成"]
+				title: ["阅读须知", "入驻认证", "保证金", "认证状态"]
 			},
-			idfront: '',
-			idcard: {
-				front: '',
-				back: '',
-				handle: ''
+			businessLicense: [{
+				url: "",
+				msg: "营业执照",
+				showDelete: true,
+				style: {
+					"width": "500px",
+					"height": "800px",
+					"padding": "5px",
+					"font-size": "20px"
+				}
+			}],
+			idcards: [{
+				url: "",
+				msg: "身份证正面",
+				showDelete: true,
+				style: {
+					"width": "270px",
+					"height": "180px",
+					"padding": "5px"
+				}
+			}, {
+				url: "",
+				msg: "身份证背面",
+				showDelete: true,
+				style: {
+					"width": "270px",
+					"height": "180px",
+					"padding": "5px"
+				}
+			}, {
+				url: "",
+				msg: "手持身份证",
+				showDelete: true,
+				style: {
+					"width": "270px",
+					"height": "180px",
+					"padding": "5px"
+				}
+			}],
+			otherImgs: [{
+				url: "",
+				msg: "其他图1",
+				showDelete: true,
+				style: {
+					"width": "270px",
+					"height": "180px",
+					"padding": "5px"
+				}
+			}, {
+				url: "",
+				msg: "其他图2",
+				showDelete: true,
+				style: {
+					"width": "270px",
+					"height": "180px",
+					"padding": "5px"
+				}
+			}, {
+				url: "",
+				msg: "其他图3",
+				showDelete: true,
+				style: {
+					"width": "270px",
+					"height": "180px",
+					"padding": "5px"
+				}
+			}]
+		}
+
+		function checkImgs() {
+			var list = example.idcards
+			var list2 = example.businessLicense
+			var item = list.concat(list2)
+			var flag = true
+			item.forEach(e => {
+				if (!e.url) {
+					flag = false
+					return false
+				}
+			})
+			if (!flag) {
+				layer.msg("必要图片必须上传")
 			}
+			return flag
+		}
+
+		function getOtherImgs(item) {
+			var str = ""
+			item.forEach(res => {
+				str = str + res.url + ","
+			})
+			return str
 		}
 
 		var vm = new Vue({
@@ -276,11 +369,67 @@
 			data() {
 				return example;
 			},
-			components:{
-				'img-area': httpVueLoader('imgArea.vue')
+			components: {
+				'img-area': httpVueLoader('/jiwuzao-merchant/plugins/imgArea.vue'),
 			},
+
 			mounted() {
-				example.stepData.index = 1
+				var request = post(true, major + "/merchant/getVerifyActor", {})
+				handleRequest(request, function(res) {
+					var merchant = res.data
+					example.merchant = merchant
+					console.log(merchant)
+					if (merchant) {
+						switch (merchant.auditType) {
+							case "refuse":
+								example.verifyMsg = "上次提交已被拒绝"
+								break;
+							case "wait":
+								example.verifyMsg = "审核中，请等待"
+								break;
+							case "agree":
+								example.verifyMsg = "恭喜成为极物造匠人"
+								break;
+							default:
+								break;
+						}
+					} else {
+						example.verifyMsg = "请前往认证吧";
+					}
+
+					if (merchant && merchant.auditType != 'refuse') {
+						example.needKnow = true
+						example.trueName = merchant.trueName
+						example.idcard = merchant.idcard
+						example.bankNo = merchant.bankNo
+						example.bankTrueName = merchant.bankTrueName
+						example.openingBank = merchant.openingBank
+						example.companyName = merchant.companyName
+						example.uscc = merchant.uscc
+						example.selected = merchant.openingBank
+						example.disabled = true
+						example.test = true
+						example.idcards[0].url = merchant.frontIdCardPhoto
+						example.idcards[1].url = merchant.backIdCardPhoto
+						example.idcards[2].url = merchant.handIdCardPhoto
+						example.businessLicense[0].url = merchant.businessLicense
+						example.businessLicense[0].showDelete = false
+						for (let i = 0; i < example.idcards.length; i++) {
+							example.idcards[i].showDelete = false
+						}
+						var others = merchant.otherSupportPhotos
+						var list = others.split(",")
+						console.log(list)
+						for (let i = 0; i < list.length; i++) {
+							if (!list[i]) {
+								example.otherImgs.splice(i)
+								break
+							}
+							example.otherImgs[i].url = list[i]
+							example.otherImgs[i].showDelete = false
+						}
+					}
+				})
 			},
 			methods: {
 				addImg(res) {
@@ -301,10 +450,10 @@
 					})
 				},
 
+
 				prev() {
 					$step.prevStep();
 					example.stepData.index = $step.getIndex()
-
 				},
 				next() {
 					switch ($step.getIndex()) {
@@ -316,8 +465,12 @@
 								break;
 							}
 						case 1:
+							if (!example.merchant) {
+								console.log("nomerchant")
+								layer.msg("请认真填写信息并提交")
+								return false
+							}
 							break;
-
 						default:
 							break;
 					}
@@ -326,24 +479,34 @@
 				}
 			}
 		})
-
 		var $step = $("#step");
 		$step.step(example.stepData);
-		// $("#prevBtn").on("click", function() {
-		// 	$step.prevStep();
-		// 	$index.text($step.getIndex());
-		// });
-		// $("#nextBtn").on("click", function() {
-		// 	$step.nextStep();
-		// 	$index.text($step.getIndex());
-		// });
-		// $("#btn1").on("click", function() {
-		// 	$step.toStep(1);
-		// 	$index.text($step.getIndex());
-		// });
-		// $("#btn2").on("click", function() {
-		// 	$step.toStep(2);
-		// 	$index.text($step.getIndex());
-		// });
+	</script>
+	<script>
+		layui.use('form', function() {
+			var form = layui.form;
+			form.on('submit()', function(data) {
+				var formData = data.field
+				if (!checkImgs()) {
+					return false
+				}
+				formData.frontIdCardPhoto = example.idcards[0].url
+				formData.backIdCardPhoto = example.idcards[1].url
+				formData.handIdCardPhoto = example.idcards[2].url
+				formData.businessLicense = example.businessLicense[0].url
+				formData.otherSupportPhotos = getOtherImgs(example.otherImgs)
+				// layer.msg(JSON.stringify(data.field));
+				console.log(JSON.stringify(formData))
+
+				var request = post(true, major + "/merchant/verifyActor", formData)
+				handleRequest(request, function(res) {
+					if (res.state == 'success') {
+						example.merchant = formData
+					}
+				})
+				return false;
+			});
+			form.render()
+		});
 	</script>
 </html>
