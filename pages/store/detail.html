@@ -6,9 +6,156 @@
 		<link rel="stylesheet" type="text/css" href="../../dist/css/layui.css" />
 		<script src="../../js/environment.js" type="text/javascript" charset="utf-8"></script>
 		<script src="https://cdn.bootcss.com/jquery/3.4.0/jquery.min.js"></script>
+		<script src="../../dist/layui.js" type="text/javascript" charset="utf-8"></script>
 		<script src="https://cdn.bootcss.com/vue/2.6.10/vue.min.js"></script>
 		<script src="https://unpkg.com/http-vue-loader"></script>
+		<script src="../../js/kboot.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/msCode.js" type="text/javascript" charset="utf-8"></script>
+		<style type="text/css">
+			.container {
+				padding: 20px;
+			}
+		</style>
 	</head>
 	<body>
+		<div id="app">
+			<div class="container">
+				<form class="layui-form" action="">
+					<div class="layui-form-item">
+						<label class="layui-form-label">店铺名称</label>
+						<div class="layui-input-block">
+							<input type="text" name="storeName" maxlength="20" required lay-verify="required" placeholder="请输入店铺名称" autocomplete="off" class="layui-input">
+						</div>
+					</div>
+
+					<div class="layui-form-item layui-form-text">
+						<label class="layui-form-label">店铺介绍</label>
+						<div class="layui-input-block">
+							<textarea name="storeIntro" placeholder="请输入内容" class="layui-textarea"></textarea>
+						</div>
+					</div>
+
+					<div class="layui-form-item">
+						<label class="layui-form-label">店铺图片</label>
+						<div class="layui-input-block">
+							<img-area :imgs="imgs"></img-area>
+						</div>
+					</div>
+
+					<div class="layui-form-item layui-form-text">
+						<label class="layui-form-label">客服电话</label>
+						<div class="layui-input-block">
+							<input class="layui-input-block layui-col-md5" type="text" v-model="servicePhone" name="servicePhone" required lay-verify="phone" placeholder="请输入客服电话" autocomplete="off" class="layui-input">
+							<input class="layui-input-block layui-col-md2" type="text" v-model="smsCode" name="verifyCode" required placeholder="请输入验证码" autocomplete="off" class="layui-input">
+							<button class="layui-btn layui-btn-primary" :disabled="verifyDisabled" @click.prevent="getVerifyCode">{{verifyMsg}}</button>
+						</div>
+					</div>
+
+					<div class="layui-form-item layui-form-text">
+						<label class="layui-form-label">店铺风格</label>
+						<div class="layui-input-block">
+							<input class="layui-input-block layui-col-md2" type="text" name="storeStyle1" placeholder="风格标签1" autocomplete="off" class="layui-input">
+							<input class="layui-input-block layui-col-md2" type="text" name="storeStyle2" placeholder="风格标签2" autocomplete="off" class="layui-input">
+							<input class="layui-input-block layui-col-md2" type="text" name="storeStyle3" placeholder="风格标签3" autocomplete="off" class="layui-input">
+						</div>
+					</div>
+
+					<div class="layui-form-item">
+						<div class="layui-input-block" style="display: flex;justify-content: flex-end;">
+							<button class="layui-btn layui-btn-warm" :disabled="disabled" lay-submit lay-filter="form">立即提交</button>
+						</div>
+					</div>
+
+				</form>
+				
+				
+			</div>
+		</div>
 	</body>
+	<script type="text/javascript">
+		var example = {
+			servicePhone:"",
+			smsCode:"",
+			verifyMsg:"获取验证码",
+			verifyDisabled:false,
+			disabled:false,
+			imgs: [{
+				url: "",
+				msg: "店铺头像",
+				showDelete: true,
+				style: {
+					"width": "200px",
+					"height": "200px",
+					"padding": "5px",
+					"font-size": "16px"
+				}
+			},{
+				url: "",
+				msg: "店铺背景",
+				showDelete: true,
+				style: {
+					"width": "600px",
+					"height": "200px",
+					"padding": "5px",
+					"font-size": "16px"
+				}
+			}]
+		}
+		new Vue({
+			el: "#app",
+			data() {
+				return example
+			},
+			components: {
+				'img-area': httpVueLoader('/jiwuzao-merchant/plugins/imgArea.vue'),
+			},
+			mounted() {
+			},
+			methods:{
+				getVerifyCode(){
+					if(!/^[1][0-9]{10}$/.test(this.servicePhone)){
+						layer.msg("请输入正确的手机号")
+						return false
+					}
+					sendSmsCode(this.servicePhone)
+					var second = 60
+					this.verifyDisabled = true
+					this.msg = "剩余时间" + second
+					var interval = setInterval(() => {
+						this.verifyMsg = "剩余时间" + --second +"秒"
+						if (second == 0) {
+							this.verifyDisabled = false,
+							this.verifyMsg = "获取验证码"
+						}
+					}, 1000)
+					setTimeout(() => {
+						clearInterval(interval)
+					}, 60010)
+				}
+			}
+		})
+	</script>
+
+	<script type="text/javascript">
+		layui.use('form', function() {
+			var form = layui.form;
+			form.on('submit()', function(data) {
+				var formData = data.field
+				console.log(formData)
+				// var request = post(true, major + "/merchant/verifyActor", formData)
+				// handleRequest(request, function(res) {
+				// 	if (res.state == 'success') {
+				// 		example.merchant = formData
+				// 	}
+				// })
+				// var smsRequest = post(true,major+"/userBasic/sendSms",{"phone":formData.servicePhone,"sha256":sha256})
+				// handleRequest(smsRequest,function(){
+				// 	console.log(11)
+				// })
+				
+				return false;
+			});
+			form.render()
+		});
+	</script>
 </html>

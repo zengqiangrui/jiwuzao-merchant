@@ -176,25 +176,25 @@
 								<option value="NBCB">宁波银行</option>
 								<option value="BOSC">上海银行</option>
 							</select>
-							<select v-else name="openingBank" :disabled="true">
-								<option selected="example.openingBank == 'ICBC'" value="ICBC">工商银行</option>
-								<option selected="example.openingBank == 'ABC'" value="ABC">农业银行</option>
-								<option selected="example.openingBank == 'BOC'" value="BOC">中国银行</option>
-								<option selected="example.openingBank == 'CCB'" value="CCB">建设银行</option>
-								<option selected="example.openingBank == 'CMB'" value="CMB">招商银行</option>
-								<option selected="example.openingBank == 'PSBC'" value="PSBC">邮储银行</option>
-								<option selected="example.openingBank == 'BCM'" value="BCM">交通银行</option>
-								<option selected="example.openingBank == 'SPDB'" value="SPDB">浦发银行</option>
-								<option selected="example.openingBank == 'CMBC'" value="CMBC">民生银行</option>
-								<option selected="example.openingBank == 'CIB'" value="CIB">兴业银行</option>
-								<option selected="example.openingBank == 'PABC'" value="PABC">平安银行</option>
-								<option selected="example.openingBank == 'CNCB'" value="CNCB">中信银行</option>
-								<option selected="example.openingBank == 'HXB'" value="HXB">华夏银行</option>
-								<option selected="example.openingBank == 'CGB'" value="CGB">广发银行</option>
-								<option selected="example.openingBank == 'CEB'" value="CEB">光大银行</option>
-								<option selected="example.openingBank == 'BOB'" value="BOB">北京银行</option>
-								<option selected="example.openingBank == 'NBCB'" value="NBCB">宁波银行</option>
-								<option selected="example.openingBank == 'BOSC'" value="BOSC">上海银行</option>
+							<select v-else name="openingBank" :value="example.openingBank">
+								<option v-if='example.openingBank == "ICBC"' value="ICBC">工商银行</option>
+								<option v-if='example.openingBank == "ABC"' value="ABC">农业银行</option>
+								<option v-if='example.openingBank == "BOC"' value="BOC">中国银行</option>
+								<option v-if='example.openingBank == "CCB"' value="CCB">建设银行</option>
+								<option v-if='example.openingBank == "CMB"' value="CMB">招商银行</option>
+								<option v-if='example.openingBank == "PSBC"' value="PSBC">邮储银行</option>
+								<option v-if='example.openingBank == "BCM"' value="BCM">交通银行</option>
+								<option v-if='example.openingBank == "SPDB"' value="SPDB">浦发银行</option>
+								<option v-if='example.openingBank == "CMBC"' value="CMBC">民生银行</option>
+								<option v-if='example.openingBank == "CIB"' value="CIB">兴业银行</option>
+								<option v-if='example.openingBank == "PABC"' value="PABC">平安银行</option>
+								<option v-if='example.openingBank == "CNCB"' value="CNCB">中信银行</option>
+								<option v-if='example.openingBank == "HXB"' value="HXB">华夏银行</option>
+								<option v-if='example.openingBank == "CGB"' value="CGB">广发银行</option>
+								<option v-if='example.openingBank == "CEB"' value="CEB">光大银行</option>
+								<option v-if='example.openingBank == "BOB"' value="BOB">北京银行</option>
+								<option v-if='example.openingBank == "NBCB"' value="NBCB">宁波银行</option>
+								<option v-if='example.openingBank == "BOSC"' value="BOSC">上海银行</option>
 							</select>
 						</div>
 					</div>
@@ -232,7 +232,7 @@
 
 					<div class="layui-form-item">
 						<div class="layui-input-block">
-							<button class="layui-btn layui-btn-warm" :disabled="disabled" lay-submit lay-filter="formDemo">立即提交</button>
+							<button class="layui-btn layui-btn-warm" :disabled="disabled" lay-submit lay-filter="form">立即提交</button>
 						</div>
 					</div>
 				</form>
@@ -449,7 +449,10 @@
 						}
 					})
 				},
-
+				
+				showSelect:function(){
+					console.log(example.openingBank)
+				},
 
 				prev() {
 					$step.prevStep();

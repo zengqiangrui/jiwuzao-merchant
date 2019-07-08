@@ -1,5 +1,5 @@
 <template>
-	<div class="container" v-bind:class='{area:isActive}'>
+	<div class="img-contain" v-bind:class='{area:isActive}'>
 		<div v-for="(item,index) in imgs" class="image-item">
 			<div v-if="!item.url" class="div-add" :style='item.style' @click="addImg(index)">
 				<div class="description">{{item.msg}}</div>
@@ -47,7 +47,7 @@
 </script>
 
 <style>
-	.container {
+	.img-contain {
 		padding: 20px;
 		display: flex;
 		flex-wrap: wrap;
