@@ -24,7 +24,7 @@ layui.use(['form'], function() {
 		},
 		msCode(value) {
 			if (!/^[0-9]{6}$/.test(value)) {
-				return msg
+				return "验证码不符合规则"
 			}
 		},
 		nickName(value) {
@@ -75,7 +75,12 @@ layui.use(['form'], function() {
 		},
 		phone(value) {
 			if (!/^[1][0-9]{10}$/.test(value)) {
-				return msg
+				return "手机号不符合规则"
+			}
+		},
+		label(value) {
+			if(!/^[\u4e00-\u9fa5]*$/.test(value)){
+				return "标签为1到6个字中文"
 			}
 		},
 		idcard(value) {

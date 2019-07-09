@@ -15,6 +15,11 @@
 			.container {
 				padding: 20px;
 			}
+
+			.redStar {
+				color: red;
+				font-size: 1.5rem;
+			}
 		</style>
 	</head>
 	<body>
@@ -22,31 +27,34 @@
 			<div class="container">
 				<form class="layui-form" action="">
 					<div class="layui-form-item">
-						<label class="layui-form-label">店铺名称</label>
+						<label class="layui-form-label">店铺名称<span class="redStar">*</span></label>
 						<div class="layui-input-block">
-							<input type="text" name="storeName" maxlength="20" required lay-verify="required" placeholder="请输入店铺名称" autocomplete="off" class="layui-input">
+							<input type="text" :value="storeName" name="storeName" maxlength="20" required lay-verify="required" placeholder="请输入店铺名称"
+							 autocomplete="off" class="layui-input">
 						</div>
 					</div>
 
 					<div class="layui-form-item layui-form-text">
-						<label class="layui-form-label">店铺介绍</label>
+						<label class="layui-form-label">店铺介绍<span class="redStar">*</span></label>
 						<div class="layui-input-block">
-							<textarea name="storeIntro" placeholder="请输入内容" class="layui-textarea"></textarea>
+							<textarea name="storeIntro" :value="storeIntro" placeholder="请输入内容" lay-verify="required" class="layui-textarea"></textarea>
 						</div>
 					</div>
 
 					<div class="layui-form-item">
-						<label class="layui-form-label">店铺图片</label>
+						<label class="layui-form-label">店铺图片<span class="redStar">*</span></label>
 						<div class="layui-input-block">
 							<img-area :imgs="imgs"></img-area>
 						</div>
 					</div>
 
 					<div class="layui-form-item layui-form-text">
-						<label class="layui-form-label">客服电话</label>
+						<label class="layui-form-label">客服电话<span class="redStar">*</span></label>
 						<div class="layui-input-block">
-							<input class="layui-input-block layui-col-md5" type="text" v-model="servicePhone" name="servicePhone" required lay-verify="phone" placeholder="请输入客服电话" autocomplete="off" class="layui-input">
-							<input class="layui-input-block layui-col-md2" type="text" v-model="smsCode" name="verifyCode" required placeholder="请输入验证码" autocomplete="off" class="layui-input">
+							<input class="layui-input-block layui-col-md5" type="text" v-model="servicePhone" name="servicePhone" required
+							 lay-verify="phone" :value="servicePhone" placeholder="请输入客服电话" autocomplete="off" class="layui-input">
+							<input class="layui-input-block layui-col-md2" type="text" v-model="smsCode" name="msCode" required lay-verify="msCode"
+							 placeholder="请输入验证码" autocomplete="off" class="layui-input">
 							<button class="layui-btn layui-btn-primary" :disabled="verifyDisabled" @click.prevent="getVerifyCode">{{verifyMsg}}</button>
 						</div>
 					</div>
@@ -54,9 +62,12 @@
 					<div class="layui-form-item layui-form-text">
 						<label class="layui-form-label">店铺风格</label>
 						<div class="layui-input-block">
-							<input class="layui-input-block layui-col-md2" type="text" name="storeStyle1" placeholder="风格标签1" autocomplete="off" class="layui-input">
-							<input class="layui-input-block layui-col-md2" type="text" name="storeStyle2" placeholder="风格标签2" autocomplete="off" class="layui-input">
-							<input class="layui-input-block layui-col-md2" type="text" name="storeStyle3" placeholder="风格标签3" autocomplete="off" class="layui-input">
+							<input class="layui-input-block layui-col-md2" :value="storeStyle1" maxlength="6" type="text" lay-verify="label" name="storeStyle1"
+							 placeholder="风格标签1" autocomplete="off" class="layui-input">
+							<input class="layui-input-block layui-col-md2" :value="storeStyle2" maxlength="6" type="text" lay-verify="label" name="storeStyle2"
+							 placeholder="风格标签2" autocomplete="off" class="layui-input">
+							<input class="layui-input-block layui-col-md2" :value="storeStyle3" maxlength="6" type="text" lay-verify="label" name="storeStyle3"
+							 placeholder="风格标签3" autocomplete="off" class="layui-input">
 						</div>
 					</div>
 
@@ -67,18 +78,23 @@
 					</div>
 
 				</form>
-				
-				
+
+
 			</div>
 		</div>
 	</body>
 	<script type="text/javascript">
 		var example = {
-			servicePhone:"",
-			smsCode:"",
-			verifyMsg:"获取验证码",
-			verifyDisabled:false,
-			disabled:false,
+			storeName:"",
+			storeIntro:"",
+			servicePhone: "",
+			smsCode: "",
+			storeStyle1:"",
+			storeStyle2:"",
+			storeStyle3:"",
+			verifyMsg: "获取验证码",
+			verifyDisabled: false,
+			disabled: false,
 			imgs: [{
 				url: "",
 				msg: "店铺头像",
@@ -89,7 +105,7 @@
 					"padding": "5px",
 					"font-size": "16px"
 				}
-			},{
+			}, {
 				url: "",
 				msg: "店铺背景",
 				showDelete: true,
@@ -110,10 +126,32 @@
 				'img-area': httpVueLoader('/jiwuzao-merchant/plugins/imgArea.vue'),
 			},
 			mounted() {
+				var request = post(false, major + "/merchant/getMerchantStore")
+				handleRequest(request, function(res) {
+					console.log(res)
+					var store = res.data
+					example.storeName = store.storeName
+					example.storeIntro = store.storeIntro
+					example.servicePhone = store.servicePhone
+					example.imgs[0].url = store.storeIcon
+					example.imgs[1].url = store.storeBgImg
+					var storeStyle = store.storeStyle
+					var list = storeStyle.split(",")
+					console.log(list)
+					if(list[0]){
+						example.storeStyle1 = list[0]
+					}
+					if(list[1]){
+						example.storeStyle2 = list[1]
+					}
+					if(list[2]){
+						example.storeStyle3 = list[2]
+					}
+				})
 			},
-			methods:{
-				getVerifyCode(){
-					if(!/^[1][0-9]{10}$/.test(this.servicePhone)){
+			methods: {
+				getVerifyCode() {
+					if (!/^[1][0-9]{10}$/.test(this.servicePhone)) {
 						layer.msg("请输入正确的手机号")
 						return false
 					}
@@ -122,10 +160,10 @@
 					this.verifyDisabled = true
 					this.msg = "剩余时间" + second
 					var interval = setInterval(() => {
-						this.verifyMsg = "剩余时间" + --second +"秒"
+						this.verifyMsg = "剩余时间" + --second + "秒"
 						if (second == 0) {
 							this.verifyDisabled = false,
-							this.verifyMsg = "获取验证码"
+								this.verifyMsg = "获取验证码"
 						}
 					}, 1000)
 					setTimeout(() => {
@@ -137,22 +175,67 @@
 	</script>
 
 	<script type="text/javascript">
+		function checkImgs(imgs) {
+			var flag = true
+			for (let i = 0; i < imgs.length; i++) {
+				if (imgs[i].uri == "" || !imgs[i].url) {
+					flag = false
+				}
+			}
+			return flag
+		}
+
+		function getStoreStyle(storeStyle1, storeStyle2, storeStyle3) {
+			var storeStyle = ""
+			if (storeStyle1 != "") {
+				storeStyle += storeStyle1 + ","
+			}
+			if (storeStyle2 != "") {
+				storeStyle += storeStyle2 + ","
+			}
+			if (storeStyle3 != "") {
+				storeStyle += storeStyle3 + ","
+			}
+			return storeStyle
+		}
+
 		layui.use('form', function() {
 			var form = layui.form;
 			form.on('submit()', function(data) {
 				var formData = data.field
 				console.log(formData)
-				// var request = post(true, major + "/merchant/verifyActor", formData)
-				// handleRequest(request, function(res) {
-				// 	if (res.state == 'success') {
-				// 		example.merchant = formData
-				// 	}
-				// })
-				// var smsRequest = post(true,major+"/userBasic/sendSms",{"phone":formData.servicePhone,"sha256":sha256})
-				// handleRequest(smsRequest,function(){
-				// 	console.log(11)
-				// })
-				
+				if (!checkImgs(example.imgs)) {
+					layer.msg("图片要上传")
+					return false
+				}
+				console.log(example.imgs)
+				formData.storeIcon = example.imgs[0].url
+				formData.storeBgImg = example.imgs[1].url
+				formData.storeStyle = getStoreStyle(formData.storeStyle1, formData.storeStyle2, formData.storeStyle3)
+				delete formData.storeStyle1
+				delete formData.storeStyle2
+				delete formData.storeStyle3
+				JSON.stringify(formData)
+				console.log("jsonFormData", formData)
+				var request = post(true, major + "/merchant/modifyOrOpenStore", formData)
+				handleRequest(request, function(res) {
+					if(res.state =="success" && res.data){
+						try{
+							var jData = JSON.parse(res.data)
+							if(jData.id)
+							layer.msg("成功提交")
+						}catch(e){
+							layer.msg(res.data)
+							if(res.data == "您未通过实名认证"){
+								setTimeout(function(){location.href="settle.html"},2000)
+								
+							}
+						}
+						
+					}else{
+						layer.msg("更新失败，请检查")
+					}
+				})
 				return false;
 			});
 			form.render()
