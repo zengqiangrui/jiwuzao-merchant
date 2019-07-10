@@ -781,6 +781,7 @@ var request = post(true,major+"/userBasic/login",{'phone':example.phone,'pwd':ex
 handleRequest(request,function(result){
 	storageSet('phone',example.phone);
 	storageSet('accessToken',result.data,'d',7);
+	console.log(result)
 	location.href="index.html";
 })
 };

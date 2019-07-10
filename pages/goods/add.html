@@ -1,9 +1,253 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<meta charset="utf-8">
-		<title></title>
+		<meta charset="utf-8" />
+		<link rel="stylesheet" type="text/css" href="../../dist/css/layui.css" />
+		<link rel="stylesheet" href="../../css/goods/sku_style.css" />
+		<script src="" type="text/javascript" charset="utf-8"></script>
+		<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.js"></script>
+		<script src="https://cdn.bootcss.com/vue/2.6.10/vue.min.js"></script>
+		<script src="../../dist/layui.js" type="text/javascript" charset="utf-8"></script>
+		<script src="https://unpkg.com/http-vue-loader"></script>
+		<script src="../../js/environment.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript" src="../../js/goods/sku.js"></script>
+		<script src="../../js/kboot.js" type="text/javascript" charset="utf-8"></script>
+		<style type="text/css">
+			#sku {
+				border: #000077 2px dashed;
+				padding: 10px;
+			}
+
+			#app {
+				padding: 20px;
+			}
+
+			#introVideo {
+				cursor: pointer;
+			}
+
+			.video-mask {
+				width: 1000px;
+				height: 600px;
+				position: absolute;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				color: yellow;
+				z-index: 10;
+			}
+
+			.block-container {
+				display: flex;
+			}
+		</style>
 	</head>
 	<body>
+		<div id="app">
+			<form class="layui-form" id="myform">
+				<div class="layui-form-item">
+					<label class="layui-form-label">商品标题</label>
+					<div class="layui-input-block">
+						<input type="text" name="title" required lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input">
+					</div>
+				</div>
+
+				<div class="layui-form-item">
+					<label class="layui-form-label">默认价格</label>
+					<div class="layui-input-block">
+						<input type="text" name="price" required lay-verify="required" placeholder="请输入默认价格" autocomplete="off" class="layui-input">
+					</div>
+				</div>
+
+				<div class="layui-form-item">
+					<label class="layui-form-label">封面图片</label>
+					<div class="layui-input-block">
+						<img-area :imgs="cover"></img-area>
+					</div>
+				</div>
+
+				<div class="layui-form-item">
+					<label class="layui-form-label">商品分类</label>
+					<div class="layui-input-block">
+						<select name="classify" id="classify" lay-verify="required">
+							<option value=""></option>
+							<option value="food">食品</option>
+							<option value="clothing">服装</option>
+							<option value="ornament">饰品</option>
+							<option value="bags">箱包</option>
+							<option value="beauty">美妆</option>
+							<option value="house">家居</option>
+							<option value="mom">母婴</option>
+							<option value="toy">玩具</option>
+							<option value="gift">礼品</option>
+							<option value="tool">器具</option>
+							<option value="electron">电子</option>
+							<option value="other">其他</option>
+						</select>
+					</div>
+				</div>
+			</form>
+
+			<!--轮播图显示静态资源-->
+			<div class="layui-form-item">
+				<label class="layui-form-label">轮播图片</label>
+				<div class="layui-input-block">
+					<img-area :imgs="swiper"></img-area>
+				</div>
+			</div>
+
+			<div class="layui-form-item">
+				<label class="layui-form-label">视频上传</label>
+				<div class="layui-input-block block-container">
+					<div v-show="!hasVideo" class="video-mask"><button class="layui-btn layui-btn-primary" @click="uploadVideo">上传视频</button></div>
+					<video width="1000px" autoplay height="600px" :src="myVideo" controls="controls" id="introVideo"></video>
+					<button class="layui-btn layui-btn-danger" @click="delVideo" v-show="hasVideo" type="button">删除视频</button>
+				</div>
+			</div>
+
+			<!--商品规格管理-->
+			<div class="layui-form-item">
+				<label class="layui-form-label">商品规格</label>
+				<div class="layui-input-block">
+					<div id="sku">
+						<div id="title_box"></div>
+						<div class="fill operation">
+							<span class="le cloneSku layui-btn-normal">添加规格</span>
+						</div>
+						<div id="skuCloneModel" style="display: none;">
+							<div class="clear"></div>
+							<ul class="SKU_TYPE">
+								<li is_required='0' propid='' sku-type-name="">
+									<a href="javascript:void(0);" class="delCusSkuType">移除规格</a>
+									<input type="text" class="cusSkuTypeInput" />：
+								</li>
+							</ul>
+							<ul>
+								<li>
+									<input type="checkbox" class="model_sku_val" propvalid='' value="" style="display: none;" />
+								</li>
+								<button class="cloneSkuVal layui-btn-primary">添加规格分类</button>
+							</ul>
+							<div class="clear"></div>
+						</div>
+						<li style="display: none;" id="onlySkuValCloneModel">
+							<input type="checkbox" class="model_sku_val" propvalid='' value="" style="display: none;" />
+							<input type="text" class="cusSkuValInput" />
+							<a href="javascript:void(0);" class="delCusSkuVal">删除</a>
+						</li>
+						<div class="clear"></div>
+						<div id="skuTable"></div>
+						<button id="submit" class="layui-btn-normal">验证规格信息</button>
+					</div>
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<div class="layui-input-block">
+					<button class="layui-btn layui-bg-cyan" type="submit" @click="submit">立即提交</button>
+					<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+				</div>
+			</div>
+		</div>
 	</body>
+	<script type="text/javascript">
+		var example = {
+			goodsClassify: "",
+			myVideo: "",
+			hasVideo: false,
+			cover: [{
+				url: "",
+				msg: "封面",
+				style: {
+					"width": "200px",
+					"height": "200px",
+				}
+			}],
+			swiper: [{
+				url: "",
+				msg: "图片1",
+				style: {
+					"width": "300px",
+					"height": "200px",
+				}
+			}, {
+				url: "",
+				msg: "图片2",
+				style: {
+					"width": "300px",
+					"height": "200px",
+				}
+			}, {
+				url: "",
+				msg: "图片3",
+				style: {
+					"width": "300px",
+					"height": "200px",
+				}
+			}, {
+				url: "",
+				msg: "图片4",
+				style: {
+					"width": "300px",
+					"height": "200px",
+				}
+			}, {
+				url: "",
+				msg: "图片5",
+				style: {
+					"width": "300px",
+					"height": "200px",
+				}
+			}, {
+				url: "",
+				msg: "图片6",
+				style: {
+					"width": "300px",
+					"height": "200px",
+				}
+			}]
+		}
+		var vm = new Vue({
+			el: "#app",
+			components: {
+				'img-area': httpVueLoader('/jiwuzao-merchant/plugins/imgArea.vue'),
+			},
+			data() {
+				return example;
+			},
+			methods: {
+				submit(e) {
+					console.log($("#classify").val())
+				},
+				uploadVideo(e) {
+					if (!this.myVideo) {
+						uploadVideo(function(res) {
+							example.myVideo = res
+							example.hasVideo = true
+						})
+					}
+				},
+				delVideo() {
+					delVideo(example.myVideo, function(res) {
+					})
+					example.myVideo = ""
+					example.hasVideo = false
+				}
+			},
+		})
+	</script>
+
+
+	<script type="text/javascript">
+		$(function() {
+			$('#submit').on('click', function(e) {
+				e.preventDefault();
+				var data = getSkuData();
+				if (data) {
+					console.log(JSON.stringify(data))
+					console.log(JSON.parse(data));
+				}
+			})
+		})
+	</script>
+
 </html>

@@ -9,6 +9,7 @@ window.onload = window.onresize = function() {
 layui.use(['form'], function() {
 	var form = layui.form
 	var msg = '不符合规则'
+	form.render()
 	form.verify({
 		require(value) {
 			value = value.trim()
@@ -79,7 +80,7 @@ layui.use(['form'], function() {
 			}
 		},
 		label(value) {
-			if(!/^[\u4e00-\u9fa5]*$/.test(value)){
+			if (!/^[\u4e00-\u9fa5]*$/.test(value)) {
 				return "标签为1到6个字中文"
 			}
 		},
@@ -357,6 +358,8 @@ $.ajaxSetup({
 			} else {
 				layer.msg(state)
 			}
+		} else if(status == 0){
+			layer.msg("请求失败请重试")
 		} else {
 			layer.msg('请求异常:' + status)
 		}
@@ -400,7 +403,6 @@ function handleRequest(request, success) {
 }
 
 function uploadImg(success, style) {
-	console.log(1)
 	var input = document.createElement("input");
 	input.type = "file";
 	input.click();
@@ -419,7 +421,6 @@ function uploadImg(success, style) {
 			layer.msg("图片大小不能超过2m")
 			return false
 		}
-
 		var request = post(false, major + '/upload/upToken', {
 			'suffix': suffix
 		})
@@ -487,10 +488,66 @@ function openImage(src) {
 	})
 }
 
+//批量删除图片
 function delImgs(imgs) {
 	var data = {}
 	data.urls = imgs
 	var request = post(true, major + '/upload/delFilesBatch', data)
+	handleRequest(request, function(res) {
+		console.log('delImgs', res)
+	})
+}
+
+function uploadVideo(success,fail) {
+	var input = document.createElement("input");
+	input.type = "file";
+	input.click();
+	input.onchange = function() {
+		var formData = new FormData()
+		var file = input.files[0];
+		var suffix = file.name.substring(file.name.lastIndexOf('.'))
+		formData.append('file', file)
+		//验证视频格式
+		if (suffix != '.mp4' && suffix != '.mkv' && suffix != '.flv') {
+			layer.msg('上传格式不正确')
+			return
+		}
+		//验证视频大小
+		if (file.size > 1024 * 1024 * 60) {
+			layer.msg("视频大小不能超过60m")
+			return false
+		}
+		var request = post(false, major + '/upload/upToken', {
+			'suffix': suffix
+		})
+		handleRequest(request, function(result) {
+			var token = result.data.upToken
+			var key = result.data.key
+			formData.append("token", token);
+			formData.append("key", key);
+			$.ajax({
+				type: "POST",
+				url: cdnUploadUrl,
+				data: formData,
+				mimeType: "multipart/form-data",
+				contentType: false,
+				cache: false,
+				processData: false,
+				success: function(res) {
+					var url = cdnPrefix + '/' + res.key;
+					success(url)
+				},
+				fail:function(res){
+					console.log('failUpload',res)
+				}
+			})
+		})
+	}
+}
+
+//删除视频
+function delVideo(video){
+	var request = post(true, major + '/upload/delSingle', {url:video})
 	handleRequest(request, function(res) {
 		console.log('delImgs', res)
 	})
@@ -524,6 +581,5 @@ function createPage(pageId, limit, path, data, success) {
 				}
 			});
 		});
-
 	})
 }

@@ -90,6 +90,11 @@
 				width: 100px;
 				height: 100px;
 			}
+			
+			.redStar{
+				color: red;
+				font-size: 1.5rem;
+			}
 		</style>
 		<link rel="stylesheet" type="text/css" href="../../css/store/jquery.step.css" />
 		<link rel="stylesheet" type="text/css" href="../../dist/css/layui.css" />
@@ -117,7 +122,7 @@
 			<div id="verify-name" v-show="example.stepData.index==1">
 				<form class="layui-form" action="">
 					<div class="layui-form-item">
-						<label class="layui-form-label">真实姓名</label>
+						<label class="layui-form-label">真实姓名<span class="redStar">*</span></label>
 						<div class="layui-input-block">
 							<input type="text" name="trueName" :disabled="disabled" :value="example.trueName" required lay-verify="name"
 							 placeholder="请输入真实姓名" autocomplete="off" class="layui-input">
@@ -125,7 +130,7 @@
 					</div>
 
 					<div class="layui-form-item">
-						<label class="layui-form-label">身份证号码</label>
+						<label class="layui-form-label">身份证号码<span class="redStar">*</span></label>
 						<div class="layui-input-block">
 							<input type="text" name="idcard" :disabled="disabled" :value="example.idcard" required lay-verify="idcard"
 							 placeholder="请输入身份证号" autocomplete="off" class="layui-input">
@@ -133,29 +138,30 @@
 					</div>
 
 					<div class="layui-form-item">
+						<label class="layui-form-label">身份信息<span class="redStar">*</span></label>
 						<!--图片输入，身份证正面，背面，手持-->
 						<img-area :imgs="idcards" />
 					</div>
 
 					<div class="layui-form-item">
-						<label class="layui-form-label">银行卡号</label>
+						<label class="layui-form-label">银行卡号<span class="redStar">*</span></label>
 						<div class="layui-input-block">
 							<input type="number" name="bankNo" :disabled="disabled" :value="example.bankNo" required lay-verify="required"
 							 placeholder="请输入银行卡号" autocomplete="off" class="layui-input">
 						</div>
 					</div>
 					<div class="layui-form-item">
-						<label class="layui-form-label">开户名</label>
+						<label class="layui-form-label">开户名<span class="redStar">*</span></label>
 						<div class="layui-input-block">
 							<input type="text" name="bankTrueName" :disabled="disabled" :value="example.bankTrueName" required lay-verify="name"
 							 placeholder="请输入开户名" autocomplete="off" class="layui-input">
 						</div>
 					</div>
 					<div class="layui-form-item">
-						<label class="layui-form-label">开户行</label>
+						<label class="layui-form-label">开户行<span class="redStar">*</span></label>
 						<div class="layui-input-block">
 							<!--开户行-->
-							<select name="openingBank" v-if="example.disabled" :value="example.openingBank">
+							<select name="openingBank" :disabled="disabled" :value="example.openingBank">
 								<option value="">请选择开户行</option>
 								<option value="ICBC">工商银行</option>
 								<option value="ABC">农业银行</option>
@@ -176,30 +182,11 @@
 								<option value="NBCB">宁波银行</option>
 								<option value="BOSC">上海银行</option>
 							</select>
-							<select v-else name="openingBank" :value="example.openingBank">
-								<option v-if='example.openingBank == "ICBC"' value="ICBC">工商银行</option>
-								<option v-if='example.openingBank == "ABC"' value="ABC">农业银行</option>
-								<option v-if='example.openingBank == "BOC"' value="BOC">中国银行</option>
-								<option v-if='example.openingBank == "CCB"' value="CCB">建设银行</option>
-								<option v-if='example.openingBank == "CMB"' value="CMB">招商银行</option>
-								<option v-if='example.openingBank == "PSBC"' value="PSBC">邮储银行</option>
-								<option v-if='example.openingBank == "BCM"' value="BCM">交通银行</option>
-								<option v-if='example.openingBank == "SPDB"' value="SPDB">浦发银行</option>
-								<option v-if='example.openingBank == "CMBC"' value="CMBC">民生银行</option>
-								<option v-if='example.openingBank == "CIB"' value="CIB">兴业银行</option>
-								<option v-if='example.openingBank == "PABC"' value="PABC">平安银行</option>
-								<option v-if='example.openingBank == "CNCB"' value="CNCB">中信银行</option>
-								<option v-if='example.openingBank == "HXB"' value="HXB">华夏银行</option>
-								<option v-if='example.openingBank == "CGB"' value="CGB">广发银行</option>
-								<option v-if='example.openingBank == "CEB"' value="CEB">光大银行</option>
-								<option v-if='example.openingBank == "BOB"' value="BOB">北京银行</option>
-								<option v-if='example.openingBank == "NBCB"' value="NBCB">宁波银行</option>
-								<option v-if='example.openingBank == "BOSC"' value="BOSC">上海银行</option>
-							</select>
+							
 						</div>
 					</div>
 					<div class="layui-form-item">
-						<label class="layui-form-label">公司名称</label>
+						<label class="layui-form-label">公司名称<span class="redStar">*</span></label>
 						<div class="layui-input-block">
 							<input type="text" name="companyName" :disabled="disabled" :value="example.companyName" required lay-verify="companyName"
 							 placeholder="请输入公司名称" autocomplete="off" class="layui-input">
@@ -207,7 +194,7 @@
 					</div>
 
 					<div class="layui-form-item">
-						<label class="layui-form-label">统一社会信用代码</label>
+						<label class="layui-form-label">统一社会信用代码<span class="redStar">*</span></label>
 						<div class="layui-input-block">
 							<input type="text" name="uscc" :disabled="disabled" :value="example.uscc" required lay-verify="uscc" placeholder="请输入统一社会信用代码"
 							 autocomplete="off" class="layui-input">
@@ -215,7 +202,7 @@
 					</div>
 
 					<div class="layui-form-item">
-						<label class="layui-form-label">营业执照</label>
+						<label class="layui-form-label">营业执照<span class="redStar">*</span></label>
 						<div class="layui-input-block">
 							<img-area :imgs="businessLicense" />
 						</div>
@@ -254,6 +241,7 @@
 		var example = {
 			needKnow:false,
 			verifyMsg: "",
+			show:true,
 			disabled: false,
 			merchant: null,
 			trueName: "",

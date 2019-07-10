@@ -5,7 +5,7 @@
 				<div class="description">{{item.msg}}</div>
 			</div>
 			<div v-else class="img-show" :style="item.style">
-				<img :src="item.url" style="width: 100%; height: 100%;">
+				<img :src="item.url" style="width: 100%; height: 100%;" @click="openImg(index)">
 				<div class="close" v-show="item.showDelete" @click="deleteImg(index)"></div>
 			</div>
 		</div>
@@ -14,7 +14,7 @@
 
 <script>
 	var example = {
-		isActive: true,
+		isActive: false,
 	}
 	module.exports = {
 		props: ["imgs"],
@@ -25,6 +25,8 @@
 			var imgs = this.imgs
 			if (imgs.length == 1) {
 				example.isActive = false
+			}else{
+				example.isActive = true
 			}
 		},
 		methods: {
@@ -40,6 +42,11 @@
 				var imgs = this.imgs
 				delImgs(imgs[index].url)
 				imgs[index].url = ""
+				this.$emit("getImgs", imgs)
+			},
+			openImg(index){
+				var imgs = this.imgs
+				openImage(imgs[index].url)
 				this.$emit("getImgs", imgs)
 			}
 		}
