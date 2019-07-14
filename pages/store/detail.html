@@ -215,7 +215,6 @@
 				delete formData.storeStyle1
 				delete formData.storeStyle2
 				delete formData.storeStyle3
-				JSON.stringify(formData)
 				console.log("jsonFormData", formData)
 				var request = post(true, major + "/merchant/modifyOrOpenStore", formData)
 				handleRequest(request, function(res) {

@@ -311,10 +311,10 @@ function getSkuData(){
 				alert('商品规格超出上限200个');
 				return null;
 			}
-			contArr.type = JSON.stringify(contArr.type)
-			contArr.typeClass = JSON.stringify(contArr.typeClass)
-			contArr.spec = JSON.stringify(contArr.spec);
-			return JSON.stringify(contArr);	
+			// contArr.type = JSON.stringify(contArr.type)
+			// contArr.typeClass = JSON.stringify(contArr.typeClass)
+			// contArr.spec = JSON.stringify(contArr.spec);
+			return contArr;	
 		}else{
 			alert('规格信息未填写完整');
 			return null;

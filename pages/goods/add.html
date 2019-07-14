@@ -12,6 +12,7 @@
 		<script src="../../js/environment.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript" src="../../js/goods/sku.js"></script>
 		<script src="../../js/kboot.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/util/decimal.js" type="text/javascript" charset="utf-8"></script>
 		<style type="text/css">
 			#sku {
 				border: #000077 2px dashed;
@@ -40,49 +41,64 @@
 			.block-container {
 				display: flex;
 			}
+
+			.redStar {
+				color: red;
+				font-size: 1.5rem;
+			}
 		</style>
 	</head>
 	<body>
 		<div id="app">
 			<form class="layui-form" id="myform">
 				<div class="layui-form-item">
-					<label class="layui-form-label">商品标题</label>
+					<label class="layui-form-label">商品标题<span class="redStar">*</span></label>
 					<div class="layui-input-block">
-						<input type="text" name="title" required lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input">
+						<input type="text" name="title" v-model="title" required lay-verify="required" placeholder="请输入标题" autocomplete="off"
+						 class="layui-input">
 					</div>
 				</div>
 
 				<div class="layui-form-item">
-					<label class="layui-form-label">默认价格</label>
-					<div class="layui-input-block">
-						<input type="text" name="price" required lay-verify="required" placeholder="请输入默认价格" autocomplete="off" class="layui-input">
+					<label class="layui-form-label">默认价格<span class="redStar">*</span></label>
+					<div class="layui-input-inline">
+						<input type="text" name="defaultPrice" v-model="defaultPrice" required lay-verify="required" placeholder="请输入默认价格(元)"
+						 autocomplete="off" class="layui-input input-price">
+					</div>
+					<label class="layui-form-label">运费价格</label>
+					<div class="layui-input-inline">
+						<input type="text" name="postage" v-model="postage" required lay-verify="required" placeholder="请输入运费价格(元)"
+						 autocomplete="off" class="layui-input input-price">
 					</div>
 				</div>
 
 				<div class="layui-form-item">
-					<label class="layui-form-label">封面图片</label>
+					<label class="layui-form-label">详情标签</label>
+					<div class="layui-input-block">
+						<!--详情标签-->
+						<input v-for="(item,index) in labelList" type="text" maxlength="5" style="width: 150px;margin-right: 10px;"
+						 :placeholder="item.placeholder" v-model="item.value" autocomplete="off" class="layui-input layui-col-md1">
+					</div>
+				</div>
+
+				<div class="layui-form-item">
+					<label class="layui-form-label">封面图片<span class="redStar">*</span></label>
 					<div class="layui-input-block">
 						<img-area :imgs="cover"></img-area>
 					</div>
 				</div>
 
 				<div class="layui-form-item">
-					<label class="layui-form-label">商品分类</label>
-					<div class="layui-input-block">
-						<select name="classify" id="classify" lay-verify="required">
-							<option value=""></option>
-							<option value="food">食品</option>
-							<option value="clothing">服装</option>
-							<option value="ornament">饰品</option>
-							<option value="bags">箱包</option>
-							<option value="beauty">美妆</option>
-							<option value="house">家居</option>
-							<option value="mom">母婴</option>
-							<option value="toy">玩具</option>
-							<option value="gift">礼品</option>
-							<option value="tool">器具</option>
-							<option value="electron">电子</option>
-							<option value="other">其他</option>
+					<label class="layui-form-label">商品分类<span class="redStar">*</span></label>
+					<div class="layui-input-inline">
+						<select name="classify1" id="classify1" lay-filter="first">
+							<option class="firstOption" value=""></option>
+						</select>
+					</div>
+					<label class="layui-form-label">二级分类</label>
+					<div class="layui-input-inline">
+						<select name="classify2" id="classify2" lay-verify="required" lay-filter="second">
+							<option class="secondOption" value=""></option>
 						</select>
 					</div>
 				</div>
@@ -90,12 +106,12 @@
 
 			<!--轮播图显示静态资源-->
 			<div class="layui-form-item">
-				<label class="layui-form-label">轮播图片</label>
+				<label class="layui-form-label">轮播图片<span class="redStar">*</span></label>
 				<div class="layui-input-block">
 					<img-area :imgs="swiper"></img-area>
 				</div>
 			</div>
-
+			<!--轮播图视频-->
 			<div class="layui-form-item">
 				<label class="layui-form-label">视频上传</label>
 				<div class="layui-input-block block-container">
@@ -105,9 +121,17 @@
 				</div>
 			</div>
 
+			<!--商品详情图-->
+			<div class="layui-form-item">
+				<label class="layui-form-label">详情图片<span class="redStar">*</span></label>
+				<div class="layui-input-block">
+					<img-area :imgs="detailPhotos"></img-area>
+				</div>
+			</div>
+
 			<!--商品规格管理-->
 			<div class="layui-form-item">
-				<label class="layui-form-label">商品规格</label>
+				<label class="layui-form-label">商品规格<span class="redStar">*</span></label>
 				<div class="layui-input-block">
 					<div id="sku">
 						<div id="title_box"></div>
@@ -141,6 +165,7 @@
 					</div>
 				</div>
 			</div>
+
 			<div class="layui-form-item">
 				<div class="layui-input-block">
 					<button class="layui-btn layui-bg-cyan" type="submit" @click="submit">立即提交</button>
@@ -149,11 +174,183 @@
 			</div>
 		</div>
 	</body>
+
 	<script type="text/javascript">
 		var example = {
+			title: "",
+			defaultPrice: "",
+			postage: "",
 			goodsClassify: "",
-			myVideo: "",
+			myVideo: "", //uri
 			hasVideo: false,
+			second: [],
+			categoryIndex: [null, null],
+			category: [{
+				value: "special",
+				name: "灵物",
+				second: [{
+					value: "special",
+					name: "灵物",
+				}]
+			}, {
+				value: "food",
+				name: "极食",
+				second: [{
+					value: "tea",
+					name: "茶",
+				}, {
+					value: "honey",
+					name: "蜂蜜",
+				}, {
+					value: "vinegar",
+					name: "醋",
+				}, {
+					value: "soy",
+					name: "酱油",
+				}, {
+					value: "zongzi",
+					name: "粽子"
+				}, {
+					value: "mooncake",
+					name: "月饼"
+				}, {
+					value: "sugar",
+					name: "糖果"
+				}, {
+					value: "delicacies",
+					name: "山珍"
+				}, {
+					value: "baking",
+					name: "手工烘焙"
+				}, {
+					value: "other",
+					name: "其他"
+				}]
+			}, {
+				value: "clothing",
+				name: "服装",
+				second: [{
+					value: "man",
+					name: "男装"
+				}, {
+					value: "woman",
+					name: "女装"
+				}, {
+					value: "child",
+					name: "童装"
+				}, {
+					value: "other",
+					name: "其他"
+				}]
+			}, {
+				value: "jewelry",
+				name: "极饰",
+				second: [{
+					value: "hair",
+					name: "发饰",
+				}, {
+					value: "ear",
+					name: "耳饰",
+				}, {
+					value: "ring",
+					name: "戒指",
+				}, {
+					value: "necklace",
+					name: "项链",
+				}, {
+					value: "bracelet",
+					name: "手链手镯",
+				}, {
+					value: "brooch",
+					name: "胸针"
+				}, {
+					value: "other",
+					name: "其他"
+				}]
+			}, {
+				value: "bags",
+				name: "箱包",
+				second: [{
+					value: "shoulder",
+					name: "单肩包",
+				}, {
+					value: "backpack",
+					name: "双肩包",
+				}, {
+					value: "clutch",
+					name: "手拿包",
+				}, {
+					value: "hand",
+					name: "手提包",
+				}, {
+					value: "wallet",
+					name: "钱包",
+				}, {
+					value: "other",
+					name: "其他",
+				}]
+			}, {
+				value: "appliance",
+				name: "器具",
+				second: [{
+					value: "flower",
+					name: "花器",
+				}, {
+					value: "tea",
+					name: "茶器",
+				}, {
+					value: "kettle",
+					name: "壶器",
+				}, {
+					value: "wine",
+					name: "酒器",
+				}, {
+					value: "other",
+					name: "其他",
+				}]
+			}, {
+				value: "gift",
+				name: "极礼",
+				second: [{
+					value: "festival",
+					name: "节日礼",
+				}, {
+					value: "souvenir",
+					name: "伴手礼",
+				}, {
+					value: "year",
+					name: "年礼",
+				}, {
+					value: "customized",
+					name: "极物造定制礼",
+				}, {
+					value: "other",
+					name: "其他",
+				}]
+			}, {
+				value: "beauty",
+				name: "美业",
+				second: [{
+					value: "beauty",
+					name: "美业",
+				}]
+			}],
+			labelList: [{
+				placeholder: "标签1",
+				value: ""
+			}, {
+				placeholder: "标签2",
+				value: ""
+			}, {
+				placeholder: "标签3",
+				value: ""
+			}, {
+				placeholder: "标签4",
+				value: ""
+			}, {
+				placeholder: "标签5",
+				value: ""
+			}],
 			cover: [{
 				url: "",
 				msg: "封面",
@@ -204,8 +401,147 @@
 					"width": "300px",
 					"height": "200px",
 				}
+			}],
+			detailPhotos: [{
+				url: "",
+				msg: "图片1",
+				style: {
+					"width": "300px",
+					"height": "500px",
+				}
+			}, {
+				url: "",
+				msg: "图片2",
+				style: {
+					"width": "300px",
+					"height": "500px",
+				}
+			}, {
+				url: "",
+				msg: "图片3",
+				style: {
+					"width": "300px",
+					"height": "500px",
+				}
+			}, {
+				url: "",
+				msg: "图片4",
+				style: {
+					"width": "300px",
+					"height": "500px",
+				}
+			}, {
+				url: "",
+				msg: "图片5",
+				style: {
+					"width": "300px",
+					"height": "500px",
+				}
+			}, {
+				url: "",
+				msg: "图片6",
+				style: {
+					"width": "300px",
+					"height": "500px",
+				}
 			}]
 		}
+
+		function getDetailLabel() {
+			var detailLabel = ""
+			var list = example.labelList
+			for (let i = 0; i < list.length; i++) {
+				if (list[i].value) {
+					detailLabel = detailLabel + list[i].value + ","
+				}
+			}
+			return detailLabel
+		}
+
+		function getSlideShow() {
+			var slideShow = ""
+			var list = example.swiper
+			for (let i = 0; i < list.length; i++) {
+				if (list[i].url) {
+					slideShow = slideShow + list[i].url + ","
+				}
+			}
+			if (example.myVideo) {
+				slideShow += example.myVideo
+			}
+			return slideShow
+		}
+
+		function getDetaiPhotos() {
+			var detailPhotos = ""
+			var list = example.detailPhotos
+			for (let i = 0; i < list.length; i++) {
+				if (list[i].url) {
+					detailPhotos = detailPhotos + list[i].url + ","
+				}
+			}
+			return detailPhotos
+		}
+
+		function createFirst() {
+			var select1 = document.getElementById("classify1");
+			for (let i in example.category) {
+				select1.add(new Option(example.category[i].name, i), null)
+			}
+		}
+
+		function addSecond() {
+			var select2 = document.getElementById("classify2");
+			var first = document.getElementById("classify1").value;
+			console.log(first)
+			select2.length = 1;
+			var second = example.category[first].second
+			for (let i in second) {
+				select2.add(new Option(second[i].name, i))
+			}
+		}
+
+		function clearSecond() {
+			var select2 = document.getElementById("classify2");
+			select2.length = 1
+		}
+
+		function checkRequired() {
+			console.log(example.categoryIndex)
+		}
+
+		/**
+		 * jQuery 
+		 *
+		 */
+		$(function() {
+
+			$('#submit').on('click', function(e) {
+				e.preventDefault(); //阻止默认点击事件
+				var data = getSkuData(); //获取sku
+				if (data) {
+					console.log(JSON.stringify(data))
+					console.log(JSON.parse(data));
+				}
+			})
+
+			$(".input-price").keyup(function() {
+				var reg = $(this).val().match(/\d+\.?\d{0,2}/);
+				var txt = '';
+				if (reg != null) {
+					txt = reg[0];
+				}
+				$(this).val(txt);
+			}).change(function() {
+				$(this).keypress();
+				var v = $(this).val();
+				if (/\.$/.test(v)) {
+					$(this).val(v.substr(0, v.length - 1));
+				}
+			});
+		})
+	</script>
+	<script type="text/javascript">
 		var vm = new Vue({
 			el: "#app",
 			components: {
@@ -214,10 +550,22 @@
 			data() {
 				return example;
 			},
+			beforeCreate() {
+				var request = post(false, major + "/goods/getCategory", {
+					"categoryId": 1
+				})
+				handleRequest(request, function(res) {
+					console.log(res.data)
+					console.log(JSON.parse(res.data.category))
+					example.category = JSON.parse(res.data.category)
+				
+				})
+			},
+			mounted() {
+				//初始创建一级类目的下拉菜单
+				createFirst()
+			},
 			methods: {
-				submit(e) {
-					console.log($("#classify").val())
-				},
 				uploadVideo(e) {
 					if (!this.myVideo) {
 						uploadVideo(function(res) {
@@ -227,27 +575,67 @@
 					}
 				},
 				delVideo() {
-					delVideo(example.myVideo, function(res) {
-					})
+					delVideo(example.myVideo, function(res) {})
 					example.myVideo = ""
 					example.hasVideo = false
+				},
+				submit() {
+					// var skuData = getSkuData()
+					// skuJson = skuData
+					// if (!skuData) {
+					// 	return false
+					// }
+					checkRequired()
+					return false
+					var data = {};
+					var index = this.categoryIndex
+					data.goodsClassify = this.category[index[0]].value
+					data.goodsClassDetail = this.category[index[0]].value + "," + this.category[index[0]].second[index[1]].value
+					data.title = this.title
+					data.cover = this.cover[0].url
+					data.defaultPrice = this.defaultPrice
+					data.slideshow = getSlideShow()
+					data.postage = this.postage
+					data.detailLabel = getDetailLabel()
+					data.goodsType = JSON.stringify(skuJson.type)
+					data.goodsTypeClass = JSON.stringify(skuJson.typeClass)
+					data.goodsSpecPojo = skuJson.spec
+					data.detailPhotos = getDetaiPhotos()
+					console.log('data', data)
+					// var request = post(true, major + "/goods/addGoods", data)
+					// handleRequest(request, function(res) {
+					// 	console.log(res)
+					// })
 				}
 			},
 		})
 	</script>
 
-
 	<script type="text/javascript">
-		$(function() {
-			$('#submit').on('click', function(e) {
-				e.preventDefault();
-				var data = getSkuData();
-				if (data) {
-					console.log(JSON.stringify(data))
-					console.log(JSON.parse(data));
+		layui.use(['layer', 'jquery', 'form'], function() {
+
+			var layer = layui.layer,
+				$ = layui.jquery,
+				form = layui.form;
+			form.on('select(first)', function(data) {
+				console.log('layui', data)
+				if (data.value) {
+					example.categoryIndex[0] = data.value
+					example.second = example.category[data.value].second
+					addSecond()
+				} else {
+					clearSecond();
 				}
-			})
-		})
+				form.render('select');
+			});
+			form.on('select(second)', function(data) {
+				console.log(data)
+				if (data.value) {
+					example.categoryIndex[1] = data.value
+				}
+				form.render('select');
+			});
+		});
 	</script>
 
 </html>
