@@ -64,8 +64,11 @@
 					</div>
 					<label class="layui-form-label">运费价格</label>
 					<div class="layui-input-inline">
-						<input type="text" disabled name="postage" v-model="postage" required lay-verify="required" placeholder="请输入运费价格(元)"
+						<input type="text" id="postage" name="postage" v-model="postage" required lay-verify="required" placeholder="请输入运费价格(元)"
 						 autocomplete="off" class="layui-input input-price">
+					</div>
+					<div class="layui-input-inline">
+						<button type="button" class="layui-btn layui-btn-normal" @click="modifyPostage">修改</button>
 					</div>
 				</div>
 
@@ -134,20 +137,20 @@
 							<button class="layui-btn layui-btn-normal" @click="modifyPrice(item,index)">修改</button>
 						</td>
 						<td>
-							<input class="specInventory" type="text" name="" id="" :value="item.specInventory" />
+							<input class="specInventory" type="number" name="" id="" :value="item.specInventory" />
 							<button class="layui-btn layui-btn-normal" @click="modifyInventory(item,index)">修改</button>
 						</td>
 					</tr>
 				</table>
 			</div>
 
-		
+
 		</div>
 	</body>
 
 	<script type="text/javascript">
 		var example = {
-			gid:"",
+			gid: "",
 			title: "",
 			defaultPrice: "",
 			postage: "",
@@ -174,113 +177,9 @@
 				placeholder: "标签5",
 				value: ""
 			}],
-			cover: [{
-				url: "",
-				msg: "封面",
-				showDelete: true,
-				style: {
-					"width": "200px",
-					"height": "200px",
-				}
-			}],
-			swiper: [{
-				url: "",
-				msg: "图片1",
-				showDelete: true,
-				style: {
-					"width": "300px",
-					"height": "200px",
-				}
-			}, {
-				url: "",
-				msg: "图片2",
-				showDelete: true,
-				style: {
-					"width": "300px",
-					"height": "200px",
-				}
-			}, {
-				url: "",
-				msg: "图片3",
-				showDelete: true,
-				style: {
-					"width": "300px",
-					"height": "200px",
-				}
-			}, {
-				url: "",
-				msg: "图片4",
-				showDelete: true,
-				style: {
-					"width": "300px",
-					"height": "200px",
-				}
-			}, {
-				url: "",
-				msg: "图片5",
-				showDelete: true,
-				style: {
-					"width": "300px",
-					"height": "200px",
-				}
-			}, {
-				url: "",
-				msg: "图片6",
-				showDelete: true,
-				style: {
-					"width": "300px",
-					"height": "200px",
-				}
-			}],
-			detailPhotos: [{
-				url: "",
-				msg: "图片1",
-				showDelete: true,
-				style: {
-					"width": "300px",
-					"height": "500px",
-				}
-			}, {
-				url: "",
-				msg: "图片2",
-				showDelete: true,
-				style: {
-					"width": "300px",
-					"height": "500px",
-				}
-			}, {
-				url: "",
-				msg: "图片3",
-				showDelete: true,
-				style: {
-					"width": "300px",
-					"height": "500px",
-				}
-			}, {
-				url: "",
-				msg: "图片4",
-				showDelete: true,
-				style: {
-					"width": "300px",
-					"height": "500px",
-				}
-			}, {
-				url: "",
-				msg: "图片5",
-				showDelete: true,
-				style: {
-					"width": "300px",
-					"height": "500px",
-				}
-			}, {
-				url: "",
-				msg: "图片6",
-				showDelete: true,
-				style: {
-					"width": "300px",
-					"height": "500px",
-				}
-			}]
+			cover: [],
+			swiper: [],
+			detailPhotos: []
 		}
 
 		function getDetailLabel() {
@@ -321,7 +220,6 @@
 
 		function createFirst() {
 			var select1 = document.getElementById("classify1");
-
 			for (let i in example.category) {
 				select1.add(new Option(example.category[i].name, i))
 			}
@@ -424,7 +322,16 @@
 					example.title = goodsDetail.title
 					example.specs = goodsDetail.goodsSpecs
 					example.defaultPrice = goodsDetail.defaultPrice
-					example.cover[0].url = goodsDetail.cover
+					var cover = {
+						url: goodsDetail.cover,
+						msg: "封面",
+						showDelete: false,
+						style: {
+							"width": "200px",
+							"height": "200px",
+						}
+					}
+					example.cover.push(cover)
 					example.postage = goodsDetail.postage
 					example.goodsClassify = goodsDetail.classify
 					goodsDetail.detailLabel.split(',').forEach((item, index) => {
@@ -432,16 +339,37 @@
 							example.labelList[index].value = item
 					})
 					goodsDetail.slideShow.split(',').forEach((item, index) => {
-						if (isVideo()) {
-							example.myVideo = item
-							example.hasVideo = true
-						} else {
-							example.swiper[index].url = item
+						if (item) {
+							if (isVideo(item)) {
+								example.myVideo = item
+								example.hasVideo = true
+							} else {
+								var swiperItem = {
+									url: item,
+									msg: "",
+									showDelete: false,
+									style: {
+										width: "300px",
+										height: "200px"
+									}
+								}
+								example.swiper.push(swiperItem)
+							}
 						}
 					})
 					goodsDetail.detailPhotos.split(',').forEach((item, index) => {
-						if (item)
-							example.detailPhotos[index].url = item
+						if (item) {
+							var photoItem = {
+								url: item,
+								msg: "",
+								showDelete: false,
+								style: {
+									"width": "300px",
+									"height": "500px",
+								}
+							}
+							example.detailPhotos.push(photoItem)
+						}
 					})
 				}
 			},
@@ -471,25 +399,56 @@
 					example.myVideo = ""
 					example.hasVideo = false
 				},
-				modifyPrice(item,index){
+				modifyPrice(item, index) {
 					var specPrice = $(".specPrice")[index].value
-					if(!isMoney(specPrice)){
+					if (!isMoney(specPrice)) {
 						layer.msg('请输入正确的价格')
 						return false
 					}
-					var request = post(true,major+"/goods/modifyPrice",{
-						gid:example.gid,
-						goodsSpecId:item.id,
-						goodsPrice:specPrice
+					var request = post(true, major + "/goods/modifyPrice", {
+						gid: example.gid,
+						goodsSpecId: item.id,
+						goodsPrice: specPrice
 					})
-					handleRequest(request,function(res){
-						if(res.state == "success"){
+					handleRequest(request, function(res) {
+						if (res.state == "success") {
 							layer.msg("修改成功！")
 						}
 					})
 				},
-				modifyInventory(item,index){
-					console.log(item+","+index)
+				modifyInventory(item, index) {
+					console.log(item + "," + index)
+					var specInventory = $(".specInventory")[index].value
+					if (specInventory < 0) {
+						layer.msg('请输入正确的库存数量')
+						return false
+					}
+					var request = post(true, major + "/goods/modifyInventory", {
+						gid: example.gid,
+						goodsSpecId: item.id,
+						inventory: specInventory
+					})
+					handleRequest(request, function(res) {
+						if (res.state == "success") {
+							layer.msg("修改成功！")
+						}
+					})
+				},
+				modifyPostage() {
+					var postage = $("#postage").val()
+					if (!isMoney(postage)) {
+						layer.msg('请输入正确的价格')
+						return false
+					}
+					var request = post(true, major + "/goods/modifyPostage", {
+						gid: example.gid,
+						postage: postage
+					})
+					handleRequest(request, function(res) {
+						if (res.state == "success") {
+							layer.msg("修改成功！")
+						}
+					})
 				}
 			},
 		})
