@@ -116,6 +116,15 @@
 				</div>
 				<li v-if="isMerchant"><a id="cl3" target="mainFrame">订单管理</a></li>
 				<div id="cl3-i" hidden="hidden">
+					<div class="div-inner">
+						<a href="/jiwuzao-merchant/pages/order/show.html" target="mainFrame">订单展示</a>
+					</div>
+				</div>
+				<li v-if="isMerchant"><a id="cl4" target="mainFrame">运营管理</a></li>
+				<div id="cl4-i" hidden="hidden">
+					<div class="div-inner">
+						<a href="/jiwuzao-merchant/pages/test.html" target="mainFrame">资金展示</a>
+					</div>
 				</div>
 			</ul>
 		</div>
@@ -130,6 +139,9 @@
 			});
 			$("#cl3").click(function() {
 				$("#cl3-i").fadeToggle()
+			});
+			$("#cl4").click(function() {
+				$("#cl4-i").fadeToggle()
 			});
 		});
 		var vm = new Vue({

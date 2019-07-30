@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<!-- <link rel="stylesheet" href="../../dist/css/layui.css" media="all"> -->
+		<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.js"></script>
+		<script src="../dist/layui.all.js" type="text/javascript" charset="utf-8"></script>
+		<script src="https://cdn.bootcss.com/vue/2.6.10/vue.min.js"></script>
+		<script src="../js/environment.js" type="text/javascript" charset="utf-8"></script>
+		<style type="text/css">
+			tbody tr:hover {
+				cursor: pointer;
+			}
+
+			table {
+				text-align: center;
+			}
+
+			.choose-area {
+				padding: 10px;
+				display: flex;
+				align-items: center;
+				justify-content: flex-start
+			}
+
+			.choose-area button {
+				height: 30px;
+				line-height: 30px;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="app">
+			<input type="text" name="" id="" v-model="msg" />
+			<button type="button" @click="send">发送</button>
+		</div>
+	</body>
+	<script src="../js/kboot.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript">
+		var example = {
+			msg:"",
+			goods: [],
+			pageSize: 10,
+			total: 0,
+			page: {
+				pageSize: 10,
+				currentPage: 0,
+				isAsc: false,
+				sortBy: "createTime"
+			}
+		}
+		var ws = null;
+		var request = post(true, major + "/chat/init", {
+			"uid": 6
+		})
+		handleRequest(request, function(res) {
+			console.log(res)
+			var groupId = res.data.groupId
+			var token = storageGet('accessToken')
+			var uid = token.split(",")[0]
+			ws = new WebSocket('ws://127.0.0.1:10010/chat/' + uid + '/' + groupId)
+			ws.onopen = function(res) {
+				console.log('onopen', res)
+			} // 指定连接成功后的回调函数
+			ws.onclose = function(res) {
+				console.log('onclose', res)
+			} // 指定连接关闭后的回调函数
+			ws.onmessage = function(res) {
+				console.log('onmessage', res)
+			} // 指定收到服务器数据后的回调函数
+			ws.onerror = function(res) {
+				console.log('onerror', res)
+			} // 指定报错时的回调函数
+		})
+	</script>
+
+	<script type="text/javascript">
+		var vm = new Vue({
+			el: "#app",
+			data() {
+				return example
+			},
+			filters: {
+				formatDate: function(value) {
+					if (!value)
+						return null
+					let date = new Date(value);
+					let y = date.getFullYear();
+					let MM = date.getMonth() + 1;
+					MM = MM < 10 ? ('0' + MM) : MM;
+					let d = date.getDate();
+					d = d < 10 ? ('0' + d) : d;
+					let h = date.getHours();
+					h = h < 10 ? ('0' + h) : h;
+					let m = date.getMinutes();
+					m = m < 10 ? ('0' + m) : m;
+					let s = date.getSeconds();
+					s = s < 10 ? ('0' + s) : s;
+					return y + '-' + MM + '-' + d + ' ' + h + ':' + m + ':' + s;
+				}
+			},
+			beforeMount() {},
+			mounted() {
+				// initData()
+				setTimeout(function() {
+					ws.send("helloworld")
+				}, 3000)
+			},
+			methods: {
+				showDetail(item) {
+					var data = {
+						"detail": item.gid
+					}
+					var request = post(true, major + '/')
+					console.log("detail", index)
+				},
+				showWaitDelivery() {
+					var requst = post(true, major + "/express/getAllWaitDeliver", function(res) {
+						console.log(res)
+					})
+				},
+				send(){
+					console.log(this.msg)
+					ws.send(this.msg)
+				}
+			}
+		})
+	</script>
+</html>

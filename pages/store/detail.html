@@ -126,7 +126,7 @@
 				'img-area': httpVueLoader('/jiwuzao-merchant/plugins/imgArea.vue'),
 			},
 			mounted() {
-				var request = post(false, major + "/merchant/getMerchantStore")
+				var request = post(true, major + "/merchant/getMerchantStore")
 				handleRequest(request, function(res) {
 					console.log(res)
 					var store = res.data

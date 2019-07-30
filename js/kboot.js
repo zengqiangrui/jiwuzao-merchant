@@ -6,6 +6,7 @@ function bodyScale() {
 window.onload = window.onresize = function() {
 	bodyScale();
 };
+
 layui.use(['form'], function() {
 	var form = layui.form
 	var msg = '不符合规则'
@@ -347,7 +348,7 @@ $.ajaxSetup({
 		if (status == 401) {
 			storageRemove('userPrivateDto')
 			storageRemove('accessToken')
-			location.href = ap + "/login.html"
+			top.location.href = ap + "/login.html"
 		} else if (status == 403) {
 			var state = XMLHttpRequest.responseJSON.state
 			try {
@@ -358,13 +359,14 @@ $.ajaxSetup({
 			} else {
 				layer.msg(state)
 			}
-		} else if(status == 0){
+		} else if (status == 0) {
 			layer.msg("请求失败请重试")
 		} else {
 			layer.msg('请求异常:' + status)
 		}
 	}
 })
+
 //由于会传Authorization,仅针对我们后台
 function post(useMask, path, data) {
 	if (useMask != false) {
@@ -498,7 +500,7 @@ function delImgs(imgs) {
 	})
 }
 
-function uploadVideo(success,fail) {
+function uploadVideo(success, fail) {
 	var input = document.createElement("input");
 	input.type = "file";
 	input.click();
@@ -537,8 +539,8 @@ function uploadVideo(success,fail) {
 					var url = cdnPrefix + '/' + res.key;
 					success(url)
 				},
-				fail:function(res){
-					console.log('failUpload',res)
+				fail: function(res) {
+					console.log('failUpload', res)
 				}
 			})
 		})
@@ -546,8 +548,10 @@ function uploadVideo(success,fail) {
 }
 
 //删除视频
-function delVideo(video){
-	var request = post(true, major + '/upload/delSingle', {url:video})
+function delVideo(video) {
+	var request = post(true, major + '/upload/delSingle', {
+		url: video
+	})
 	handleRequest(request, function(res) {
 		console.log('delImgs', res)
 	})
@@ -582,4 +586,10 @@ function createPage(pageId, limit, path, data, success) {
 			});
 		});
 	})
+}
+
+function isMoney(money) {
+	if (/((^[1-9]\d*)|^0)(\.\d{0,2}){0,1}$/.test(money))
+		return true
+	return false
 }

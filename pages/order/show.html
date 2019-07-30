@@ -34,42 +34,43 @@
 		<div id="app">
 			<div class="layui-bg-cyan choose-area">
 				<button class="layui-btn layui-btn-primary">查看全部</button>
-				<button class="layui-btn layui-btn-primary">查看待审核</button>
-				<button class="layui-btn layui-btn-primary">查看已上架</button>
-				<button class="layui-btn layui-btn-primary">查看已下架</button>
+				<button class="layui-btn layui-btn-primary" @click="showWaitDelivery">查看待发货</button>
+				<button class="layui-btn layui-btn-primary" @click="showWaitReceive">查看待签收</button>
+				<button class="layui-btn layui-btn-primary" @click="">查看已完成</button>
+				<button class="layui-btn layui-btn-primary">查看异常订单</button>
 			</div>
 			<table class="layui-table">
 				<thead>
 					<tr>
 						<td>商品名称</td>
 						<td>封面</td>
-						<td>标签</td>
-						<td>默认价格</td>
-						<td>运费</td>
-						<td>商品类型</td>
-						<td>创建时间</td>
-						<td>修改时间</td>
-						<td>审核状态</td>
-						<td>上架操作</td>
+						<td>规格</td>
+						<td>购买数量</td>
+						<!-- <td>商品类型</td> -->
+						<td>支付时间</td>
+						<td>订单状态</td>
+						<td>总金额</td>
+						<td>收货城市</td>
+						<td>收货地址</td>
+						<td>收货人</td>
+						<td>收货电话</td>
+						<td>邮费</td>
 					</tr>
 				</thead>
 				<tbody>
 					<tr v-for="(item,index) in goods" @click="showDetail(item)">
-						<td>{{item.title}}</td>
+						<td>{{item.goodsTitle}}</td>
 						<td><img style="width: 40px; height: 40px;" :src="item.cover"></td>
-						<td>{{item.detailLabel}}</td>
-						<td>{{item.defaultPrice}}</td>
+						<td>{{item.specString}}</td>
+						<td>{{item.buyCount}}</td>
+						<td>{{item.payTime | formatDate}}</td>
+						<td>{{item.orderStatus}}</td>
+						<td>{{item.finalPay}}</td>
+						<td>{{item.receiverCity}}</td>
+						<td>{{item.receiverAddress}}</td>
+						<td>{{item.receiverTrueName}}</td>
+						<td>{{item.receiverPhone}}</td>
 						<td>{{item.postage}}</td>
-						<td>{{item.classify}}</td>
-						<td>{{item.createTime}}</td>
-						<td>{{item.updateTime}}</td>
-						<td>{{item.auditType=="agree"?"审核通过":item.auditType=="wait"?"等待审核":"被拒绝"}}</td>
-						<td>
-							<div class="handel-btn" v-if="item.auditType == 'agree'">
-								<button v-if="!item.putaway" class="layui-btn layui-btn-primary" @click.prevent.stop="putaway(index)">上架</button>
-								<button v-else class="layui-btn layui-btn-primary">下架</button>
-							</div>
-						</td>
 					</tr>
 				</tbody>
 			</table>
@@ -89,10 +90,34 @@
 				sortBy: "createTime"
 			}
 		}
+		var ws = null;
+		var request = post(true, major + "/chat/init", {
+			"uid": 6
+		})
+		handleRequest(request, function(res) {
+			console.log(res)
+			var groupId = res.data.groupId
+			var token = storageGet('accessToken')
+			var uid = token.split(",")[0]
+			ws = new WebSocket('ws://localhost:10010/chat/' + uid + '/' + groupId)
+			ws.onopen = function(res) {
+				console.log('onopen', res)
+			} // 指定连接成功后的回调函数
+			ws.onclose = function(res) {
+				console.log('onclose', res)
+			} // 指定连接关闭后的回调函数
+			ws.onmessage = function(res) {
+				console.log('onmessage', res)
+			} // 指定收到服务器数据后的回调函数
+			ws.onerror = function(res) {
+				console.log('onerror', res)
+			} // 指定报错时的回调函数
+		})
 
 		function initData() {
-			var request = post(true, major + "/goods/getGoodsList", example.page)
+			var request = post(true, major + "/express/getAllDelivery", example.page)
 			handleRequest(request, function(res) {
+				console.log('pagedto', res)
 				if (res.state == "success") {
 					example.goods = res.data.content
 					example.total = res.data.total
@@ -133,35 +158,53 @@
 		}
 	</script>
 
-
 	<script type="text/javascript">
 		var vm = new Vue({
 			el: "#app",
 			data() {
 				return example
 			},
+			filters: {
+				formatDate: function(value) {
+					if (!value)
+						return null
+					let date = new Date(value);
+					let y = date.getFullYear();
+					let MM = date.getMonth() + 1;
+					MM = MM < 10 ? ('0' + MM) : MM;
+					let d = date.getDate();
+					d = d < 10 ? ('0' + d) : d;
+					let h = date.getHours();
+					h = h < 10 ? ('0' + h) : h;
+					let m = date.getMinutes();
+					m = m < 10 ? ('0' + m) : m;
+					let s = date.getSeconds();
+					s = s < 10 ? ('0' + s) : s;
+					return y + '-' + MM + '-' + d + ' ' + h + ':' + m + ':' + s;
+				}
+			},
 			beforeMount() {},
 			mounted() {
 				initData()
+				setTimeout(function() {
+					ws.send("helloworld")
+				}, 3000)
 			},
 			methods: {
 				showDetail(item) {
-					var that = this
 					var data = {
-						"gid": item.gid
+						"detail": item.gid
 					}
-					var request = post(true, major + '/goods/merchantGetGoodsDetail', data)
-					handleRequest(request, function(res) {
-						storageSet('goodsDetail',res.data,'m',10)
-						layer.open({
-							type: 2,
-							area:['1200px','600px'],
-							content: '/jiwuzao-merchant/pages/goods/goodsDetail.html',
-						});
+					var request = post(true, major + '/')
+					console.log("detail", index)
+				},
+				showWaitDelivery() {
+					var requst = post(true, major + "/express/getAllWaitDeliver", function(res) {
+						console.log(res)
 					})
 				},
-				putaway(index) {
-					console.log(example.goods[index])
+				sendMessage(){
+					
 				}
 			}
 		})

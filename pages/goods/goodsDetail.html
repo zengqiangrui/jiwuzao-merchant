@@ -10,7 +10,6 @@
 		<script src="https://unpkg.com/http-vue-loader"></script>
 		<script src="../../js/environment.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../../js/kboot.js" type="text/javascript" charset="utf-8"></script>
-		<script type="text/javascript" src="../../js/goods/sku.js"></script>
 		<style type="text/css">
 			#sku {
 				border: #000077 2px dashed;
@@ -20,9 +19,11 @@
 			#app {
 				padding: 20px;
 			}
+
 			#introVideo {
 				cursor: pointer;
 			}
+
 			.video-mask {
 				width: 1000px;
 				height: 600px;
@@ -50,20 +51,20 @@
 				<div class="layui-form-item">
 					<label class="layui-form-label">商品标题<span class="redStar">*</span></label>
 					<div class="layui-input-block">
-						<input type="text" name="title" v-model="title" required lay-verify="required" placeholder="请输入标题" autocomplete="off"
-						 class="layui-input">
+						<input type="text" name="title" disabled v-model="title" required lay-verify="required" placeholder="请输入标题"
+						 autocomplete="off" class="layui-input">
 					</div>
 				</div>
 
 				<div class="layui-form-item">
 					<label class="layui-form-label">默认价格<span class="redStar">*</span></label>
 					<div class="layui-input-inline">
-						<input type="text" name="defaultPrice" v-model="defaultPrice" required lay-verify="required" placeholder="请输入默认价格(元)"
+						<input type="text" disabled name="defaultPrice" v-model="defaultPrice" required lay-verify="required" placeholder="请输入默认价格(元)"
 						 autocomplete="off" class="layui-input input-price">
 					</div>
 					<label class="layui-form-label">运费价格</label>
 					<div class="layui-input-inline">
-						<input type="text" name="postage" v-model="postage" required lay-verify="required" placeholder="请输入运费价格(元)"
+						<input type="text" disabled name="postage" v-model="postage" required lay-verify="required" placeholder="请输入运费价格(元)"
 						 autocomplete="off" class="layui-input input-price">
 					</div>
 				</div>
@@ -72,7 +73,7 @@
 					<label class="layui-form-label">详情标签</label>
 					<div class="layui-input-block">
 						<!--详情标签-->
-						<input v-for="(item,index) in labelList" type="text" maxlength="5" style="width: 150px;margin-right: 10px;"
+						<input v-for="(item,index) in labelList" disabled type="text" maxlength="5" style="width: 150px;margin-right: 10px;"
 						 :placeholder="item.placeholder" v-model="item.value" autocomplete="off" class="layui-input layui-col-md1">
 					</div>
 				</div>
@@ -86,17 +87,9 @@
 
 				<div class="layui-form-item">
 					<label class="layui-form-label">商品分类<span class="redStar">*</span></label>
-					<div class="layui-input-inline">
-						<select name="classify1" id="classify1" lay-filter="first">
-							<option class="firstOption" value="">1</option>
-						</select>
-					</div>
-					<label class="layui-form-label">二级分类</label>
-					<div class="layui-input-inline">
-						<select name="classify2" id="classify2" lay-verify="required" lay-filter="second">
-							<option class="secondOption" value="">2</option>
-						</select>
-					</div>
+
+					<label class="layui-form-label">{{goodsClassify}}</label>
+
 				</div>
 			</form>
 
@@ -127,52 +120,34 @@
 
 			<!--商品规格管理-->
 			<div class="layui-form-item">
-				<label class="layui-form-label">商品规格<span class="redStar">*</span></label>
-				<div class="layui-input-block">
-					<div id="sku">
-						<div id="title_box"></div>
-						<div class="fill operation">
-							<span class="le cloneSku layui-btn-normal">添加规格</span>
-						</div>
-						<div id="skuCloneModel" style="display: none;">
-							<div class="clear"></div>
-							<ul class="SKU_TYPE">
-								<li is_required='0' propid='' sku-type-name="">
-									<a href="javascript:void(0);" class="delCusSkuType">移除规格</a>
-									<input type="text" class="cusSkuTypeInput" />：
-								</li>
-							</ul>
-							<ul>
-								<li>
-									<input type="checkbox" class="model_sku_val" propvalid='' value="" style="display: none;" />
-								</li>
-								<button class="cloneSkuVal layui-btn-primary">添加规格分类</button>
-							</ul>
-							<div class="clear"></div>
-						</div>
-						<li style="display: none;" id="onlySkuValCloneModel">
-							<input type="checkbox" class="model_sku_val" propvalid='' value="" style="display: none;" />
-							<input type="text" class="cusSkuValInput" />
-							<a href="javascript:void(0);" class="delCusSkuVal">删除</a>
-						</li>
-						<div class="clear"></div>
-						<div id="skuTable"></div>
-						<button id="submit" class="layui-btn-normal">验证规格信息</button>
-					</div>
-				</div>
+				<label class="layui-form-label">规格库存<span class="redStar">*</span></label>
+				<table class="layui-table">
+					<tr>
+						<th>规格</th>
+						<th>价格(元)</th>
+						<th>库存(件)</th>
+					</tr>
+					<tr v-for="(item,index) in specs">
+						<td>{{item.specClass}}</td>
+						<td>
+							<input class="specPrice" type="text" name="" id="" :value="item.specPrice" />
+							<button class="layui-btn layui-btn-normal" @click="modifyPrice(item,index)">修改</button>
+						</td>
+						<td>
+							<input class="specInventory" type="text" name="" id="" :value="item.specInventory" />
+							<button class="layui-btn layui-btn-normal" @click="modifyInventory(item,index)">修改</button>
+						</td>
+					</tr>
+				</table>
 			</div>
 
-			<div class="layui-form-item">
-				<div class="layui-input-block">
-					<button class="layui-btn layui-bg-cyan" type="submit" @click="submit">立即提交</button>
-					<button type="reset" class="layui-btn layui-btn-primary">重置</button>
-				</div>
-			</div>
+		
 		</div>
 	</body>
 
 	<script type="text/javascript">
 		var example = {
+			gid:"",
 			title: "",
 			defaultPrice: "",
 			postage: "",
@@ -182,6 +157,7 @@
 			second: [],
 			categoryIndex: [null, null],
 			category: [],
+			specs: [],
 			labelList: [{
 				placeholder: "标签1",
 				value: ""
@@ -345,10 +321,8 @@
 
 		function createFirst() {
 			var select1 = document.getElementById("classify1");
-			console.log('example.category', example.category)
 
 			for (let i in example.category) {
-				console.log('i', example.category[i].name)
 				select1.add(new Option(example.category[i].name, i))
 			}
 			var form = layui.form
@@ -358,12 +332,24 @@
 		function addSecond() {
 			var select2 = document.getElementById("classify2");
 			var first = document.getElementById("classify1").value;
-			console.log(first)
 			select2.length = 1;
 			var second = example.category[first].second
 			for (let i in second) {
 				select2.add(new Option(second[i].name, i))
 			}
+		}
+
+		function isVideo(url) {
+			if (!url)
+				return false
+			var strs = url.split('.')
+			if (!strs)
+				return false
+			let str = strs[strs.length - 1]
+			if (str == "mp4" || str == "mkv" || str == "flv")
+				return true
+			else
+				return false
 		}
 
 		function clearSecond() {
@@ -422,7 +408,6 @@
 	</script>
 	<script src="../../js/util/provinces.js" type="text/javascript" charset="utf-8"></script>
 	<script type="text/javascript">
-		
 		var vm = new Vue({
 			el: "#app",
 			components: {
@@ -433,27 +418,42 @@
 			},
 			beforeCreate() {
 				var goodsDetail = storageGet('goodsDetail')
-				if(goodsDetail){
+				console.log('````````````````', goodsDetail)
+				if (goodsDetail) {
+					example.gid = goodsDetail.gid
 					example.title = goodsDetail.title
+					example.specs = goodsDetail.goodsSpecs
+					example.defaultPrice = goodsDetail.defaultPrice
+					example.cover[0].url = goodsDetail.cover
+					example.postage = goodsDetail.postage
+					example.goodsClassify = goodsDetail.classify
+					goodsDetail.detailLabel.split(',').forEach((item, index) => {
+						if (item)
+							example.labelList[index].value = item
+					})
+					goodsDetail.slideShow.split(',').forEach((item, index) => {
+						if (isVideo()) {
+							example.myVideo = item
+							example.hasVideo = true
+						} else {
+							example.swiper[index].url = item
+						}
+					})
+					goodsDetail.detailPhotos.split(',').forEach((item, index) => {
+						if (item)
+							example.detailPhotos[index].url = item
+					})
 				}
 			},
-			beforeMount() {
-			},
-			created() {
-			},
+			beforeMount() {},
+			created() {},
 			mounted() {
-				for(let i in provinces){
-					console.log(provinces[i].label)
-				}
 				//初始创建一级类目的下拉菜单
 				var request = post(false, major + "/goods/getCategory", {
 					"categoryId": 1
 				})
 				handleRequest(request, function(res) {
-					console.log(res.data)
-					console.log('jsonpase', JSON.parse(res.data.category))
 					example.category = JSON.parse(res.data.category)
-					console.log('beforeCreated', example.category)
 					createFirst()
 				})
 			},
@@ -471,34 +471,25 @@
 					example.myVideo = ""
 					example.hasVideo = false
 				},
-				submit() {
-					if (!checkRequired()) {
+				modifyPrice(item,index){
+					var specPrice = $(".specPrice")[index].value
+					if(!isMoney(specPrice)){
+						layer.msg('请输入正确的价格')
 						return false
 					}
-					var skuData = getSkuData()
-					skuJson = skuData
-					if (!skuData) {
-						return false
-					}
-					var data = {};
-					var index = this.categoryIndex
-					data.goodsClassify = this.category[index[0]].value
-					data.goodsClassDetail = this.category[index[0]].value + "," + this.category[index[0]].second[index[1]].value
-					data.title = this.title
-					data.cover = this.cover[0].url
-					data.defaultPrice = this.defaultPrice
-					data.slideshow = getSlideShow()
-					data.postage = this.postage
-					data.detailLabel = getDetailLabel()
-					data.goodsType = JSON.stringify(skuJson.type)
-					data.goodsTypeClass = JSON.stringify(skuJson.typeClass)
-					data.goodsSpecPojo = skuJson.spec
-					data.detailPhotos = getDetaiPhotos()
-					console.log('data', data)
-					var request = post(true, major + "/goods/addGoods", data)
-					handleRequest(request, function(res) {
-						console.log(res)
+					var request = post(true,major+"/goods/modifyPrice",{
+						gid:example.gid,
+						goodsSpecId:item.id,
+						goodsPrice:specPrice
 					})
+					handleRequest(request,function(res){
+						if(res.state == "success"){
+							layer.msg("修改成功！")
+						}
+					})
+				},
+				modifyInventory(item,index){
+					console.log(item+","+index)
 				}
 			},
 		})
