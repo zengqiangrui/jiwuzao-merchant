@@ -6,8 +6,8 @@
 		<link rel="stylesheet" type="text/css" href="../../dist/css/layui.css" />
 		<script src="../../js/environment.js" type="text/javascript" charset="utf-8"></script>
 		<script src="https://cdn.bootcss.com/jquery/3.4.0/jquery.min.js"></script>
-		<script src="../../dist/layui.js" type="text/javascript" charset="utf-8"></script>
 		<script src="https://cdn.bootcss.com/vue/2.6.10/vue.min.js"></script>
+		<script src="../../dist/layui.all.js" type="text/javascript" charset="utf-8"></script>
 		<script src="https://unpkg.com/http-vue-loader"></script>
 		<script src="../../js/kboot.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../../js/msCode.js" type="text/javascript" charset="utf-8"></script>
@@ -25,7 +25,7 @@
 	<body>
 		<div id="app">
 			<div class="container">
-				<form class="layui-form" action="">
+				<form class="layui-form">
 					<div class="layui-form-item">
 						<label class="layui-form-label">店铺名称<span class="redStar">*</span></label>
 						<div class="layui-input-block">
@@ -35,9 +35,31 @@
 					</div>
 
 					<div class="layui-form-item layui-form-text">
+						<label class="layui-form-label">店铺风格<span class="redStar">*</span></label>
+						<div class="layui-input-block" v-if="storeStyle">
+							<input type="text" :value="getStyleValue(example.storeStyle)"  maxlength="20" disabled="disabled"
+							 autocomplete="off" class="layui-input">
+						</div>
+						<div class="layui-input-block" v-show="!storeStyle">
+							<select name="storeStyle" required>
+								<option value="chinese" :selected="storeStyle==='chinese'?true:false">中国风</option>
+								<option value="japanese" :selected="storeStyle==='japanese'?true:false">日式</option>
+								<option value="ancient" :selected="storeStyle==='ancient'?true:false">复古</option>
+								<option value="fashion" :selected="storeStyle==='fashion'?true:false">潮派</option>
+								<option value="simple" :selected="storeStyle==='simple'?true:false">简约</option>
+							</select>
+						</div>
+					</div>
+
+					<div class="layui-form-item layui-form-text">
 						<label class="layui-form-label">店铺介绍<span class="redStar">*</span></label>
+						<label class="layui-form-label">2000字以内</label>
+
+						<div id="storeRichDiv" class="layui-input-block">
+							<textarea id="storeRich" name="storeIntro" style="display: none;"></textarea>
+						</div>
 						<div class="layui-input-block">
-							<textarea name="storeIntro" :value="storeIntro" placeholder="请输入内容" lay-verify="required" class="layui-textarea"></textarea>
+							<div v-html="storeIntro"></div>
 						</div>
 					</div>
 
@@ -52,22 +74,10 @@
 						<label class="layui-form-label">客服电话<span class="redStar">*</span></label>
 						<div class="layui-input-block">
 							<input class="layui-input-block layui-col-md5" type="text" v-model="servicePhone" name="servicePhone" required
-							 lay-verify="phone" :value="servicePhone" placeholder="请输入客服电话" autocomplete="off" class="layui-input">
+							 lay-verify="phone" placeholder="请输入客服电话" autocomplete="off" class="layui-input">
 							<input class="layui-input-block layui-col-md2" type="text" v-model="smsCode" name="msCode" required lay-verify="msCode"
 							 placeholder="请输入验证码" autocomplete="off" class="layui-input">
 							<button class="layui-btn layui-btn-primary" :disabled="verifyDisabled" @click.prevent="getVerifyCode">{{verifyMsg}}</button>
-						</div>
-					</div>
-
-					<div class="layui-form-item layui-form-text">
-						<label class="layui-form-label">店铺风格</label>
-						<div class="layui-input-block">
-							<input class="layui-input-block layui-col-md2" :value="storeStyle1" maxlength="6" type="text" lay-verify="label" name="storeStyle1"
-							 placeholder="风格标签1" autocomplete="off" class="layui-input">
-							<input class="layui-input-block layui-col-md2" :value="storeStyle2" maxlength="6" type="text" lay-verify="label" name="storeStyle2"
-							 placeholder="风格标签2" autocomplete="off" class="layui-input">
-							<input class="layui-input-block layui-col-md2" :value="storeStyle3" maxlength="6" type="text" lay-verify="label" name="storeStyle3"
-							 placeholder="风格标签3" autocomplete="off" class="layui-input">
 						</div>
 					</div>
 
@@ -76,22 +86,20 @@
 							<button class="layui-btn layui-btn-warm" :disabled="disabled" lay-submit lay-filter="form">立即提交</button>
 						</div>
 					</div>
-
 				</form>
-
-
 			</div>
 		</div>
 	</body>
 	<script type="text/javascript">
 		var example = {
-			storeName:"",
-			storeIntro:"",
+			layeditIdx: 0,
+			hasStoreIntro: false,
+			hasStoreStyle: false,
+			storeName: "",
+			storeIntro: "",
 			servicePhone: "",
 			smsCode: "",
-			storeStyle1:"",
-			storeStyle2:"",
-			storeStyle3:"",
+			storeStyle: "",
 			verifyMsg: "获取验证码",
 			verifyDisabled: false,
 			disabled: false,
@@ -125,28 +133,30 @@
 			components: {
 				'img-area': httpVueLoader('/jiwuzao-merchant/plugins/imgArea.vue'),
 			},
-			mounted() {
+			beforeCreate() {
 				var request = post(true, major + "/merchant/getMerchantStore")
 				handleRequest(request, function(res) {
 					console.log(res)
 					var store = res.data
 					example.storeName = store.storeName
-					example.storeIntro = store.storeIntro
+					if (store.storeIntro) {
+						example.storeIntro = store.storeIntro
+					}
 					example.servicePhone = store.servicePhone
 					example.imgs[0].url = store.storeIcon
 					example.imgs[1].url = store.storeBgImg
 					var storeStyle = store.storeStyle
-					var list = storeStyle.split(",")
-					console.log(list)
-					if(list[0]){
-						example.storeStyle1 = list[0]
+					console.log('storestylel;;;;;;;;;;;;;;;;;;;;;', storeStyle)
+					if (storeStyle) {
+						example.hasStoreStyle = true
+						example.storeStyle = storeStyle
 					}
-					if(list[1]){
-						example.storeStyle2 = list[1]
-					}
-					if(list[2]){
-						example.storeStyle3 = list[2]
-					}
+				})
+			},
+			mounted() {
+				layui.use('form', function() {
+					var form = layui.form;
+					form.render()
 				})
 			},
 			methods: {
@@ -169,9 +179,22 @@
 					setTimeout(() => {
 						clearInterval(interval)
 					}, 60010)
+				},
+				getStyleValue(value){
+					return "已选风格："+value
 				}
 			}
 		})
+		layui.use('layedit', function() {
+			var layedit = layui.layedit;
+			layedit.set({
+				uploadImage: {
+					url: 'http://api.jiwuzao.com/upload/myUpload',
+					type: 'post', //默认post
+				}
+			});
+			example.layeditIdx = layedit.build('storeRich'); //建立编辑器
+		});
 	</script>
 
 	<script type="text/javascript">
@@ -185,25 +208,22 @@
 			return flag
 		}
 
-		function getStoreStyle(storeStyle1, storeStyle2, storeStyle3) {
-			var storeStyle = ""
-			if (storeStyle1 != "") {
-				storeStyle += storeStyle1 + ","
-			}
-			if (storeStyle2 != "") {
-				storeStyle += storeStyle2 + ","
-			}
-			if (storeStyle3 != "") {
-				storeStyle += storeStyle3 + ","
-			}
-			return storeStyle
-		}
 
 		layui.use('form', function() {
 			var form = layui.form;
 			form.on('submit()', function(data) {
 				var formData = data.field
-				console.log(formData)
+				delete formData.file
+				layui.use('layedit', function() {
+					var layedit = layui.layedit;
+					console.log('content', layedit.getContent(example.layeditIdx))
+					formData.storeIntro = layedit.getContent(example.layeditIdx)
+				});
+				if (!formData.storeIntro) {
+					layer.msg('请写一份漂亮的店铺介绍吧，将用于app展示')
+					return false
+				}
+				console.log('fromdata', formData)
 				if (!checkImgs(example.imgs)) {
 					layer.msg("图片要上传")
 					return false
@@ -211,26 +231,31 @@
 				console.log(example.imgs)
 				formData.storeIcon = example.imgs[0].url
 				formData.storeBgImg = example.imgs[1].url
-				formData.storeStyle = getStoreStyle(formData.storeStyle1, formData.storeStyle2, formData.storeStyle3)
 				delete formData.storeStyle1
 				delete formData.storeStyle2
 				delete formData.storeStyle3
 				console.log("jsonFormData", formData)
 				var request = post(true, major + "/merchant/modifyOrOpenStore", formData)
 				handleRequest(request, function(res) {
-					if(res.state =="success" && res.data){
-						try{
+					if (res.state == "success" && res.data) {
+						try {
 							var jData = JSON.parse(res.data)
-							if(jData.id)
-							layer.msg("成功提交")
-						}catch(e){
+							if (jData.id) {
+								layer.msg("成功提交!")
+
+							} else {
+								console.log(res.data)
+								layer.msg(jData)
+							}
+						} catch (e) {
 							layer.msg(res.data)
-							if(res.data == "您未通过实名认证"){
-								setTimeout(function(){location.href="settle.html"},2000)
+							if (res.data == "您未通过实名认证") {
+								setTimeout(function() {
+									location.href = "settle.html"
+								}, 2000)
 							}
 						}
-						
-					}else{
+					} else {
 						layer.msg("更新失败，请检查")
 					}
 				})
@@ -239,4 +264,6 @@
 			form.render()
 		});
 	</script>
+
+
 </html>

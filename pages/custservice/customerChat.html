@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>客服聊天</title>
+		<link rel="stylesheet" type="text/css" href="../../dist/css/layui.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/cust/custChat.css"/>
+		<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.js"></script>
+		<script src="https://cdn.bootcss.com/vue/2.6.10/vue.min.js"></script>
+		<script src="../../dist/layui.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/environment.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/kboot.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+	<body>
+		<div id="app">
+			<!--标题，与某人聊天-->
+			<div id="header">
+				<p>与曾经拥有聊天中...</p>
+				<div class="window-handle">
+					<!-- <img style="height: 80%;" src="../../img/icons/close.png" > -->
+				</div>
+			</div>
+			<div class="chat-main">
+				<div class="chat-area">
+					<div class="show-msg">
+						<!--对方发送信息，放左侧-->
+						<div class="msg-item-left">
+							<!-- 头像 -->
+							<img src="../../img/icons/avatar-boy.png" width="60px" height="60px" class="avatar-left">
+
+							<div class="msg-item-left-body">
+								<!-- 昵称 -->
+								<p>曾经拥有 2019-8-1 11:11:21</p>
+								<div id="left-triangle"></div>
+								<div class="msg-item-left-show">
+									哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈
+									哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈
+									哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈
+									哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈
+								</div>
+							</div>
+						</div>
+						<!--己方发送信息放右侧-->
+						<div class="msg-item-right">
+							<!-- 头像 -->
+							<img src="../../img/icons/avatar-girl.png" width="60px" height="60px" class="avatar-right">
+							<div class="msg-item-right-body">
+								<!-- 昵称 -->
+								<p style="text-align: right;">曾经拥有 2019-8-1 11:11:21</p>
+								<div id="right-triangle"></div>
+								<div class="msg-item-right-show">
+									哈
+								</div>
+							</div>
+						</div>
+					</div>
+					<!--操作栏，发送图片之类-->
+					<div class="input-handle">
+						<img class="handle-img" style="height: 80%; max-height: 100%;margin-left: 10px;" src="../../img/icons/send-img.png" />
+						<img class="handle-img" style="height: 80%; max-height: 100%;margin-left: 10px;" src="../../img/icons/face.png" />
+					</div>
+					<div class="input-msg">
+						<!--输入文本域-->
+						<textarea class="input-area" autofocus>
+						</textarea>
+						<!--发送-->
+						<div class="input-send">
+							<button type="button" id="btn-close">关闭</button>
+							<button type="button" id="btn-send">发送</button>
+						</div>
+					</div>
+				</div>
+				<!--右侧区域暂定为联系人-->
+				<div class="chat-person">
+					<div class="person-head">
+						我的客户10/20
+					</div>
+					<div class="person-main">
+						<div class="person-item">
+							<div class="person-item-main">
+								<img class="person-item-avatar" src="../../img/icons/avatar-girl.png" />
+								<p class="person-item-name">曾经拥有</p>
+							</div>
+							<div class="person-item-handle">
+								<div class="red-dot"></div>
+							</div>
+						</div>
+						<div class="person-item">
+							<div class="person-item-main">
+								<img class="person-item-avatar" src="../../img/icons/avatar-girl.png" />
+								<p class="person-item-name">曾经拥有afdsafdsafsafsafasfas</p>
+							</div>
+							<div class="person-item-handle">
+								<div class="red-dot"></div>
+							</div>
+						</div>
+						<div class="person-item">
+							<div class="person-item-main">
+								<img class="person-item-avatar" src="../../img/icons/avatar-girl.png" />
+								<p class="person-item-name">曾经拥有</p>
+							</div>
+							<div class="person-item-handle">
+								<div class="red-dot"></div>
+							</div>
+						</div>
+						<div class="person-item">
+							<div class="person-item-main">
+								<img class="person-item-avatar" src="../../img/icons/avatar-girl.png" />
+								<p class="person-item-name">曾经拥有</p>
+							</div>
+							<div class="person-item-handle">
+								<div class="red-dot"></div>
+							</div>
+						</div>
+						<div class="person-item">
+							<div class="person-item-main">
+								<img class="person-item-avatar" src="../../img/icons/avatar-girl.png" />
+								<p class="person-item-name">曾经拥有</p>
+							</div>
+							<div class="person-item-handle">
+								<div class="red-dot"></div>
+							</div>
+						</div>
+						<div class="person-item">
+							<div class="person-item-main">
+								<img class="person-item-avatar" src="../../img/icons/avatar-girl.png" />
+								<p class="person-item-name">曾经拥有</p>
+							</div>
+							<div class="person-item-handle">
+								<div class="red-dot"></div>
+							</div>
+						</div>
+						
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+
+	<script type="text/javascript">
+		new Vue({
+			el: "#app",
+			data() {
+				return {
+
+				}
+			},
+			beforeCreate() {
+				
+			},
+			mounted() {
+				console.log(1111)
+			}
+		})
+	</script>
+</html>

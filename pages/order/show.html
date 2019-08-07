@@ -90,29 +90,6 @@
 				sortBy: "createTime"
 			}
 		}
-		var ws = null;
-		var request = post(true, major + "/chat/init", {
-			"uid": 6
-		})
-		handleRequest(request, function(res) {
-			console.log(res)
-			var groupId = res.data.groupId
-			var token = storageGet('accessToken')
-			var uid = token.split(",")[0]
-			ws = new WebSocket('ws://localhost:10010/chat/' + uid + '/' + groupId)
-			ws.onopen = function(res) {
-				console.log('onopen', res)
-			} // 指定连接成功后的回调函数
-			ws.onclose = function(res) {
-				console.log('onclose', res)
-			} // 指定连接关闭后的回调函数
-			ws.onmessage = function(res) {
-				console.log('onmessage', res)
-			} // 指定收到服务器数据后的回调函数
-			ws.onerror = function(res) {
-				console.log('onerror', res)
-			} // 指定报错时的回调函数
-		})
 
 		function initData() {
 			var request = post(true, major + "/express/getAllDelivery", example.page)
@@ -132,6 +109,7 @@
 								//obj包含了当前分页的所有参数，比如：
 								//首次不执行
 								if (!first) {
+									console.log('objjjjjj',obj)
 									example.page.currentPage = obj.curr - 1
 									example.page.pageSize = obj.limit
 									updateData()
@@ -140,19 +118,19 @@
 						});
 					});
 				} else {
-					layer.msg("暂无商品")
+					layer.msg("暂无订单")
 				}
 			})
 		}
 
 		function updateData() {
-			var request = post(true, major + "/goods/getGoodsList", example.page)
+			var request = post(true, major + "/express/getAllDelivery", example.page)
 			handleRequest(request, function(res) {
 				if (res.state == "success") {
 					example.goods = res.data.content
 					example.total = res.data.total
 				} else {
-					layer.msg("暂无商品")
+					layer.msg("暂无订单")
 				}
 			})
 		}
@@ -186,26 +164,19 @@
 			beforeMount() {},
 			mounted() {
 				initData()
-				setTimeout(function() {
-					ws.send("helloworld")
-				}, 3000)
 			},
 			methods: {
 				showDetail(item) {
 					var data = {
 						"detail": item.gid
 					}
-					var request = post(true, major + '/')
 					console.log("detail", index)
 				},
 				showWaitDelivery() {
-					var requst = post(true, major + "/express/getAllWaitDeliver", function(res) {
-						console.log(res)
-					})
-				},
-				sendMessage(){
-					
-				}
+					// var requst = post(true, major + "/express/getAllWaitDeliver", function(res) {
+					// 	console.log(res)
+					// })
+				},showWaitReceive(){}
 			}
 		})
 	</script>

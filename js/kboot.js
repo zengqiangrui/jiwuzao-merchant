@@ -413,7 +413,6 @@ function uploadImg(success, style) {
 		var file = input.files[0];
 		var suffix = file.name.substring(file.name.lastIndexOf('.'))
 		formData.append('file', file)
-
 		if (suffix != '.jpg' && suffix != '.png' && suffix != '.jpeg') {
 			layer.msg('上传格式不正确')
 			return

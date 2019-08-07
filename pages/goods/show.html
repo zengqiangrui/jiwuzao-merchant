@@ -131,6 +131,7 @@
 				}
 			})
 		}
+
 	</script>
 
 
@@ -161,7 +162,15 @@
 					})
 				},
 				putaway(index) {
-					console.log(example.goods[index])
+					var request = post(true,major+"/goods/putaway",{
+						"gid":example.goods[index].gid
+					})
+					handleRequest(request,function(res){
+						if(res.state == "success"){
+							layer.msg("上架成功")
+							updateData()
+						}
+					})
 				}
 			}
 		})

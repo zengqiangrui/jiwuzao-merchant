@@ -5,7 +5,6 @@ var manager = 'http://106.52.109.239:10020'
 var socket = 'http://106.52.109.239:10030'
 var cdnUploadUrl = 'http://upload-z2.qiniu.com/'
 var cdnPrefix = 'http://cdn.jiwuzao.com'
-var cdnAccesskey = '80VH0Goc4ICFTHACWiKZKssLfYQYba8l4vdVIpyP'
 
 if(environment == 'local'){
 	major = 'http://127.0.0.1:10010'

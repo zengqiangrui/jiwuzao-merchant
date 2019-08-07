@@ -126,6 +126,12 @@
 						<a href="/jiwuzao-merchant/pages/test.html" target="mainFrame">资金展示</a>
 					</div>
 				</div>
+				<li v-if="isMerchant"><a id="cl5" target="mainFrame">客服系统</a></li>
+				<div id="cl5-i" hidden="hidden">
+					<div class="div-inner">
+						<a href="/jiwuzao-merchant/pages/custservice/customerChat.html" target="mainFrame">用户会话</a>
+					</div>
+				</div>
 			</ul>
 		</div>
 	</body>
@@ -142,6 +148,9 @@
 			});
 			$("#cl4").click(function() {
 				$("#cl4-i").fadeToggle()
+			});
+			$("#cl5").click(function() {
+				$("#cl5-i").fadeToggle()
 			});
 		});
 		var vm = new Vue({
