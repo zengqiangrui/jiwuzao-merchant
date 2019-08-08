@@ -28,25 +28,34 @@
 				height: 30px;
 				line-height: 30px;
 			}
+
+			.no-order {
+				width: 100%;
+				height: 100%;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: center;
+				font-size: 20px;
+			}
 		</style>
 	</head>
 	<body>
 		<div id="app">
 			<div class="layui-bg-cyan choose-area">
-				<button class="layui-btn layui-btn-primary">查看全部</button>
+				<button class="layui-btn layui-btn-primary" @click="showAll">查看全部</button>
 				<button class="layui-btn layui-btn-primary" @click="showWaitDelivery">查看待发货</button>
 				<button class="layui-btn layui-btn-primary" @click="showWaitReceive">查看待签收</button>
-				<button class="layui-btn layui-btn-primary" @click="">查看已完成</button>
+				<button class="layui-btn layui-btn-primary" @click="showFinish">查看已完成</button>
 				<button class="layui-btn layui-btn-primary">查看异常订单</button>
 			</div>
-			<table class="layui-table">
+			<table class="layui-table" v-if="goods.length>0">
 				<thead>
 					<tr>
 						<td>商品名称</td>
 						<td>封面</td>
 						<td>规格</td>
 						<td>购买数量</td>
-						<!-- <td>商品类型</td> -->
 						<td>支付时间</td>
 						<td>订单状态</td>
 						<td>总金额</td>
@@ -55,6 +64,7 @@
 						<td>收货人</td>
 						<td>收货电话</td>
 						<td>邮费</td>
+						<td>操作</td>
 					</tr>
 				</thead>
 				<tbody>
@@ -71,9 +81,14 @@
 						<td>{{item.receiverTrueName}}</td>
 						<td>{{item.receiverPhone}}</td>
 						<td>{{item.postage}}</td>
+						<td><button type="button" v-if="item.orderStatus == 'waitDeliver'" @click="toDeliver(item)" class="layui-btn layui-btn-primary">发货</button></td>
 					</tr>
 				</tbody>
 			</table>
+			<div v-if="goods.length===0" class="no-order">
+				<img src="../../img/icons/no-order.svg" style="width: 200px;height: 200px;">
+				<p>暂无订单</p>
+			</div>
 			<div id="pager"></div>
 		</div>
 	</body>
@@ -87,12 +102,42 @@
 				pageSize: 10,
 				currentPage: 0,
 				isAsc: false,
+				orderStatus: "waitPay",
 				sortBy: "createTime"
 			}
 		}
 
-		function initData() {
-			var request = post(true, major + "/express/getAllDelivery", example.page)
+		function initData(value) {
+			var page = example.page
+			var request
+			switch (value) {
+				case "all":
+					page.currentPage = 0
+					request = post(true, major + "/order/getAllMerchantOrder", page)
+					break;
+				case "waitPay":
+					page.currentPage = 0
+					page.orderStatus = "waitPay"
+					request = post(true, major + "/order/getAllStoreOrderByStatus", page)
+					break;
+				case "waitDeliver":
+					page.currentPage = 0
+					page.orderStatus = "waitDeliver"
+					request = post(true, major + "/order/getAllStoreOrderByStatus", page)
+					break;
+				case "waitReceive":
+					page.currentPage = 0
+					page.orderStatus = "waitReceive"
+					request = post(true, major + "/order/getAllStoreOrderByStatus", page)
+					break;
+				case "finish":
+					page.currentPage = 0
+					page.orderStatus = "finish"
+					request = post(true, major + "/order/getAllStoreOrderByStatus", page)
+					break;
+				default:
+					break;
+			}
 			handleRequest(request, function(res) {
 				console.log('pagedto', res)
 				if (res.state == "success") {
@@ -109,10 +154,9 @@
 								//obj包含了当前分页的所有参数，比如：
 								//首次不执行
 								if (!first) {
-									console.log('objjjjjj',obj)
 									example.page.currentPage = obj.curr - 1
 									example.page.pageSize = obj.limit
-									updateData()
+									updateData(value)
 								}
 							}
 						});
@@ -123,8 +167,32 @@
 			})
 		}
 
-		function updateData() {
-			var request = post(true, major + "/express/getAllDelivery", example.page)
+		function updateData(value) {
+			var page = example.page
+			var request
+			switch (value) {
+				case "all":
+					request = post(true, major + "/order/getAllMerchantOrder", page)
+					break;
+				case "waitPay":
+					page.orderStatus = "waitPay"
+					request = post(true, major + "/order/getAllStoreOrderByStatus", page)
+					break;
+				case "waitDeliver":
+					page.orderStatus = "waitDeliver"
+					request = post(true, major + "/order/getAllStoreOrderByStatus", page)
+					break;
+				case "waitReceive":
+					page.orderStatus = "waitReceive"
+					request = post(true, major + "/order/getAllStoreOrderByStatus", page)
+					break;
+				case "finish":
+					page.orderStatus = "finish"
+					request = post(true, major + "/order/getAllStoreOrderByStatus", page)
+					break;
+				default:
+					break;
+			}
 			handleRequest(request, function(res) {
 				if (res.state == "success") {
 					example.goods = res.data.content
@@ -163,20 +231,28 @@
 			},
 			beforeMount() {},
 			mounted() {
-				initData()
+				initData("waitDeliver")
 			},
 			methods: {
 				showDetail(item) {
-					var data = {
-						"detail": item.gid
-					}
-					console.log("detail", index)
+
+				},
+				showAll() {
+					initData("all")
 				},
 				showWaitDelivery() {
-					// var requst = post(true, major + "/express/getAllWaitDeliver", function(res) {
-					// 	console.log(res)
-					// })
-				},showWaitReceive(){}
+					initData("waitDeliver")
+				},
+				showWaitReceive() {
+					initData("waitReceive")
+				},
+				showFinish() {
+					initData("finish")
+				},
+				toDeliver(item) {
+					storageSet('deliverOrder',item,'m',30)
+					location.href = 'deliver.html'
+				}
 			}
 		})
 	</script>

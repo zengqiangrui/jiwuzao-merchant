@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<title>layarea</title>
+		<link rel="stylesheet" type="text/css" href="../../dist/css/layui.css" />
+		<script src="../../js/environment.js" type="text/javascript" charset="utf-8"></script>
+		<script src="https://cdn.bootcss.com/jquery/3.4.0/jquery.min.js"></script>
+		<script src="https://cdn.bootcss.com/vue/2.6.10/vue.min.js"></script>
+		<style type="text/css">
+			tbody tr {
+				cursor: pointer;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="app">
+			<div class="layui-form">
+				<div class="layui-form-item" id="area-picker">
+					<div class="layui-form-label">省份</div>
+					<div class="layui-input-inline" style="width: 200px;">
+						<select name="province" class="province-selector" data-value="" lay-filter="province-1">
+							<option value="">请选择省</option>
+						</select>
+					</div>
+					<div class="layui-form-label">城市</div>
+
+					<div class="layui-input-inline" style="width: 200px;">
+						<select name="city" class="city-selector" data-value="" lay-filter="city-1">
+							<option value="">请选择市</option>
+						</select>
+					</div>
+					<div class="layui-form-label">地区</div>
+
+					<div class="layui-input-inline" style="width: 200px;">
+						<select name="area" class="county-selector" data-value="" lay-filter="county-1">
+							<option value="">请选择区</option>
+						</select>
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">发货地址</label>
+					<div class="layui-input-inline" style="width: 200px;">
+						<input type="text" name="addressDetail" v-model="addressDetail" required lay-verify="required" placeholder="请输入详细发货地址"
+						 autocomplete="off" class="layui-input">
+					</div>
+					<label class="layui-form-label">发货人</label>
+					<div class="layui-input-inline" style="width: 200px;">
+						<input type="text" name="trueName" required v-model="trueName" lay-verify="required" placeholder="请输入发货人姓名"
+						 autocomplete="off" class="layui-input">
+					</div>
+					<label class="layui-form-label">联系电话</label>
+					<div class="layui-input-inline" style="width: 200px;">
+						<input type="text" name="phone" required v-model="phone" lay-verify="required" placeholder="联系电话" autocomplete="off"
+						 class="layui-input">
+					</div>
+					<div class="layui-input-inline" style="width: 200px;">
+						<button type="button" class="layui-btn layui-btn-primary" @click="addAddress">添加</button>
+					</div>
+				</div>
+			</div>
+
+			<table class="layui-table">
+				<thead>
+					<tr>
+						<th>省市区</th>
+						<th>详细地址</th>
+						<th>联系姓名</th>
+						<th>联系电话</th>
+						<th>默认地址</th>
+						<th>操作</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr v-for="(item,index) in addressList" @click="choose(item)">
+						<td>{{item.provinces}}</td>
+						<td>{{item.addressDetail}}</td>
+						<td>{{item.trueName}}</td>
+						<td>{{item.phone}}</td>
+						<td>{{item.addressStatus}}</td>
+						<td><button class="layui-btn layui-btn-primary" type="button" @click.prevent.stop="del(item)">删除</button></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
+		<script src="../../dist/layui.all.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/kboot.js" type="text/javascript" charset="utf-8"></script>
+		<script>
+			var example = {
+				addressList: [],
+				provinces: "北京市-北京市-东城区",
+				addressDetail: "",
+				trueName: "",
+				phone: "",
+			}
+
+			//配置插件目录
+			layui.config({
+				base: '/jiwuzao-merchant/js/store/mods/',
+				version: '1.0'
+			});
+			//一般直接写在一个js文件中
+			layui.use(['layer', 'form', 'layarea'], function() {
+				var layer = layui.layer,
+					form = layui.form,
+					layarea = layui.layarea;
+
+				layarea.render({
+					elem: '#area-picker',
+					change: function(res) {
+						//选择结果
+						console.log(res);
+						let provinces = res.province + "-" + res.city + "-" + res.county
+						example.provinces = provinces
+					}
+				});
+			});
+		</script>
+		<script type="text/javascript">
+			new Vue({
+				el: '#app',
+				data() {
+					return example
+				},
+				created() {
+					this.init()
+				},
+				methods: {
+					init() {
+						var that = this
+						var request = post(true, major + '/address/undeleteAddress', {})
+						handleRequest(request, function(res) {
+							console.log(',......', res);
+							that.addressList = res.data
+						})
+					},
+					addAddress() {
+						var that = this
+						if (!this.provinces || !this.phone || !this.addressDetail || !this.trueName) {
+							layer.msg("请将发货地址填写完整")
+							return false
+						}
+						var data = {
+							provinces: this.provinces,
+							addressDetail: this.addressDetail,
+							phone: this.phone,
+							trueName: this.trueName
+						}
+						var request = post(true, major + "/address/addUserAddress", data)
+						handleRequest(request, function() {
+							that.init()
+						})
+					},
+					choose(item) {
+						console.log('choose', item)
+						storageSet('senderAddress', item, 'd', 7)
+					},
+					del(item) {
+						console.log('del', item)
+						var myAddress = storageGet('senderAddress')
+						console.log('mya', myAddress)
+						var reuquest = post(true,major+'/',)
+						if (myAddress.id == item.id) {
+							storageRemove('senderAddress')
+						}
+					}
+
+				}
+			})
+		</script>
+	</body>
+
+</html>

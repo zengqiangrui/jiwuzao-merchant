@@ -8,16 +8,23 @@
 		<script src="https://cdn.bootcss.com/vue/2.6.10/vue.min.js"></script>
 		<script src="../js/environment.js"></script>
 		<script src="../dist/layui.js" type="text/javascript" charset="utf-8"></script>
-		<!-- <script src="../js/kboot.js" type="text/javascript" charset="utf-8"></script> -->
+		<script src="../js/kboot.js" type="text/javascript" charset="utf-8"></script>
 	</head>
 	<style>
+		html,body,#app{
+			height: 100%;
+		}
 		.admin_top {
-			height: 70px;
+			height: 100%;
 			background: #283643;
 			text-align: right;
 			padding-right: 70px;
 			color: white;
 			position: relative;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			
 		}
 
 		.admin_top span {
@@ -26,9 +33,9 @@
 			top: 30px;
 		}
 
-		.admin_top img {
+/* 		.admin_top img {
 			margin-top: 20px;
-		}
+		} */
 
 		.admin_top .top_left {
 			width: 250px;
@@ -44,6 +51,23 @@
 
 		.admin_top .top_left:hover {
 			background: #000;
+			cursor: pointer;
+		}
+		
+		.h_top_right{
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+		
+		.avatar{
+			width: 50px;
+			height: 50px;
+			border-radius: 50%;
+		}
+		
+		.handle a:hover{
+			cursor: pointer;
 		}
 	</style>
 	<body style="background:blue">
@@ -53,24 +77,32 @@
 					JIWUZAO
 				</div>
 				<div class="h_top_right">
-					<span style="margin-right: 50px"></span>
-					<span><a href="#" style="color: lightseagreen">Logout</a></span>
+					<img class="avatar" :src="avatar" alt=""></img>
+					<p>欢迎{{nickName}}！</p>
+				</div>
+				<div class="handle">
+					<a>退出登录</a>
 				</div>
 			</div>
 		</div>
 
 	</body>
-	
+
 	<script type="text/javascript">
 		var vm = new Vue({
-			el:"#app",
-			data(){
+			el: "#app",
+			data() {
 				return {
-					
+					avatar:"",
+					nickName:""
 				}
 			},
 			mounted() {
-			
+				var user = storageGet('userOpen')
+				if (user) {
+					this.avatar = user.portrait
+					this.nickName = user.nickName
+				}
 			}
 		})
 	</script>

@@ -67,6 +67,29 @@
 						 autocomplete="off" class="layui-input input-price">
 					</div>
 				</div>
+				
+				<div class="layui-form-item">
+					<label class="layui-form-label">退换承诺<span class="redStar">*</span></label>
+					<div class="layui-input-inline">
+						<select id="goodsReturn" name="goodsReturn" lay-verify required="required" v-model="goodsReturn">
+						  <option value="">请选择</option>
+						  <option value="CANNOT_RETURN">不可退换</option>
+						  <option value="CAN_RETURN">可退换</option>
+						</select>
+					</div>
+					<label class="layui-form-label">发货时间<span class="redStar">*</span></label>
+					<div class="layui-input-inline">
+						<select id="deliveryTime" name="deliveryTime" lay-verify required="required" v-model="deliveryTime">
+						  <option value="">请选择</option>
+						  <option value="ONE_DAY">一天内</option>
+						  <option value="TWO_DAY">两天内</option>
+						  <option value="TREE_DAY">三天内</option>
+						  <option value="FIVE_DAY">五天内</option>
+						  <option value="SEVEN_DAY">七天内</option>
+						  <option value="OTHERS">其他时间</option>
+						</select>  
+					</div>
+				</div>
 
 				<div class="layui-form-item">
 					<label class="layui-form-label">详情标签</label>
@@ -175,13 +198,15 @@
 		var example = {
 			title: "",
 			defaultPrice: "",
-			postage: "",
+			postage: 0,
 			goodsClassify: "",
 			myVideo: "", //uri
 			hasVideo: false,
 			second: [],
 			categoryIndex: [null, null],
 			category: [],
+			goodsReturn:"",
+			deliveryTime:"",
 			labelList: [{
 				placeholder: "标签1",
 				value: ""
@@ -396,6 +421,15 @@
 				layer.msg("详情图至少要有一张")
 				return false
 			}
+			if(!$("#goodsReturn").val()){
+				layer.msg("商品要填是否可退换")
+				return false
+			}
+			if(!$("#deliveryTime").val()){
+				layer.msg("商品要填发货时间")
+				return false
+			}
+			
 			return true
 		}
 
@@ -489,6 +523,8 @@
 					data.defaultPrice = this.defaultPrice
 					data.slideshow = getSlideShow()
 					data.postage = this.postage
+					data.goodsReturn = $("#goodsReturn").val()
+					data.deliveryTime = $("#deliveryTime").val()
 					data.detailLabel = getDetailLabel()
 					data.goodsType = JSON.stringify(skuJson.type)
 					data.goodsTypeClass = JSON.stringify(skuJson.typeClass)
@@ -497,7 +533,9 @@
 					console.log('data', data)
 					var request = post(true, major + "/goods/addGoods", data)
 					handleRequest(request, function(res) {
-						console.log(res)
+						if(res.state == 'success'){
+							location.href ="show.html"
+						}
 					})
 				}
 			},

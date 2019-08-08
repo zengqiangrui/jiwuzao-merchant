@@ -33,10 +33,10 @@
 	<body>
 		<div id="app">
 			<div class="layui-bg-cyan choose-area">
-				<button class="layui-btn layui-btn-primary">查看全部</button>
-				<button class="layui-btn layui-btn-primary">查看待审核</button>
-				<button class="layui-btn layui-btn-primary">查看已上架</button>
-				<button class="layui-btn layui-btn-primary">查看已下架</button>
+				<button class="layui-btn layui-btn-primary" @click="showAll">查看全部</button>
+				<button class="layui-btn layui-btn-primary" @click="showWait">查看待审核</button>
+				<button class="layui-btn layui-btn-primary" @click="showPutAway">查看已上架</button>
+				<button class="layui-btn layui-btn-primary" @click="showPutOff">查看未上架</button>
 			</div>
 			<table class="layui-table">
 				<thead>
@@ -67,7 +67,7 @@
 						<td>
 							<div class="handel-btn" v-if="item.auditType == 'agree'">
 								<button v-if="!item.putaway" class="layui-btn layui-btn-primary" @click.prevent.stop="putaway(index)">上架</button>
-								<button v-else class="layui-btn layui-btn-primary">下架</button>
+								<button v-else class="layui-btn layui-btn-primary" @click.prevent.stop="putOff(index)">下架</button>
 							</div>
 						</td>
 					</tr>
@@ -85,13 +85,35 @@
 			page: {
 				pageSize: 10,
 				currentPage: 0,
+				putaway: false,
+				auditType: 'wait',
 				isAsc: false,
 				sortBy: "createTime"
 			}
 		}
 
-		function initData() {
-			var request = post(true, major + "/goods/getGoodsList", example.page)
+		function initData(value) {
+			var request;
+			var page = example.page
+			switch (value) {
+				case "all":
+					request = post(true, major + "/goods/getGoodsList", page)
+					break;
+				case "wait":
+					request = post(true, major + "/goods/getGoodsListByStatus", page)
+					break;
+				case "putaway":
+					page.putaway = true
+					request = post(true, major + "/goods/getGoodsListByPutAway", page)
+					break;
+				case "putOff":
+					page.putaway = false
+					request = post(true, major + "/goods/getGoodsListByPutAway", page)
+					break;
+				default:
+					break;
+			}
+
 			handleRequest(request, function(res) {
 				if (res.state == "success") {
 					example.goods = res.data.content
@@ -109,7 +131,7 @@
 								if (!first) {
 									example.page.currentPage = obj.curr - 1
 									example.page.pageSize = obj.limit
-									updateData()
+									updateData(value)
 								}
 							}
 						});
@@ -120,8 +142,27 @@
 			})
 		}
 
-		function updateData() {
-			var request = post(true, major + "/goods/getGoodsList", example.page)
+		function updateData(value) {
+			var request;
+			var page = example.page
+			switch (value) {
+				case "all":
+					request = post(true, major + "/goods/getGoodsList", page)
+					break;
+				case "wait":
+					request = post(true, major + "/goods/getGoodsListByStatus", page)
+					break;
+				case "putaway":
+					page.putaway = true
+					request = post(true, major + "/goods/getGoodsListByPutAway", page)
+					break;
+				case "putOff":
+					page.putaway = false
+					request = post(true, major + "/goods/getGoodsListByPutAway", page)
+					break;
+				default:
+					break;
+			}
 			handleRequest(request, function(res) {
 				if (res.state == "success") {
 					example.goods = res.data.content
@@ -131,7 +172,6 @@
 				}
 			})
 		}
-
 	</script>
 
 
@@ -143,7 +183,7 @@
 			},
 			beforeMount() {},
 			mounted() {
-				initData()
+				initData("all")
 			},
 			methods: {
 				showDetail(item) {
@@ -153,24 +193,50 @@
 					}
 					var request = post(true, major + '/goods/merchantGetGoodsDetail', data)
 					handleRequest(request, function(res) {
-						storageSet('goodsDetail',res.data,'m',10)
+						storageSet('goodsDetail', res.data, 'm', 10)
 						layer.open({
 							type: 2,
-							area:['1200px','600px'],
+							area: ['1200px', '600px'],
 							content: '/jiwuzao-merchant/pages/goods/goodsDetail.html',
 						});
 					})
 				},
 				putaway(index) {
-					var request = post(true,major+"/goods/putaway",{
-						"gid":example.goods[index].gid
+					var request = post(true, major + "/goods/putaway", {
+						"gid": example.goods[index].gid
 					})
-					handleRequest(request,function(res){
-						if(res.state == "success"){
+					handleRequest(request, function(res) {
+						if (res.state == "success") {
 							layer.msg("上架成功")
-							updateData()
+							example.goods[index].putaway = true
 						}
 					})
+				},
+				putOff(index) {
+					var request = post(true, major + "/goods/putOff", {
+						"gid": example.goods[index].gid
+					})
+					handleRequest(request, function(res) {
+						if (res.state == "success") {
+							layer.msg("下架成功")
+							example.goods[index].putaway = false
+						}
+					})
+				},
+				showAll() {
+					initData("all")
+				},
+				showWait() {
+					initData("wait")
+
+				},
+				showPutAway() {
+					initData("putaway")
+
+				},
+				showPutOff() {
+					initData("putOff")
+
 				}
 			}
 		})
