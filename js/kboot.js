@@ -345,6 +345,8 @@ $.ajaxSetup({
 	timeout: 15000,
 	error: function(XMLHttpRequest, textStatus, errorThrown) {
 		var status = XMLHttpRequest.status
+		var text = XMLHttpRequest.responseText
+		var errObj = JSON.parse(text)
 		if (status == 401) {
 			storageRemove('userPrivateDto')
 			storageRemove('accessToken')
@@ -362,7 +364,8 @@ $.ajaxSetup({
 		} else if (status == 0) {
 			layer.msg("请求失败请重试")
 		} else {
-			layer.msg('请求异常:' + status)
+			console.log(errObj);
+			layer.msg('请求异常:' + errObj.data)
 		}
 	}
 })

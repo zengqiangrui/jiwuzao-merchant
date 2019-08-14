@@ -90,8 +90,8 @@
 				width: 100px;
 				height: 100px;
 			}
-			
-			.redStar{
+
+			.redStar {
 				color: red;
 				font-size: 1.5rem;
 			}
@@ -105,17 +105,16 @@
 		<script src="../../js/kboot.js" type="text/javascript" charset="utf-8"></script>
 		<script src="https://cdn.bootcss.com/vue/2.6.10/vue.min.js"></script>
 		<script src="https://unpkg.com/http-vue-loader"></script>
+
 	</head>
 
 	<body>
 		<div id="app">
 			<div id="step" style="width: 100%;"></div>
 			<div id="need-know" v-show="example.stepData.index==0">
-				<p>1.重复铺货式开店淘宝会对重复发链接的宝贝进行判定，如果说淘宝系统看到你店铺内的链接相同，或者是宝贝的标题主图全部相同的话，就会判定你为重复铺货。那么什么是重复铺货式开店呢？给我说几家店铺的实际经营人都是同一个人，而且出售的商品都相同的话，这就会判定为重复铺货式开店。2018年之后重复铺货和重复铺货式开店，都已经进入严查的范围，淘宝被下架的产品已经有很多，所以在重复铺货方面大家一定要注意。2.虚假交易虚假交易最为大家所熟知的方式就是刷单，据我们所知，淘宝出台的关于刷单的规则已经有200条左右。另外在淘宝检测越来越精准化的条件下，淘宝会根据不同的标签检测出更多的刷单行为，刷单一旦被检测到，警告是最小的处罚，严重的可能店铺都无法经营，所以想要吸引流量，还是走正常途径，避开虚假交易哦。3.偷换宝贝偷换宝贝属于违规行为中经常出现的情况，一些商品销量不高之后，店家偷偷把它换成另外的商品，但是销量和基础依然是该商品的，这种情况下，商家就避免了新品再重新提高销量的步骤。但是所经营的商品也是完全不同的两个商品。在2018年这种同款产品的现象也成为严厉打击的对象，大家如果要更换产品的或者是标题之类，可以1到2天的间隔时间来慢慢的进行更换，这样就可以避免被淘宝误判为偷换宝贝了。4.SKU淘宝会根据不同的商品给他匹配不同的SKU,但是有的店家会通过产品的质量不同而进行产品更换，一旦淘宝的系统发现商品
-					与SKU不匹配的时候，就会把你的产品判断为作弊，这个时候，也会影响你店铺的信誉。5.错放类目就是字面上的意思，可能你本身经营的是男装，却把自己的类目放置到了女装之中，这时候淘宝就会判定你是违规，这个只需要我们细心一点就可以避免。6.价格方面不符合比如说一个产品，你设置的价格非常低，并且还设置了免邮。举个例子，一件冬天的羽绒服，店铺设置的价格是五块钱，还免费给顾客邮寄到家。或者说你的邮费本身正常价格是十块钱左右，但是你却设置为一百元。这两种情况的价格不符合，都会导致淘宝直接给您的店铺降权，所以这种投机取巧的行为还是不要做。
-					1.重复铺货式开店淘宝会对重复发链接的宝贝进行判定，如果说淘宝系统看到你店铺内的链接相同，或者是宝贝的标题主图全部相同的话，就会判定你为重复铺货。那么什么是重复铺货式开店呢？给我说几家店铺的实际经营人都是同一个人，而且出售的商品都相同的话，这就会判定为重复铺货式开店。2018年之后重复铺货和重复铺货式开店，都已经进入严查的范围，淘宝被下架的产品已经有很多，所以在重复铺货方面大家一定要注意。2.虚假交易虚假交易最为大家所熟知的方式就是刷单，据我们所知，淘宝出台的关于刷单的规则已经有200条左右。另外在淘宝检测越来越精准化的条件下，淘宝会根据不同的标签检测出更多的刷单行为，刷单一旦被检测到，警告是最小的处罚，严重的可能店铺都无法经营，所以想要吸引流量，还是走正常途径，避开虚假交易哦。3.偷换宝贝偷换宝贝属于违规行为中经常出现的情况，一些商品销量不高之后，店家偷偷把它换成另外的商品，但是销量和基础依然是该商品的，这种情况下，商家就避免了新品再重新提高销量的步骤。但是所经营的商品也是完全不同的两个商品。在2018年这种同款产品的现象也成为严厉打击的对象，大家如果要更换产品的或者是标题之类，可以1到2天的间隔时间来慢慢的进行更换，这样就可以避免被淘宝误判为偷换宝贝了。4.SKU淘宝会根据不同的商品给他匹配不同的SKU,但是有的店家会通过产品的质量不同而进行产品更换，一旦淘宝的系统发现商品
-					与SKU不匹配的时候，就会把你的产品判断为作弊，这个时候，也会影响你店铺的信誉。5.错放类目就是字面上的意思，可能你本身经营的是男装，却把自己的类目放置到了女装之中，这时候淘宝就会判定你是违规，这个只需要我们细心一点就可以避免。6.价格方面不符合比如说一个产品，你设置的价格非常低，并且还设置了免邮。举个例子，一件冬天的羽绒服，店铺设置的价格是五块钱，还免费给顾客邮寄到家。或者说你的邮费本身正常价格是十块钱左右，但是你却设置为一百元。这两种情况的价格不符合，都会导致淘宝直接给您的店铺降权，所以这种投机取巧的行为还是不要做。
-				</p>
+				<div id="agreement">
+					<iframe src="../agreement/merchant-agreement.html" width="100%" height="1000" disabled></iframe>
+				</div>
 				<div style="display: flex;align-items: center;justify-content: center ; height: 50px;width: 100%;"><input id="needknow"
 					 style="zoom: 200%;" :checked="needKnow" type="checkbox" name="admit" value="admit" /><label for="needknow">我已仔细阅读并同意</label></div>
 			</div>
@@ -150,7 +149,7 @@
 							 placeholder="请输入银行卡号" autocomplete="off" class="layui-input">
 						</div>
 					</div>
-					
+
 					<div class="layui-form-item">
 						<label class="layui-form-label">开户名<span class="redStar">*</span></label>
 						<div class="layui-input-block">
@@ -158,7 +157,7 @@
 							 placeholder="请输入开户名" autocomplete="off" class="layui-input">
 						</div>
 					</div>
-					
+
 					<div class="layui-form-item">
 						<label class="layui-form-label">开户行<span class="redStar">*</span></label>
 						<div class="layui-input-block">
@@ -238,12 +237,18 @@
 			</div>
 		</div>
 	</body>
+	<script type="text/javascript">
+		$(function() {
+		console.log(111);
+			// $("#agreement").load('/jiwuzao-merchant/pages/agreement/merchant-agreement.html')
 
+		})
+	</script>
 	<script type="text/javascript">
 		var example = {
-			needKnow:false,
+			needKnow: false,
 			verifyMsg: "",
-			show:true,
+			show: true,
 			disabled: false,
 			merchant: null,
 			trueName: "",
@@ -439,8 +444,8 @@
 						}
 					})
 				},
-				
-				showSelect:function(){
+
+				showSelect: function() {
 					console.log(example.openingBank)
 				},
 

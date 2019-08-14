@@ -9,24 +9,220 @@
 		<script src="https://cdn.bootcss.com/vue/2.6.10/vue.min.js"></script>
 		<script src="../../js/environment.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../../js/kboot.js" type="text/javascript" charset="utf-8"></script>
+		<style type="text/css">
+			#app {
+				padding: 20px;
+			}
+
+			.font-center {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				font-size: 30px;
+				margin: 10px;
+			}
+
+			.font-sub-title {
+				font-size: 20px;
+				font-weight: 200;
+			}
+
+			.red-star {
+				/* font-size: 25px; */
+				color: red;
+			}
+		</style>
+
 	</head>
 	<body>
 		<div id="app">
-			
+			<div class="layui-inline font-center">
+				<p>请确认发货信息</p>
+			</div>
+			<div class="layui-form">
+				<div class="layui-card-header font-sub-title">发货人信息<span class="red-star">*</span>
+					<button type="button" style="margin-left: 900px;" class="layui-btn layui-btn-primary" @click="modifyAddress">修改地址</button>
+					<button type="button" class="layui-btn layui-btn-warm" @click="confirmDeliver">确认发货</button>
+				</div>
+				<div class="layui-form-item layui-card-body">
+					<label class="layui-form-label">发货地址<span class="red-star">*</span></label>
+					<div class="layui-input-block">
+						<input type="text" disabled v-model="senderAddress.addressDetail" name="title" placeholder="发货地址" autocomplete="off"
+						 class="layui-input">
+					</div>
+				</div>
+				<div class="layui-form-item layui-card-body">
+					<label class="layui-form-label">发货人<span class="red-star">*</span></label>
+					<div class="layui-input-inline">
+						<input type="text" disabled v-model="senderAddress.trueName" name="title" placeholder="发货人" autocomplete="off"
+						 class="layui-input">
+					</div>
+					<label class="layui-form-label">联系方式<span class="red-star">*</span></label>
+					<div class="layui-input-inline">
+						<input type="text" disabled v-model="senderAddress.phone" name="title" placeholder="联系方式" autocomplete="off"
+						 class="layui-input">
+					</div>
+					<label class="layui-form-label">快递公司<span class="red-star">*</span></label>
+					<div class="layui-input-inline">
+						<select name="city" id="express-select" lay-verify="">
+							<option value="">请选择</option>
+							<!-- <option v-for="(item,index) in example.expressCompanys">{{1}}</option> -->
+						</select>
+					</div>
+				</div>
+				<div class="layui-form-item layui-card-body">
+					<label class="layui-form-label">快递单号<span class="red-star">*</span></label>
+					<div class="layui-input-block">
+						<input type="text" name="title" id="expNo" placeholder="请输入" autocomplete="off" class="layui-input">
+					</div>
+				</div>
+
+
+				<div class="layui-card-header font-sub-title">商品基本信息</div>
+				<div class="layui-form-item layui-card-body">
+					<label class="layui-form-label">商品名</label>
+					<div class="layui-input-inline">
+						<input type="text" disabled name="title" v-model="order.goodsTitle" placeholder="商品名" autocomplete="off" class="layui-input">
+					</div>
+					<label class="layui-form-label">商品规格</label>
+					<div class="layui-input-inline">
+						<input type="text" disabled name="title" v-model="order.specString" placeholder="商品规格" autocomplete="off" class="layui-input">
+					</div>
+					<label class="layui-form-label">购买数量</label>
+					<div class="layui-input-inline">
+						<input type="text" disabled name="title" v-model="order.buyCount" placeholder="支付时间" autocomplete="off" class="layui-input">
+					</div>
+					<label class="layui-form-label">支付金额</label>
+					<div class="layui-input-inline">
+						<input type="text" disabled name="title" v-model="order.finalPay" placeholder="支付金额" autocomplete="off" class="layui-input">
+					</div>
+				</div>
+				<div class="layui-form-item layui-card-body">
+					<label class="layui-form-label">支付时间</label>
+					<div class="layui-input-inline">
+						<input type="text" disabled name="title" v-model="order.payTime" placeholder="支付时间" autocomplete="off" class="layui-input">
+					</div>
+				</div>
+				<div class="layui-card-header font-sub-title">收货人信息</div>
+				<div class="layui-form-item layui-card-body">
+					<label class="layui-form-label">收货人</label>
+					<div class="layui-input-inline">
+						<input type="text" disabled name="title" v-model="order.receiverTrueName" placeholder="收货人" autocomplete="off"
+						 class="layui-input">
+					</div>
+					<label class="layui-form-label">联系电话</label>
+					<div class="layui-input-inline">
+						<input type="text" disabled name="title" v-model="order.receiverPhone" placeholder="联系电话" autocomplete="off"
+						 class="layui-input">
+					</div>
+					<label class="layui-form-label">收货人城市</label>
+					<div class="layui-input-inline">
+						<input type="text" disabled name="title" v-model="order.receiverCity" placeholder="收货人城市" autocomplete="off"
+						 class="layui-input">
+					</div>
+				</div>
+				<div class="layui-form-item layui-card-body">
+					<label class="layui-form-label">详细地址</label>
+					<div class="layui-input-block">
+						<input type="text" name="title" v-model="order.receiverAddress" disabled placeholder="收货详细地址" autocomplete="off"
+						 class="layui-input">
+					</div>
+				</div>
+			</div>
+		</div>
 		</div>
 	</body>
 	<script type="text/javascript">
+		var example = {
+			order: {},
+			senderAddress: {},
+			expressCompanys: [],
+			expCode: ''
+		}
 		new Vue({
-			el:"#app",
-			data(){
-				return {}
+			el: "#app",
+			data() {
+				return example
 			},
-			methods:{
-				
+			methods: {
+				getCategory() {
+					var request = post(false, major + "/express/getExpressCategory", {})
+					handleRequest(request, function(res) {
+						example.expressCompanys = res.data
+						var list = res.data
+						var select = document.getElementById("express-select");
+
+						for (let i in list) {
+							select.add(new Option(list[i].name, list[i].code))
+						}
+						var form = layui.form
+						form.render()
+					})
+				},
+				modifyAddress() {
+					var that = this
+					layer.open({
+						type: 2,
+						area: ['1100px', '600px'],
+						content: '/jiwuzao-merchant/pages/order/address.html',
+						cancel: function(res) {
+							that.getAddress()
+						}
+					});
+				},
+				getAddress() {
+					var address = storageGet('senderAddress')
+					var detail = address.provinces + " " + address.addressDetail
+					address.addressDetail = detail
+					this.senderAddress = address
+				},
+				confirmDeliver() {
+					var expCode = $("#express-select").val()
+					var expNo = $("#expNo").val()
+					var orderNo = this.order.goodsOrderNo
+					var senderAddressId = this.senderAddress.id
+					if (!expCode || !expNo || !orderNo || !senderAddressId) {
+						layer.msg("必要信息不完整")
+						return false
+					}
+					var data = {
+						"expCode": expCode,
+						"orderNo": orderNo,
+						"expNo": expNo,
+						"addressId": senderAddressId
+					}
+					console.log('data.......',data)
+					var request = post(true, major + "/express/deliveryOne", data)
+					handleRequest(request, function(res) {
+						console.log(res);
+						if(res.state=='success'){
+							layer.msg('发货成功')
+							location.href='show.html'
+						}else{
+							layer.msg('发货失败，请检查')
+						}
+					})
+				}
 			},
-			mounted(){
-				console.log('deliver.....',storageGet('deliverOrder'))
+			beforeCreate() {
+
+
+			},
+			created() {
+
+
+			},
+			mounted() {
+				this.order = storageGet('deliverOrder')
+				this.getAddress()
+				this.getCategory()
 			}
 		})
+	</script>
+	<script type="text/javascript">
+		layui.use('form', function() {
+			var form = layui.form;
+			form.render()
+		});
 	</script>
 </html>

@@ -13,11 +13,42 @@
 			tbody tr {
 				cursor: pointer;
 			}
+
+			#app {
+				padding: 20px;
+			}
+			
+			html,body{
+				width: 100%;
+				height: 100%;
+			}
 		</style>
 	</head>
 
 	<body>
 		<div id="app">
+			<table class="layui-table">
+				<thead>
+					<tr>
+						<th>省市区</th>
+						<th>详细地址</th>
+						<th>联系姓名</th>
+						<th>联系电话</th>
+						<th>默认地址</th>
+						<th>操作</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr v-for="(item,index) in addressList" @click="choose(item)">
+						<td>{{item.provinces}}</td>
+						<td>{{item.addressDetail}}</td>
+						<td>{{item.trueName}}</td>
+						<td>{{item.phone}}</td>
+						<td>{{item.addressStatus}}</td>
+						<td><button class="layui-btn layui-btn-primary" type="button" @click.prevent.stop="del(item)">删除</button></td>
+					</tr>
+				</tbody>
+			</table>
 			<div class="layui-form">
 				<div class="layui-form-item" id="area-picker">
 					<div class="layui-form-label">省份</div>
@@ -63,28 +94,7 @@
 				</div>
 			</div>
 
-			<table class="layui-table">
-				<thead>
-					<tr>
-						<th>省市区</th>
-						<th>详细地址</th>
-						<th>联系姓名</th>
-						<th>联系电话</th>
-						<th>默认地址</th>
-						<th>操作</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr v-for="(item,index) in addressList" @click="choose(item)">
-						<td>{{item.provinces}}</td>
-						<td>{{item.addressDetail}}</td>
-						<td>{{item.trueName}}</td>
-						<td>{{item.phone}}</td>
-						<td>{{item.addressStatus}}</td>
-						<td><button class="layui-btn layui-btn-primary" type="button" @click.prevent.stop="del(item)">删除</button></td>
-					</tr>
-				</tbody>
-			</table>
+			
 		</div>
 
 		<script src="../../dist/layui.all.js" type="text/javascript" charset="utf-8"></script>
@@ -160,10 +170,18 @@
 						storageSet('senderAddress', item, 'd', 7)
 					},
 					del(item) {
-						console.log('del', item)
+						var that = this
 						var myAddress = storageGet('senderAddress')
-						console.log('mya', myAddress)
-						var reuquest = post(true,major+'/',)
+						var addressId = item.id
+						var request = post(true, major + '/address/deleteAddress', {
+							"addressId": addressId
+						})
+						handleRequest(request, function(res) {
+							console.log('res', res)
+							if (res.state == 'success') {
+								that.init()
+							}
+						})
 						if (myAddress.id == item.id) {
 							storageRemove('senderAddress')
 						}

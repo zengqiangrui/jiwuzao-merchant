@@ -97,17 +97,21 @@
 			var page = example.page
 			switch (value) {
 				case "all":
+					page.currentPage = 0
 					request = post(true, major + "/goods/getGoodsList", page)
 					break;
 				case "wait":
+					page.currentPage = 0
 					request = post(true, major + "/goods/getGoodsListByStatus", page)
 					break;
 				case "putaway":
 					page.putaway = true
+					page.currentPage = 0
 					request = post(true, major + "/goods/getGoodsListByPutAway", page)
 					break;
 				case "putOff":
 					page.putaway = false
+					page.currentPage=0
 					request = post(true, major + "/goods/getGoodsListByPutAway", page)
 					break;
 				default:
@@ -202,6 +206,7 @@
 					})
 				},
 				putaway(index) {
+					var that =this
 					var request = post(true, major + "/goods/putaway", {
 						"gid": example.goods[index].gid
 					})
@@ -209,6 +214,7 @@
 						if (res.state == "success") {
 							layer.msg("上架成功")
 							example.goods[index].putaway = true
+							
 						}
 					})
 				},

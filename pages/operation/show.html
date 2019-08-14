@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>展示资金信息</title>
+		<link rel="stylesheet" type="text/css" href="../../dist/css/layui.css" />
+		<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.js"></script>
+		<script src="https://cdn.bootcss.com/vue/2.6.10/vue.min.js"></script>
+		<script src="../../dist/layui.all.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/environment.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/kboot.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/util/date.js" type="text/javascript" charset="utf-8"></script>
+		<style type="text/css">
+			#app {
+				box-sizing: border-box;
+			}
+
+			.money-contain {
+				margin: 10px;
+				border: 2px dashed black;
+				padding: 10px;
+				width: 97%;
+			}
+
+			.head-container {
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="app">
+			<div class="money-contain">
+				<div class="layui-card">
+					<div class="layui-card-header head-container">
+						<p>当前可提现金额:<span style="color: red;">{{withdrawAbleCash}}</span>元</p>
+						<button class="layui-btn layui-btn-primary" @click="withdraw">提现</button>
+					</div>
+				</div>
+				<div class="layui-card">
+					<div class="layui-card-header head-container">
+						<p>店铺累计收益:<span style="color: red;">{{allEarning}}</span>元</p>
+						<button class="layui-btn layui-btn-primary" @click="showWithdrawHistory">查看提现记录</button>
+					</div>
+					<div class="layui-card-body">
+						<table class="layui-table" lay-skin="row">
+							<thead class="thead">
+								<tr>
+									<th>提现单号</th>
+									<th>提现金额</th>
+									<th>开户行</th>
+									<th>银行卡号</th>
+									<th>开户名</th>
+									<th>备注</th>
+									<th>状态</th>
+									<th>提现时间</th>
+									<th>处理时间</th>
+									<th>确认时间</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr v-for="(item,index) in list">
+									<td>{{item.withdrawOrderNo}}</td>
+									<td style="color: red;">{{item.remitMoney}}元</td>
+									<td>{{item.openingBank}}</td>
+									<td>{{item.bankNo}}</td>
+									<td>{{item.bankTrueName}}</td>
+									<td>{{item.remark}}</td>
+									<td>{{getWithdrawStatus(item.withdrawStatus)}}</td>
+									<td>{{getFormatTime(item.createTime)}}</td>
+									<td>{{getFormatTime(item.processingTime)}}</td>
+									<td>{{getFormatTime(item.finishTime)}}</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript">
+		var example = {
+			withdrawAbleCash: 0,
+			allEarning: 0,
+			storeId: '',
+			show_num: [],
+			list: []
+		}
+		var vm = new Vue({
+			el: "#app",
+			data() {
+				return example
+			},
+			mounted() {
+				var that = this
+				var request = post(true, major + "/withdraw/getWithdrawAble", {})
+				handleRequest(request, function(res) {
+					if (res.state == 'success') {
+						console.log(',,..,.', res);
+						example.storeId = res.data.storeId
+						example.withdrawAbleCash = res.data.withdrawAbleCash
+						that.getAllEarning(res.data.storeId)
+					} else {
+						layer.msg('请求失败')
+					}
+				})
+			},
+			methods: {
+				getFormatTime(timestamp) {
+					if (!timestamp)
+						return ""
+					return new Date(timestamp).format("yyyy年MM月dd日 hh时mm分")
+				},
+				getWithdrawStatus(withdrawStatus) {
+					var res = ""
+					switch (withdrawStatus) {
+						case "wait":
+							res = "等待处理"
+							break;
+						case "processing":
+							res = "处理中"
+							break;
+						case "success":
+							res = "成功"
+							break;
+						case "failure":
+							res = "失败"
+							break;
+						default:
+							break;
+					}
+					return res
+				},
+				getAllEarning(storeId) {
+					var request = post(false, major + "/withdraw/getAllEarning", {
+						"storeId": storeId
+					})
+					handleRequest(request, function(res) {
+						console.log(res);
+						if (res.state == 'success')
+							example.allEarning = res.data.allEarning
+					})
+				},
+				withdraw() {
+					console.log('storeId', this.storeId);
+					if (!this.storeId) {
+						layer.msg("店铺不存在!")
+					}
+					layer.open({
+						content: '<div class="layui-form">' +
+							'<div class="layui-form-item">' +
+							'<label class="layui-form-label">提现金额(元)</label><div class="layui-input-inline"><input maxlength="10" type="text" id="withdraw-input" class="layui-input"/></div>' +
+							'</div>' +
+							'<div class="layui-form-item">' +
+							'<label class="layui-form-label">账户密码</label><div class="layui-input-inline"><input maxlength="32" type="password" id="withdraw-password" class="layui-input"/></div>' +
+							'</div>' +
+							'<div class="layui-form-item">' +
+							'<label class="layui-form-label">用户备注</label><div class="layui-input-inline"><input maxlength="100" type="text" id="withdraw-remark" class="layui-input"/></div>' +
+							'</div>' +
+							'<div class="layui-form-item">' +
+							'<label class="layui-form-label"></label><div><canvas id="canvas" onclick="changeVerify()" width="120" height="50"></canvas></div>' +
+							'</div>' +
+							'<div class="layui-form-item">' +
+							'<label class="layui-form-label">验证码:</label><div class="layui-input-inline"><input maxlength="100" type="text" id="verify-code" class="layui-input"/></div>' +
+							'</div>' +
+							'</div>',
+						area: ['400px', '500px'],
+						title: '提现申请',
+						btn: ['确定', '取消'],
+						success: function(layero, index) {
+							draw(example.show_num);
+						},
+						yes: function(index, layero) {
+							var verifyCode = $("#verify-code").val()
+							var value = $("#withdraw-input").val()
+							var pwd = $("#withdraw-password").val()
+							var remark = $("#withdraw-remark").val()
+							if (verifyCode.toLowerCase() !== example.show_num.join("").toLowerCase()) {
+								alert('验证码错误')
+								return false
+							}
+							console.log('...shownum', );
+							if (!pwd) {
+								layer.msg('密码错误')
+								return false
+							}
+							if (!/^(([1-9]\d*)|\d)(\.\d{1,2})?$/.test(value)) {
+								layer.msg('金额输入错误')
+								return false
+							} else if (value < 1000) {
+								layer.msg('提现金额需要大于1000')
+								return false
+							} else if (value > example.withdrawAbleCash) {
+								layer.msg('提现金额超过上限')
+								return false
+							} else {
+								var request = post(true, major + "/withdraw/apply", {
+									"storeId": example.storeId,
+									"remitMoney": value,
+									"pwd": pwd,
+									"remark": remark
+								})
+								handleRequest(request, function(res) {
+									console.log('res...........', res);
+									if (res.state == 'success') {
+										layer.closeAll()
+										location.href = 'show.html'
+									}
+								})
+							}
+
+						},
+						btn2: function(index, layero) {},
+						cancel: function() {}
+					});
+					console.log('cash', this.withdrawAbleCash);
+				},
+				showWithdrawHistory() {
+					var request = post(true, major + '/withdraw/showHistory', {
+						"storeId": example.storeId
+					})
+					handleRequest(request, function(res) {
+						if (res.state == 'success') {
+							example.list = res.data
+						}
+					})
+
+				}
+			}
+		})
+	</script>
+	<script type="text/javascript">
+		function changeVerify() {
+			draw(example.show_num);
+		}
+
+		function draw(show_num) {
+			var canvas_width = $('#canvas').width();
+			var canvas_height = $('#canvas').height();
+			var canvas = document.getElementById("canvas"); //获取到canvas的对象，演员
+			var context = canvas.getContext("2d"); //获取到canvas画图的环境，演员表演的舞台
+			canvas.width = canvas_width;
+			canvas.height = canvas_height;
+			var sCode = "A,B,C,E,F,G,H,J,K,L,M,N,P,Q,R,S,T,W,X,Y,Z,1,2,3,4,5,6,7,8,9,0";
+			var aCode = sCode.split(",");
+			var aLength = aCode.length; //获取到数组的长度
+
+			for (var i = 0; i <= 3; i++) {
+				var j = Math.floor(Math.random() * aLength); //获取到随机的索引值
+				var deg = Math.random() * 30 * Math.PI / 180; //产生0~30之间的随机弧度
+				var txt = aCode[j]; //得到随机的一个内容
+				show_num[i] = txt.toLowerCase();
+				var x = 10 + i * 20; //文字在canvas上的x坐标
+				var y = 20 + Math.random() * 8; //文字在canvas上的y坐标
+				context.font = "bold 23px 微软雅黑";
+
+				context.translate(x, y);
+				context.rotate(deg);
+
+				context.fillStyle = randomColor();
+				context.fillText(txt, 0, 0);
+
+				context.rotate(-deg);
+				context.translate(-x, -y);
+			}
+			for (var i = 0; i <= 5; i++) { //验证码上显示线条
+				context.strokeStyle = randomColor();
+				context.beginPath();
+				context.moveTo(Math.random() * canvas_width, Math.random() * canvas_height);
+				context.lineTo(Math.random() * canvas_width, Math.random() * canvas_height);
+				context.stroke();
+			}
+			for (var i = 0; i <= 30; i++) { //验证码上显示小点
+				context.strokeStyle = randomColor();
+				context.beginPath();
+				var x = Math.random() * canvas_width;
+				var y = Math.random() * canvas_height;
+				context.moveTo(x, y);
+				context.lineTo(x + 1, y + 1);
+				context.stroke();
+			}
+		}
+
+		function randomColor() { //得到随机的颜色值
+			var r = Math.floor(Math.random() * 256);
+			var g = Math.floor(Math.random() * 256);
+			var b = Math.floor(Math.random() * 256);
+			return "rgb(" + r + "," + g + "," + b + ")";
+		}
+	</script>
+</html>
