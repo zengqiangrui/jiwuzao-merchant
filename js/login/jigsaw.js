@@ -824,7 +824,6 @@ function success() {
 		handleRequest(req, function(res) {
 			storageSet('userOpen', res.data, 'd', 7)
 			location.href = "index.html";
-
 		})
 	})
 };

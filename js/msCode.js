@@ -536,12 +536,12 @@
 })();
 
 function sendSmsCode(phone) {
-	var key = sha256(phone+"sendSms-kboot")
+	var key = sha256(phone + "sendSms-kboot")
 	var smsRequest = post(true, major + "/userBasic/sendSms", {
 		"phone": phone,
 		"sha256": key
 	})
-	handleRequest(smsRequest,function(res){
+	handleRequest(smsRequest, function(res) {
 		console.log(res)
 	})
 }

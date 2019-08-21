@@ -221,10 +221,14 @@
 			}
 			
 			.red-dot{
-				width: 18px;
-				height: 18px;
+				width: 28px;
+				height: 28px;
 				border-radius: 50%;
 				background: red;
+				line-height: 28px;
+				text-align: center;
+				color: white;
+				font-size: 14px;
 			}
 			
 			.person-item-avatar{

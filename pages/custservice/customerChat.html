@@ -4,52 +4,59 @@
 		<meta charset="utf-8">
 		<title>客服聊天</title>
 		<link rel="stylesheet" type="text/css" href="../../dist/css/layui.css" />
-		<link rel="stylesheet" type="text/css" href="../../css/cust/custChat.css"/>
+		<link rel="stylesheet" type="text/css" href="../../css/cust/custChat.css" />
 		<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.js"></script>
 		<script src="https://cdn.bootcss.com/vue/2.6.10/vue.min.js"></script>
-		<script src="../../dist/layui.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../dist/layui.all.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../../js/environment.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../../js/kboot.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/jiwuzao-merchant/js/util/date.js" type="text/javascript" charset="utf-8"></script>
+		<style type="text/css">
+			.font-div {
+				display: flex;
+				flex-direction: column;
+
+			}
+		</style>
 	</head>
+
 	<body>
 		<div id="app">
 			<!--标题，与某人聊天-->
 			<div id="header">
-				<p>与曾经拥有聊天中...</p>
+				<p>与{{other.nickname}}聊天中...</p>
 				<div class="window-handle">
 					<!-- <img style="height: 80%;" src="../../img/icons/close.png" > -->
 				</div>
 			</div>
 			<div class="chat-main">
 				<div class="chat-area">
-					<div class="show-msg">
-						<!--对方发送信息，放左侧-->
-						<div class="msg-item-left">
-							<!-- 头像 -->
-							<img src="../../img/icons/avatar-boy.png" width="60px" height="60px" class="avatar-left">
-
-							<div class="msg-item-left-body">
-								<!-- 昵称 -->
-								<p>曾经拥有 2019-8-1 11:11:21</p>
-								<div id="left-triangle"></div>
-								<div class="msg-item-left-show">
-									哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈
-									哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈
-									哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈
-									哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈
+					<div class="show-msg" id="show-msg">
+						<div v-for="(item,index) in msgList">
+							<!--对方发送信息，放左侧-->
+							<div class="msg-item-left" v-if="item.uid != uid">
+								<!-- 头像 -->
+								<img :src="other.avatar" onerror="this.src = '../../img/icons/avatar-boy.png'" width="60px" height="60px" class="avatar-left">
+								<div class="msg-item-left-body">
+									<!-- 昵称 -->
+									<p>{{other.nickname}}{{formatTime(item.createTime)}}</p>
+									<div id="left-triangle"></div>
+									<div class="msg-item-left-show">
+										{{item.content}}
+									</div>
 								</div>
 							</div>
-						</div>
-						<!--己方发送信息放右侧-->
-						<div class="msg-item-right">
-							<!-- 头像 -->
-							<img src="../../img/icons/avatar-girl.png" width="60px" height="60px" class="avatar-right">
-							<div class="msg-item-right-body">
-								<!-- 昵称 -->
-								<p style="text-align: right;">曾经拥有 2019-8-1 11:11:21</p>
-								<div id="right-triangle"></div>
-								<div class="msg-item-right-show">
-									哈
+							<!--己方发送信息放右侧-->
+							<div class="msg-item-right" v-if="item.uid == uid">
+								<!-- 头像 -->
+								<img onerror="this.src = '../../img/icons/avatar-girl.png'" :src="mine.avatar" width="60px" height="60px" class="avatar-right">
+								<div class="msg-item-right-body">
+									<!-- 昵称 -->
+									<p style="text-align: right;">{{mine.nickname}}{{formatTime(item.createTime)}}</p>
+									<div id="right-triangle"></div>
+									<div class="msg-item-right-show">
+										{{item.content}}
+									</div>
 								</div>
 							</div>
 						</div>
@@ -61,76 +68,44 @@
 					</div>
 					<div class="input-msg">
 						<!--输入文本域-->
-						<textarea class="input-area" autofocus>
-						</textarea>
+						<textarea class="input-area" id="input-area"></textarea>
 						<!--发送-->
 						<div class="input-send">
 							<button type="button" id="btn-close">关闭</button>
-							<button type="button" id="btn-send">发送</button>
+							<button type="button" id="btn-send" @click="sendMsg">发送</button>
 						</div>
 					</div>
 				</div>
 				<!--右侧区域暂定为联系人-->
 				<div class="chat-person">
 					<div class="person-head">
-						我的客户10/20
+						我的客户{{onlineNum}}/{{allGroup.length}}
 					</div>
 					<div class="person-main">
 						<div class="person-item">
 							<div class="person-item-main">
 								<img class="person-item-avatar" src="../../img/icons/avatar-girl.png" />
-								<p class="person-item-name">曾经拥有</p>
+								<div class="font-div">
+									<p class="person-item-name">极物造官方</p>
+									<p class="person-item-name" style="font-size: 10px;font-weight: 200;">在线</p>
+								</div>
 							</div>
 							<div class="person-item-handle">
-								<div class="red-dot"></div>
+								<div class="red-dot">8</div>
 							</div>
 						</div>
-						<div class="person-item">
+						<div class="person-item" v-for="(item,index) in allGroup" @click="toChat(item)">
 							<div class="person-item-main">
-								<img class="person-item-avatar" src="../../img/icons/avatar-girl.png" />
-								<p class="person-item-name">曾经拥有afdsafdsafsafsafasfas</p>
+								<img class="person-item-avatar" onerror="this.src='/jiwuzao-merchant/img/icons/avatar-boy.png'" :src="item.avatar?item.avatar:'/jiwuzao-merchant/img/icons/avatar-boy.png'" />
+								<div class="font-div">
+									<p class="person-item-name">{{item.nickName}}</p>
+									<p class="person-item-name" style="font-size: 10px;font-weight: 200;">{{getOnlineStatus(item.onlineStatus)}}</p>
+								</div>
 							</div>
 							<div class="person-item-handle">
-								<div class="red-dot"></div>
+								<div v-show="item.undoNum>0" class="red-dot">{{item.undoNum}}</div>
 							</div>
 						</div>
-						<div class="person-item">
-							<div class="person-item-main">
-								<img class="person-item-avatar" src="../../img/icons/avatar-girl.png" />
-								<p class="person-item-name">曾经拥有</p>
-							</div>
-							<div class="person-item-handle">
-								<div class="red-dot"></div>
-							</div>
-						</div>
-						<div class="person-item">
-							<div class="person-item-main">
-								<img class="person-item-avatar" src="../../img/icons/avatar-girl.png" />
-								<p class="person-item-name">曾经拥有</p>
-							</div>
-							<div class="person-item-handle">
-								<div class="red-dot"></div>
-							</div>
-						</div>
-						<div class="person-item">
-							<div class="person-item-main">
-								<img class="person-item-avatar" src="../../img/icons/avatar-girl.png" />
-								<p class="person-item-name">曾经拥有</p>
-							</div>
-							<div class="person-item-handle">
-								<div class="red-dot"></div>
-							</div>
-						</div>
-						<div class="person-item">
-							<div class="person-item-main">
-								<img class="person-item-avatar" src="../../img/icons/avatar-girl.png" />
-								<p class="person-item-name">曾经拥有</p>
-							</div>
-							<div class="person-item-handle">
-								<div class="red-dot"></div>
-							</div>
-						</div>
-						
 					</div>
 				</div>
 			</div>
@@ -142,14 +117,152 @@
 			el: "#app",
 			data() {
 				return {
-
+					webSocket: null,
+					allGroup: [],
+					msgList: [],
+					uid: "",
+					otherName: "",
+					groupId: "",
+					other: {
+						nickname: "",
+						avatar: "",
+					},
+					mine: {
+						nickname: "",
+						avatar: "",
+					},
+					onlineNum: 0,
 				}
 			},
 			beforeCreate() {
-				
+
 			},
 			mounted() {
-				console.log(1111)
+				var mine = storageGet('userOpen')
+				this.mine.nickname = mine.nickName
+				this.mine.avatar = mine.portrait
+				this.uid = storageGet('accessToken').split(',')[0]
+				this.getAllGroup()
+			},
+			methods: {
+				getOnlineStatus(online) {
+					var res = ""
+					switch (online) {
+						case "ON_LINE":
+							res = "在线"
+							break;
+						default:
+							res = "离线"
+							break;
+					}
+					return res
+				},
+				getAllGroup() {
+					var that = this
+					var request = post(true, major + "/chatControl/getAllGroup", {})
+					handleRequest(request, function(res) {
+						that.allGroup = res.data
+						var list = res.data
+						var num = 0
+						for (let i = 0; i < list.length; i++) {
+							if (list[i].onlineStatus == 'ON_LINE')
+								num++;
+						}
+						that.onlineNum = num
+					})
+				},
+
+				toChat(item) {
+					this.other.avatar = item.avatar
+					this.other.nickname = item.nickName
+					this.groupId = item.groupId
+					var that = this
+					var uid = this.uid
+					var request = post(true, major + "/chatControl/init", {
+						"uid": item.uid
+					})
+					handleRequest(request, function(res) {
+						if (res.state == 'success') {
+							if (that.webSocket) that.webSocket.close()
+							that.webSocket = new WebSocket(ws + '/chat/' + uid + '/' + item.groupId)
+							that.getGroupMessage(item.groupId)
+							that.webSocket.onmessage = function(res) {
+								var msgItem = JSON.parse(res.data)
+								that.msgList.push(msgItem)
+								that.scrollBottom()
+							}
+							var req = post(false, major + "/chatControl/handleMessage", {
+								groupId: item.groupId
+							})
+							handleRequest(req, function(res) {
+								if (res.state == 'success') {
+									var list = that.allGroup
+									for (let i = 0; i < list.length; i++) {
+										if (list[i].groupId == item.groupId) {
+											list[i].undoNum = 0
+										}
+									}
+								}
+							})
+						}
+					})
+				},
+
+				getGroupMessage(groupId) {
+					var that = this
+					var request = post(true, major + "/chatControl/getGroupMessage", {
+						"groupId": groupId
+					})
+					handleRequest(request, function(res) {
+						if (res.state == 'success') {
+							that.msgList = res.data
+							that.scrollBottom()
+						}
+					})
+				},
+				sendMsg() {
+					if (!this.uid || !this.groupId) {
+						layer.msg("暂无聊天对象")
+						return false
+					}
+					var sendMsg = $("#input-area").val()
+					console.log('msg.', sendMsg);
+					if (!sendMsg.trim())
+						return false
+					var data = {
+						content: sendMsg,
+						"createTime": new Date().valueOf(),
+						groupId: this.groupId,
+						messageType: "TEXT",
+						status: 0,
+						uid: parseInt(this.uid),
+					}
+					var msgItem = JSON.stringify(data)
+					this.webSocket.send(msgItem)
+					$("#input-area").val("")
+					this.msgList.push(data)
+					this.scrollBottom()
+				},
+
+				scrollBottom() {
+					setTimeout(function() {
+						var ele = document.getElementById("show-msg")
+						var left = document.getElementsByClassName("msg-item-left")
+						var right = document.getElementsByClassName("msg-item-right")
+						var height = 0
+						for (let i = 0; i < left.length; i++) {
+							height += left[i].scrollHeight;
+						}
+						for (let j = 0; j < right.length; j++) {
+							height += right[j].scrollHeight
+						}
+						ele.scrollTop = height;
+
+					}, 100)
+				},
+				formatTime(time) {
+					return new Date(time).format('yyyy-MM-dd hh:mm:ss')
+				}
 			}
 		})
 	</script>

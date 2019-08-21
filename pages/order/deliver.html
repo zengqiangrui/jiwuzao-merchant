@@ -9,6 +9,7 @@
 		<script src="https://cdn.bootcss.com/vue/2.6.10/vue.min.js"></script>
 		<script src="../../js/environment.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../../js/kboot.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/util/verifyCode.js" type="text/javascript" charset="utf-8"></script>
 		<style type="text/css">
 			#app {
 				padding: 20px;
@@ -47,20 +48,17 @@
 				<div class="layui-form-item layui-card-body">
 					<label class="layui-form-label">发货地址<span class="red-star">*</span></label>
 					<div class="layui-input-block">
-						<input type="text" disabled v-model="senderAddress.addressDetail" name="title" placeholder="发货地址" autocomplete="off"
-						 class="layui-input">
+						<input type="text" disabled v-model="senderAddress.addressDetail" placeholder="发货地址" autocomplete="off" class="layui-input">
 					</div>
 				</div>
 				<div class="layui-form-item layui-card-body">
 					<label class="layui-form-label">发货人<span class="red-star">*</span></label>
 					<div class="layui-input-inline">
-						<input type="text" disabled v-model="senderAddress.trueName" name="title" placeholder="发货人" autocomplete="off"
-						 class="layui-input">
+						<input type="text" disabled v-model="senderAddress.trueName" placeholder="发货人" autocomplete="off" class="layui-input">
 					</div>
 					<label class="layui-form-label">联系方式<span class="red-star">*</span></label>
 					<div class="layui-input-inline">
-						<input type="text" disabled v-model="senderAddress.phone" name="title" placeholder="联系方式" autocomplete="off"
-						 class="layui-input">
+						<input type="text" disabled v-model="senderAddress.phone" placeholder="联系方式" autocomplete="off" class="layui-input">
 					</div>
 					<label class="layui-form-label">快递公司<span class="red-star">*</span></label>
 					<div class="layui-input-inline">
@@ -73,7 +71,7 @@
 				<div class="layui-form-item layui-card-body">
 					<label class="layui-form-label">快递单号<span class="red-star">*</span></label>
 					<div class="layui-input-block">
-						<input type="text" name="title" id="expNo" placeholder="请输入" autocomplete="off" class="layui-input">
+						<input type="text" id="expNo" placeholder="请输入" autocomplete="off" class="layui-input">
 					</div>
 				</div>
 
@@ -82,62 +80,76 @@
 				<div class="layui-form-item layui-card-body">
 					<label class="layui-form-label">商品名</label>
 					<div class="layui-input-inline">
-						<input type="text" disabled name="title" v-model="order.goodsTitle" placeholder="商品名" autocomplete="off" class="layui-input">
+						<input type="text" disabled v-model="order.goodsTitle" placeholder="商品名" autocomplete="off" class="layui-input">
 					</div>
 					<label class="layui-form-label">商品规格</label>
 					<div class="layui-input-inline">
-						<input type="text" disabled name="title" v-model="order.specString" placeholder="商品规格" autocomplete="off" class="layui-input">
+						<input type="text" disabled v-model="order.specString" placeholder="商品规格" autocomplete="off" class="layui-input">
 					</div>
 					<label class="layui-form-label">购买数量</label>
 					<div class="layui-input-inline">
-						<input type="text" disabled name="title" v-model="order.buyCount" placeholder="支付时间" autocomplete="off" class="layui-input">
+						<input type="text" disabled v-model="order.buyCount" placeholder="支付时间" autocomplete="off" class="layui-input">
 					</div>
 					<label class="layui-form-label">支付金额</label>
 					<div class="layui-input-inline">
-						<input type="text" disabled name="title" v-model="order.finalPay" placeholder="支付金额" autocomplete="off" class="layui-input">
+						<input type="text" disabled v-model="order.finalPay" placeholder="支付金额" autocomplete="off" class="layui-input">
 					</div>
 				</div>
 				<div class="layui-form-item layui-card-body">
 					<label class="layui-form-label">支付时间</label>
 					<div class="layui-input-inline">
-						<input type="text" disabled name="title" v-model="order.payTime" placeholder="支付时间" autocomplete="off" class="layui-input">
+						<input type="text" disabled v-model="order.payTime" placeholder="支付时间" autocomplete="off" class="layui-input">
+					</div>
+					<label class="layui-form-label">发票类型</label>
+					<div class="layui-input-inline">
+						<input type="text" disabled v-model="receipt.type" placeholder="发票类型" autocomplete="off" class="layui-input">
+					</div>
+					<label class="layui-form-label">客户名称</label>
+					<div class="layui-input-inline">
+						<input type="text" disabled v-model="receipt.name" placeholder="客户名称" autocomplete="off" class="layui-input">
+					</div>
+					<label class="layui-form-label">纳税人号</label>
+					<div class="layui-input-inline">
+						<input type="text" disabled v-model="receipt.taxId" placeholder="纳税人号" autocomplete="off" class="layui-input">
 					</div>
 				</div>
 				<div class="layui-card-header font-sub-title">收货人信息</div>
 				<div class="layui-form-item layui-card-body">
 					<label class="layui-form-label">收货人</label>
 					<div class="layui-input-inline">
-						<input type="text" disabled name="title" v-model="order.receiverTrueName" placeholder="收货人" autocomplete="off"
-						 class="layui-input">
+						<input type="text" disabled v-model="order.receiverTrueName" placeholder="收货人" autocomplete="off" class="layui-input">
 					</div>
 					<label class="layui-form-label">联系电话</label>
 					<div class="layui-input-inline">
-						<input type="text" disabled name="title" v-model="order.receiverPhone" placeholder="联系电话" autocomplete="off"
-						 class="layui-input">
+						<input type="text" disabled v-model="order.receiverPhone" placeholder="联系电话" autocomplete="off" class="layui-input">
 					</div>
 					<label class="layui-form-label">收货人城市</label>
 					<div class="layui-input-inline">
-						<input type="text" disabled name="title" v-model="order.receiverCity" placeholder="收货人城市" autocomplete="off"
-						 class="layui-input">
+						<input type="text" disabled v-model="order.receiverCity" placeholder="收货人城市" autocomplete="off" class="layui-input">
 					</div>
 				</div>
 				<div class="layui-form-item layui-card-body">
 					<label class="layui-form-label">详细地址</label>
 					<div class="layui-input-block">
-						<input type="text" name="title" v-model="order.receiverAddress" disabled placeholder="收货详细地址" autocomplete="off"
-						 class="layui-input">
+						<input type="text" v-model="order.receiverAddress" disabled placeholder="收货详细地址" autocomplete="off" class="layui-input">
+					</div>
+				</div>
+				<div class="layui-form-item layui-card-body">
+					<div class="layui-input-block">
+						<button type="button" class="layui-btn layui-btn-danger" @click="cancelDeliver">取消发货</button>
 					</div>
 				</div>
 			</div>
-		</div>
 		</div>
 	</body>
 	<script type="text/javascript">
 		var example = {
 			order: {},
+			receipt: {},
 			senderAddress: {},
 			expressCompanys: [],
-			expCode: ''
+			expCode: '',
+			show_num: [],
 		}
 		new Vue({
 			el: "#app",
@@ -151,7 +163,6 @@
 						example.expressCompanys = res.data
 						var list = res.data
 						var select = document.getElementById("express-select");
-
 						for (let i in list) {
 							select.add(new Option(list[i].name, list[i].code))
 						}
@@ -176,6 +187,18 @@
 					address.addressDetail = detail
 					this.senderAddress = address
 				},
+				getReceipt() {
+					var that = this
+					var request = post(false, major + "/order/getOrderReceipt", {
+						'goodsOrderNo': that.order.goodsOrderNo
+					})
+					handleRequest(request, function(res) {
+						if (res.state == 'success') {
+							console.log(',,,,', res);
+							that.receipt = res.data
+						}
+					})
+				},
 				confirmDeliver() {
 					var expCode = $("#express-select").val()
 					var expNo = $("#expNo").val()
@@ -191,21 +214,74 @@
 						"expNo": expNo,
 						"addressId": senderAddressId
 					}
-					console.log('data.......',data)
+					console.log('data.......', data)
 					var request = post(true, major + "/express/deliveryOne", data)
 					handleRequest(request, function(res) {
 						console.log(res);
-						if(res.state=='success'){
+						if (res.state == 'success') {
 							layer.msg('发货成功')
-							location.href='show.html'
-						}else{
+							location.href = 'show.html'
+						} else {
 							layer.msg('发货失败，请检查')
 						}
 					})
+				},
+				cancelDeliver() {
+					console.log(this.order);
+					layer.open({
+						content: '<div class="layui-form">' +
+							'<div class="layui-form-item">' +
+							'<label class="layui-form-label">取消原因<span class="red-star">*</span></label><div class="layui-input-inline"><textarea maxlength="200" placeholder="200字以内" style="height:150px;padding:10px" type="text" id="cancel-reason" class="layui-input"></textarea></div>' +
+							'</div>' +
+							'<div class="layui-form-item">' +
+							'<label class="layui-form-label">账户密码</label><div class="layui-input-inline"><input maxlength="32" type="password" id="password" class="layui-input"/></div>' +
+							'</div>' +
+							'<div class="layui-form-item">' +
+							'<label class="layui-form-label"></label><div><canvas id="canvas" onclick="changeVerify()" width="120" height="50"></canvas></div>' +
+							'</div>' +
+							'<div class="layui-form-item">' +
+							'<label class="layui-form-label">验证码:</label><div class="layui-input-inline"><input maxlength="100" type="text" id="verify-code" class="layui-input"/></div>' +
+							'</div>' +
+							'</div>',
+						area: ['400px', '500px'],
+						title: '取消发货',
+						btn: ['确定', '取消'],
+						success: function(layero, index) {
+							draw(example.show_num);
+						},
+						yes: function(index, layero) {
+							var verifyCode = $("#verify-code").val()
+							var pwd = $("#password").val()
+							var reason = $("#cancel-reason").val()
+							if (verifyCode.toLowerCase() !== example.show_num.join("").toLowerCase()) {
+								alert('验证码错误')
+								draw(example.show_num)
+								return false
+							}
+							if (!pwd) {
+								alert('请输入密码')
+								return false
+							}
+							var request = post(true,major+"/express/cancelDeliver",{
+								"goodsOrderNo":example.order.goodsOrderNo,
+								"pwd":pwd,
+								"cancelReason":reason
+							})
+							handleRequest(request,function(res){
+								console.log('..........',res);
+								if(res.state == 'success'){
+									location.href="show.html"
+								}
+							})
+							return false
+							
+						},
+						btn2: function(index, layero) {},
+						cancel: function() {}
+					});
 				}
 			},
 			beforeCreate() {
-
 
 			},
 			created() {
@@ -216,10 +292,15 @@
 				this.order = storageGet('deliverOrder')
 				this.getAddress()
 				this.getCategory()
+				this.getReceipt()
 			}
 		})
 	</script>
 	<script type="text/javascript">
+		function changeVerify() {
+			draw(example.show_num);
+		}
+		
 		layui.use('form', function() {
 			var form = layui.form;
 			form.render()
