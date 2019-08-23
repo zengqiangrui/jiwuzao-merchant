@@ -1,6 +1,6 @@
 var environment = 'local'
 var ap = '/jiwuzao-merchant'
-var major = 'http://106.52.109.239:10010'
+var major = 'http://api.jiwuzao.com'
 var manager = 'http://106.52.109.239:10020'
 var socket = 'http://106.52.109.239:10030'
 var cdnUploadUrl = 'http://upload-z2.qiniu.com/'

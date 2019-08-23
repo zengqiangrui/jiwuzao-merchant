@@ -13,7 +13,12 @@
 		<script src="js/kboot.js" type="text/javascript" charset="utf-8"></script>
 		<script src="js/msCode.js" type="text/javascript" charset="utf-8"></script>
 		<style type="text/css">
-
+			#button{
+				background-color: grey
+			}
+			#button:hover{
+				background-color: lightgrey
+			}
 		</style>
 	</head>
 	<body>
@@ -27,7 +32,7 @@
 				<div class="cont-main clearfix">
 					<div class="index-tab">
 						<div class="index-slide-nav">
-							<a href="login.html">登录</a>
+							<a href="login.html" style="color: white;font-weight: 600;">登录</a>
 							<a href="register.html" class="active">注册</a>
 							<div class="slide-bar slide-bar1"></div>
 						</div>
@@ -36,19 +41,20 @@
 					<div class="login form">
 						<div class="group">
 							<div class="group-ipt phone">
-								<input type="text" style="color: white;" v-model="phone" name="phone" id="phone" class="ipt" maxlength="11" placeholder="手机号"
-								 required>
+								<input type="text" style="color: white;" v-model="phone" name="phone" id="phone" class="ipt" maxlength="11"
+								 placeholder="手机号" required>
 							</div>
 							<div class="group-ipt password">
-								<input type="password" style="color: white;" v-model="password" name="password" id="password" class="ipt" placeholder="设置登录密码(8-18位数字字母组合)"
-								 required>
+								<input type="password" style="color: white;" v-model="password" name="password" id="password" class="ipt"
+								 placeholder="设置登录密码(8-18位数字字母组合)" required>
 							</div>
 							<div class="group-ipt password1">
-								<input type="password" style="color: white;" v-model="verifyPwd" name="password1" id="password1" class="ipt" placeholder="重复密码"
-								 required>
+								<input type="password" style="color: white;" v-model="verifyPwd" name="password1" id="password1" class="ipt"
+								 placeholder="重复密码" required>
 							</div>
 							<div class="group-ipt verify">
-								<input type="text" style="color: white;" v-model="verifyCode" name="verify" id="verify" class="ipt" placeholder="输入验证码" required>
+								<input type="text" style="color: white;" v-model="verifyCode" name="verify" id="verify" class="ipt" placeholder="输入验证码"
+								 required>
 								<!-- <img src="http://zrong.me/home/index/imgcode?id=" class="imgcode"> -->
 								<button class="layui-btn-primary imgcode" :disabled="verifyDisabled" @click.prevent="getVerifyCode">{{verifyMsg}}</button>
 							</div>
@@ -58,7 +64,8 @@
 						 id="remember-me" class="remember-mecheck" checked></label> -->
 					<div class="layui-form">
 						<div class="layui-input-inline" style="margin:10px 0 0 10px;">
-							<input style="transform: scale(0.6);" type="checkbox" name="agreeCheck" id="agreeCheck" /><label for="agreeCheck"><a style="font-size: 13px; color: blue;" href="pages/agreement/user-agreement.html">《极物造用户服务协议
+							<input style="transform: scale(0.6);" type="checkbox" name="agreeCheck" id="agreeCheck" /><label for="agreeCheck"><a
+								 style="font-size: 13px; color: blue;" href="pages/agreement/user-agreement.html">《极物造用户服务协议
 									极物造隐私条款》</a></label>
 						</div>
 
@@ -71,8 +78,10 @@
 			</div>
 
 			<div class="footer">
-				<p>极物造 - Thousands Find</p>
-				<p>Designed By ZengRong & <a href="zrong.me">mycodes.net</a> 2016</p>
+				<div style="width: 100%; text-align: center;">
+					<p style="color: #EEEEEE;font-size: 10px;"><a style="color: #EEEEEE;font-size: 10px;" href="http://www.miitbeian.gov.cn">渝ICP备18017599号
+						</a>©2019 重庆懿妈荟科技发展有限公司 版权所有</p>
+				</div>
 			</div>
 		</div>
 		<script src='js/login/particles.js' type="text/javascript"></script>
@@ -109,11 +118,11 @@
 				methods: {
 					register() {
 						var n = document.getElementById("agreeCheck").checked;
-						if(!n){
+						if (!n) {
 							layer.msg("请认真阅读并勾选")
 							return false
 						}
-						console.log('....',n);
+						console.log('....', n);
 						if (!/^[1][0-9]{10}$/.test(this.phone)) {
 							layer.msg("请输入正确的手机号")
 							return false
