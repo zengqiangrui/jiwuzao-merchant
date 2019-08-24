@@ -421,8 +421,8 @@ function uploadImg(success, style) {
 			return
 		}
 		//验证图片大小
-		if (file.size > 1024 * 1024 * 2) {
-			layer.msg("图片大小不能超过2m")
+		if (file.size > 1024 * 1024 * 1) {
+			layer.msg("图片大小不能超过1m")
 			return false
 		}
 		var request = post(false, major + '/upload/upToken', {

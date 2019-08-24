@@ -82,7 +82,7 @@
 					<p>欢迎{{nickName}}！</p>
 				</div>
 				<div class="handle">
-					<a>退出登录</a>
+					<a @click="logOut">退出登录</a>
 				</div>
 			</div>
 		</div>
@@ -103,6 +103,12 @@
 				if (user) {
 					this.avatar = user.portrait
 					this.nickName = user.nickName
+				}
+			},methods:{
+				logOut(){
+					storageRemove('userOpen')
+					storageRemove('accessToken')
+					top.location.href='../login.html'
 				}
 			}
 		})

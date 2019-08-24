@@ -183,6 +183,7 @@
 				},
 				getAddress() {
 					var address = storageGet('senderAddress')
+					console.log('dareaadf...',address);
 					var detail = address.provinces + " " + address.addressDetail
 					address.addressDetail = detail
 					this.senderAddress = address

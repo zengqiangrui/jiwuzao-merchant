@@ -232,6 +232,7 @@
 			beforeMount() {},
 			mounted() {
 				initData("waitDeliver")
+				this.getDefaultAddress()
 			},
 			methods: {
 				showDetail(item) {
@@ -252,6 +253,15 @@
 				toDeliver(item) {
 					storageSet('deliverOrder',item,'m',30)
 					location.href = 'deliver.html'
+				},
+				getDefaultAddress(){
+					var user = storageGet('userOpen')
+					var uid = user.uid
+					var request = post(false,major+'/address/defaultAddress',{uid})
+					handleRequest(request,function(res){
+						console.log('..........',res);
+						storageSet('senderAddress',res.data)
+					})
 				}
 			}
 		})
