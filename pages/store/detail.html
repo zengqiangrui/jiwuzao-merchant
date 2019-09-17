@@ -29,16 +29,15 @@
 					<div class="layui-form-item">
 						<label class="layui-form-label">店铺名称<span class="redStar">*</span></label>
 						<div class="layui-input-block">
-							<input type="text" :value="storeName" name="storeName" maxlength="20" required lay-verify="required" placeholder="请输入店铺名称"
-							 autocomplete="off" class="layui-input">
+							<input type="text" v-model="storeName" name="storeName" maxlength="20" required lay-verify="required"
+							 placeholder="请输入店铺名称" class="layui-input">
 						</div>
 					</div>
-
 					<div class="layui-form-item layui-form-text">
 						<label class="layui-form-label">店铺风格<span class="redStar">*</span></label>
 						<div class="layui-input-block" v-if="storeStyle">
-							<input type="text" :value="getStyleValue(example.storeStyle)"  maxlength="20" disabled="disabled"
-							 autocomplete="off" class="layui-input">
+							<input type="text" :value="getStyleValue(example.storeStyle)" maxlength="20" disabled="disabled" autocomplete="off"
+							 class="layui-input">
 						</div>
 						<div class="layui-input-block" v-show="!storeStyle">
 							<select name="storeStyle" required>
@@ -144,7 +143,9 @@
 					}
 					example.servicePhone = store.servicePhone
 					example.imgs[0].url = store.storeIcon
+					example.imgs[0].showDelete = false
 					example.imgs[1].url = store.storeBgImg
+					example.imgs[1].showDelete = false
 					var storeStyle = store.storeStyle
 					if (storeStyle) {
 						example.hasStoreStyle = true
@@ -179,8 +180,29 @@
 						clearInterval(interval)
 					}, 60010)
 				},
-				getStyleValue(value){
-					return "已选风格："+value
+				getStyleValue(value) {
+					var str
+					switch (value) {
+						case 'chinese':
+							str = "中国风"
+							break;
+						case 'japanese':
+							str = "日式"
+							break;
+						case 'ancient':
+							str = "复古"
+							break;
+						case 'fashion':
+							str = "潮派"
+							break;
+						case 'simple':
+							str = "简约"
+							break;
+						default:
+							str = ""
+							break;
+					}
+					return "已选风格：" + str
 				}
 			}
 		})

@@ -351,6 +351,8 @@ $.ajaxSetup({
 			storageRemove('userPrivateDto')
 			storageRemove('accessToken')
 			top.location.href = ap + "/login.html"
+		} else if (status == 400) {
+			layer.msg('参数错误')
 		} else if (status == 403) {
 			var state = XMLHttpRequest.responseJSON.state
 			try {
@@ -365,7 +367,7 @@ $.ajaxSetup({
 			layer.msg("请求失败请重试")
 		} else {
 			console.log(errObj);
-			layer.msg('请求异常:' + errObj.data)
+			layer.msg("" + errObj.data)
 		}
 	}
 })

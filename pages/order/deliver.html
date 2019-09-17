@@ -100,17 +100,25 @@
 					<div class="layui-input-inline">
 						<input type="text" disabled v-model="order.payTime" placeholder="支付时间" autocomplete="off" class="layui-input">
 					</div>
-					<label class="layui-form-label">发票类型</label>
-					<div class="layui-input-inline">
-						<input type="text" disabled v-model="receipt.type" placeholder="发票类型" autocomplete="off" class="layui-input">
+					<div v-if="receipt">
+						<label class="layui-form-label">发票类型</label>
+						<div class="layui-input-inline">
+						</div>
+							<input type="text" disabled v-model="receipt.type" placeholder="发票类型" autocomplete="off" class="layui-input">
+						<label class="layui-form-label">客户名称</label>
+						<div class="layui-input-inline">
+							<input type="text" disabled v-model="receipt.name" placeholder="客户名称" autocomplete="off" class="layui-input">
+						</div>
+						<label class="layui-form-label">纳税人号</label>
+						<div class="layui-input-inline">
+							<input type="text" disabled v-model="receipt.taxId" placeholder="纳税人号" autocomplete="off" class="layui-input">
+						</div>
 					</div>
-					<label class="layui-form-label">客户名称</label>
-					<div class="layui-input-inline">
-						<input type="text" disabled v-model="receipt.name" placeholder="客户名称" autocomplete="off" class="layui-input">
-					</div>
-					<label class="layui-form-label">纳税人号</label>
-					<div class="layui-input-inline">
-						<input type="text" disabled v-model="receipt.taxId" placeholder="纳税人号" autocomplete="off" class="layui-input">
+					<div v-else>
+						<label class="layui-form-label">发票信息</label>
+						<div class="layui-input-inline">
+							<input class="layui-input" type="text" disabled="disabled" value="不用开具发票" />
+						</div>
 					</div>
 				</div>
 				<div class="layui-card-header font-sub-title">收货人信息</div>
@@ -183,7 +191,7 @@
 				},
 				getAddress() {
 					var address = storageGet('senderAddress')
-					console.log('dareaadf...',address);
+					console.log('dareaadf...', address);
 					var detail = address.provinces + " " + address.addressDetail
 					address.addressDetail = detail
 					this.senderAddress = address
@@ -263,19 +271,19 @@
 								alert('请输入密码')
 								return false
 							}
-							var request = post(true,major+"/express/cancelDeliver",{
-								"goodsOrderNo":example.order.goodsOrderNo,
-								"pwd":pwd,
-								"cancelReason":reason
+							var request = post(true, major + "/express/cancelDeliver", {
+								"goodsOrderNo": example.order.goodsOrderNo,
+								"pwd": pwd,
+								"cancelReason": reason
 							})
-							handleRequest(request,function(res){
-								console.log('..........',res);
-								if(res.state == 'success'){
-									location.href="show.html"
+							handleRequest(request, function(res) {
+								console.log('..........', res);
+								if (res.state == 'success') {
+									location.href = "show.html"
 								}
 							})
 							return false
-							
+
 						},
 						btn2: function(index, layero) {},
 						cancel: function() {}
@@ -301,7 +309,7 @@
 		function changeVerify() {
 			draw(example.show_num);
 		}
-		
+
 		layui.use('form', function() {
 			var form = layui.form;
 			form.render()

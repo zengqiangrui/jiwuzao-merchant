@@ -46,8 +46,6 @@
 				text-decoration: none;
 			}
 
-			ul li a:hover {}
-
 
 			#cl1-i {
 				width: 100%;
@@ -82,6 +80,12 @@
 				color: #B5B5B5;
 			}
 
+			.active {
+				background: darkgray;
+				color: white;
+				text-decoration: none;
+			}
+
 			.div-inner a:hover {
 				/* background: darkgray; */
 				background: transparent;
@@ -96,65 +100,74 @@
 
 
 			<ul>
-				<li><a id="cl0" target="mainFrame" href="/jiwuzao-merchant/pages/store/settle.html">我要入驻</a></li>
+				<li v-if="!isMerchant"><a id="cl0" target="mainFrame" :class="{active:curTab===0}" href="/jiwuzao-merchant/pages/store/settle.html">我要入驻</a></li>
 
-				<li v-if="isMerchant"><a id="cl1" target="mainFrame">店铺管理</a></li>
+				<li v-if="isMerchant"><a id="cl1" target="mainFrame" :class="{active:curTab===1}">店铺管理</a></li>
 				<div id="cl1-i" hidden="hidden" v-if="isMerchant">
 					<div class="div-inner">
-						<a href="/jiwuzao-merchant/pages/store/detail.html" target="mainFrame">店铺详情</a>
+						<a @click="example.curTab=1" href="/jiwuzao-merchant/pages/store/detail.html" target="mainFrame">店铺详情</a>
 					</div>
 				</div>
-				<li v-if="isMerchant"><a id="cl2" target="mainFrame">商品管理</a></li>
+				<li v-if="isMerchant"><a id="cl2" target="mainFrame" :class="{active:curTab===2}">商品管理</a></li>
 				<div id="cl2-i" hidden="hidden" v-if="isMerchant">
 					<div class="div-inner">
-						<a href="/jiwuzao-merchant/pages/goods/show.html" target="mainFrame">商品详情</a>
+						<a @click="example.curTab=2" href="/jiwuzao-merchant/pages/goods/show.html" target="mainFrame">商品详情</a>
 					</div>
 					<div class="div-inner">
-						<a href="/jiwuzao-merchant/pages/goods/add.html" target="mainFrame">添加商品</a>
+						<a @click="example.curTab=2" href="/jiwuzao-merchant/pages/goods/add.html" target="mainFrame">添加商品</a>
 					</div>
 				</div>
-				<li v-if="isMerchant"><a id="cl3" target="mainFrame">订单管理</a></li>
+				<li v-if="isMerchant"><a id="cl3" target="mainFrame" :class="{active:curTab===3}">订单管理</a></li>
 				<div id="cl3-i" hidden="hidden">
 					<div class="div-inner">
-						<a href="/jiwuzao-merchant/pages/order/show.html" target="mainFrame">订单展示</a>
+						<a @click="example.curTab=3" href="/jiwuzao-merchant/pages/order/show.html" target="mainFrame">订单展示</a>
 					</div>
-				<!-- 	<div class="div-inner">
+					<!-- 	<div class="div-inner">
 						<a href="/jiwuzao-merchant/pages/order/deliver.html" target="mainFrame">发货</a>
 					</div> -->
 					<div class="div-inner">
-						<a href="/jiwuzao-merchant/pages/order/address.html" target="mainFrame">地址</a>
+						<a @click="example.curTab=3" href="/jiwuzao-merchant/pages/order/address.html" target="mainFrame">地址</a>
 					</div>
 				</div>
-				<li v-if="isMerchant"><a id="cl4" target="mainFrame">运营管理</a></li>
+				<li v-if="isMerchant"><a id="cl4" target="mainFrame" :class="{active:curTab===4}">运营管理</a></li>
 				<div id="cl4-i" hidden="hidden">
 					<div class="div-inner">
-						<a href="/jiwuzao-merchant/pages/operation/show.html" target="mainFrame">资金展示</a>
+						<a @click="example.curTab=4" href="/jiwuzao-merchant/pages/operation/show.html" target="mainFrame">资金展示</a>
 					</div>
 				</div>
-				<li v-if="isMerchant"><a id="cl5" target="mainFrame">客服系统</a></li>
+				<li v-if="isMerchant"><a id="cl5" target="mainFrame" :class="{active:curTab===5}">客服系统</a></li>
 				<div id="cl5-i" hidden="hidden">
 					<div class="div-inner">
-						<a href="/jiwuzao-merchant/pages/custservice/customerChat.html" target="mainFrame">用户会话</a>
+						<a @click="example.curTab=5" href="/jiwuzao-merchant/pages/custservice/customerChat.html" target="mainFrame">用户会话</a>
 					</div>
 				</div>
+				<li v-if="isMerchant"><a id="cl0" target="mainFrame" href="/jiwuzao-merchant/pages/store/showSettle.html">入驻信息</a></li>
 			</ul>
 		</div>
 	</body>
 	<script>
 		$(function() {
+			$("#cl0").click(function() {
+				example.curTab = 0
+			});
 			$("#cl1").click(function() {
+				example.curTab = 1
 				$("#cl1-i").fadeToggle()
 			});
 			$("#cl2").click(function() {
+				example.curTab = 2
 				$("#cl2-i").fadeToggle()
 			});
 			$("#cl3").click(function() {
+				example.curTab = 3
 				$("#cl3-i").fadeToggle()
 			});
 			$("#cl4").click(function() {
+				example.curTab = 4
 				$("#cl4-i").fadeToggle()
 			});
 			$("#cl5").click(function() {
+				example.curTab = 5
 				$("#cl5-i").fadeToggle()
 			});
 		});
@@ -173,19 +186,20 @@
 			}
 			return obj.data
 		}
+		var example = {
+			isMerchant: true,
+			curTab: 2
+		}
 
 		var vm = new Vue({
 			el: "#app",
 			data() {
-				return {
-					isMerchant: true
-				}
+				return example
 			},
 			mounted() {
 				var user = storageGet('userOpen')
 				if (user.role !== 'merchant') {
 					this.isMerchant = false
-
 				}
 			}
 		})

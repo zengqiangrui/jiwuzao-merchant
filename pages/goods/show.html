@@ -43,12 +43,9 @@
 					<tr>
 						<td>商品名称</td>
 						<td>封面</td>
-						<td>标签</td>
 						<td>默认价格</td>
 						<td>运费</td>
-						<td>商品类型</td>
 						<td>创建时间</td>
-						<td>修改时间</td>
 						<td>审核状态</td>
 						<td>上架操作</td>
 					</tr>
@@ -57,12 +54,9 @@
 					<tr v-for="(item,index) in goods" @click="showDetail(item)">
 						<td>{{item.title}}</td>
 						<td><img style="width: 40px; height: 40px;" :src="item.cover"></td>
-						<td>{{item.detailLabel}}</td>
 						<td>{{item.defaultPrice}}</td>
 						<td>{{item.postage}}</td>
-						<td>{{item.classify}}</td>
-						<td>{{item.createTime}}</td>
-						<td>{{item.updateTime}}</td>
+						<td>{{getDate(item.createTime)}}</td>
 						<td>{{item.auditType=="agree"?"审核通过":item.auditType=="wait"?"等待审核":"被拒绝"}}</td>
 						<td>
 							<div class="handel-btn" v-if="item.auditType == 'agree'">
@@ -77,6 +71,7 @@
 		</div>
 	</body>
 	<script src="../../js/kboot.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../../js/util/date.js" type="text/javascript" charset="utf-8"></script>
 	<script type="text/javascript">
 		var example = {
 			goods: [],
@@ -190,6 +185,9 @@
 				initData("all")
 			},
 			methods: {
+				getDate(value){
+					return new Date(value).format('yyyy-MM-dd hh:mm')
+				},
 				showDetail(item) {
 					var that = this
 					var data = {
@@ -242,7 +240,6 @@
 				},
 				showPutOff() {
 					initData("putOff")
-
 				}
 			}
 		})

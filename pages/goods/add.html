@@ -71,7 +71,7 @@
 				<div class="layui-form-item">
 					<label class="layui-form-label">退换承诺<span class="redStar">*</span></label>
 					<div class="layui-input-inline">
-						<select id="goodsReturn" name="goodsReturn" lay-verify required="required" v-model="goodsReturn">
+						<select id="goodsReturn" name="goodsReturn" lay-verify required="required">
 						  <option value="">请选择</option>
 						  <option value="CANNOT_RETURN">不可退换</option>
 						  <option value="CAN_RETURN">可退换</option>
@@ -79,7 +79,7 @@
 					</div>
 					<label class="layui-form-label">发货时间<span class="redStar">*</span></label>
 					<div class="layui-input-inline">
-						<select id="deliveryTime" name="deliveryTime" lay-verify required="required" v-model="deliveryTime">
+						<select id="deliveryTime" name="deliveryTime" lay-verify required="required">
 						  <option value="">请选择</option>
 						  <option value="ONE_DAY">一天内</option>
 						  <option value="TWO_DAY">两天内</option>
@@ -205,8 +205,6 @@
 			second: [],
 			categoryIndex: [null, null],
 			category: [],
-			goodsReturn:"",
-			deliveryTime:"",
 			labelList: [{
 				placeholder: "标签1",
 				value: ""
@@ -452,6 +450,15 @@
 					$(this).val(v.substr(0, v.length - 1));
 				}
 			});
+			
+			$("#defaultTips").hover(function(){
+				layer.tips("1","#defaultTips",{
+					time:3000
+				})
+			},function(){
+				layer.closeAll()
+			})
+
 		})
 	</script>
 	<script src="../../js/util/provinces.js" type="text/javascript" charset="utf-8"></script>
