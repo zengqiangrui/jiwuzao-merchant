@@ -99,6 +99,10 @@
 				color: red;
 				font-size: 1.5rem;
 			}
+			#otherVerify:hover{
+				cursor: pointer;
+			}
+			
 		</style>
 		<link rel="stylesheet" type="text/css" href="../../css/store/jquery.step.css" />
 		<link rel="stylesheet" type="text/css" href="../../dist/css/layui.css" />
@@ -248,11 +252,10 @@
 	<script type="text/javascript">
 		$(function() {
 			$('#otherVerify').hover(function() {
-				layer.tips("食品安全认证等", '#otherVerify')
+				layer.tips("如果为食品相关企业，必须上传食品安全认证", '#otherVerify',{tips:4})
 			}, function() {
 				layer.closeAll('tips');
 			})
-
 		})
 	</script>
 	<script type="text/javascript">

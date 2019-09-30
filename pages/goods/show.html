@@ -16,12 +16,18 @@
 			table {
 				text-align: center;
 			}
+			
+			.active{
+				background: red;
+				color: white;
+			}
 
 			.choose-area {
 				padding: 10px;
 				display: flex;
 				align-items: center;
-				justify-content: flex-start
+				justify-content: flex-start;
+				background: #000000;
 			}
 
 			.choose-area button {
@@ -32,11 +38,11 @@
 	</head>
 	<body>
 		<div id="app">
-			<div class="layui-bg-cyan choose-area">
-				<button class="layui-btn layui-btn-primary" @click="showAll">查看全部</button>
-				<button class="layui-btn layui-btn-primary" @click="showWait">查看待审核</button>
-				<button class="layui-btn layui-btn-primary" @click="showPutAway">查看已上架</button>
-				<button class="layui-btn layui-btn-primary" @click="showPutOff">查看未上架</button>
+			<div class="choose-area">
+				<button class="layui-btn layui-btn-primary" :class="{active:curTab==0}" @click="showAll">查看全部</button>
+				<button class="layui-btn layui-btn-primary" :class="{active:curTab==1}" @click="showWait">查看待审核</button>
+				<button class="layui-btn layui-btn-primary" :class="{active:curTab==2}" @click="showPutAway">查看已上架</button>
+				<button class="layui-btn layui-btn-primary" :class="{active:curTab==3}" @click="showPutOff">查看未上架</button>
 			</div>
 			<table class="layui-table">
 				<thead>
@@ -76,6 +82,7 @@
 		var example = {
 			goods: [],
 			pageSize: 10,
+			curTab:0,
 			total: 0,
 			page: {
 				pageSize: 10,
@@ -200,6 +207,7 @@
 							type: 2,
 							area: ['1200px', '600px'],
 							content: '/jiwuzao-merchant/pages/goods/goodsDetail.html',
+							offset: 'lt'
 						});
 					})
 				},
@@ -229,17 +237,19 @@
 				},
 				showAll() {
 					initData("all")
+					this.curTab = 0
 				},
 				showWait() {
 					initData("wait")
-
+					this.curTab = 1
 				},
 				showPutAway() {
 					initData("putaway")
-
+					this.curTab = 2
 				},
 				showPutOff() {
 					initData("putOff")
+					this.curTab = 3
 				}
 			}
 		})

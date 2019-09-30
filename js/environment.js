@@ -2,7 +2,9 @@ var environment = 'prod'
 var ap = '/jiwuzao-merchant'
 var major = 'https://api.jiwuzao.com'
 var manager = 'http://106.52.109.239:10020'
-var cdnUploadUrl = 'http://upload-z2.qiniu.com/'
+// var cdnUploadUrl = 'http://upload-z2.qiniu.com/'//原有http 请求地址
+// var cdnUploadUrl = 'https://upload.qbox.me/'
+var cdnUploadUrl = 'https://up-z2.qbox.me/'	//现在的https 请求地址
 var cdnPrefix = 'http://cdn.jiwuzao.com'
 var ws = 'wss://api.jiwuzao.com'
 

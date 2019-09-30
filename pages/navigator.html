@@ -21,12 +21,15 @@
 				width: 100%;
 				height: 50px;
 				line-height: 50px;
+			
 				border-bottom: 1px solid rgba(107, 108, 109, 0.19);
 				position: relative;
 			}
 
 			ul li a {
-				display: block;
+				display: flex;
+				align-items: center;
+				justify-content: center;
 				width: 100%;
 				height: 50px;
 				color: #B5B5B5;
@@ -34,14 +37,12 @@
 				text-shadow: none;
 				font-size: 15px;
 				text-decoration: none;
-				float: left;
-				padding-left: 50px;
 				cursor: pointer;
 			}
 
 			ul li a:hover {
 				/* background: #1cc09f; */
-				background: darkgray;
+				background: red;
 				color: white;
 				text-decoration: none;
 			}
@@ -50,19 +51,19 @@
 			#cl1-i {
 				width: 100%;
 				/* height: 50px; */
-				background-color: #283643;
+				background-color: #000;
 			}
 
 			#cl2-i {
 				width: 100%;
 
-				background-color: #283643;
+				background-color: #000;
 			}
 
 			#cl3-i {
 				width: 100%;
 				/* height: 150px; */
-				background-color: #283643;
+				background-color: #000;
 			}
 
 			.div-inner {
@@ -75,13 +76,13 @@
 				display: block;
 				background: transparent;
 				text-shadow: none;
-				font-size: 12px;
+				font-size: 14px;
 				text-decoration: none;
 				color: #B5B5B5;
 			}
 
 			.active {
-				background: darkgray;
+				background: red;
 				color: white;
 				text-decoration: none;
 			}
@@ -95,7 +96,7 @@
 		</style>
 	</head>
 
-	<body style="background:#283643;">
+	<body style="background:#000;">
 		<div id="app">
 
 
@@ -120,13 +121,17 @@
 				<li v-if="isMerchant"><a id="cl3" target="mainFrame" :class="{active:curTab===3}">订单管理</a></li>
 				<div id="cl3-i" hidden="hidden">
 					<div class="div-inner">
-						<a @click="example.curTab=3" href="/jiwuzao-merchant/pages/order/show.html" target="mainFrame">订单展示</a>
+						<a @click="example.curTab=3" href="/jiwuzao-merchant/pages/order/show.html" target="mainFrame">订单详情</a>
 					</div>
 					<!-- 	<div class="div-inner">
 						<a href="/jiwuzao-merchant/pages/order/deliver.html" target="mainFrame">发货</a>
 					</div> -->
 					<div class="div-inner">
-						<a @click="example.curTab=3" href="/jiwuzao-merchant/pages/order/address.html" target="mainFrame">地址</a>
+						<a @click="example.curTab=3" href="/jiwuzao-merchant/pages/order/address.html" target="mainFrame">商家地址</a>
+					</div>
+					
+					<div class="div-inner">
+						<a @click="example.curTab=3" href="/jiwuzao-merchant/pages/order/return.html" target="mainFrame">退货管理</a>
 					</div>
 				</div>
 				<li v-if="isMerchant"><a id="cl4" target="mainFrame" :class="{active:curTab===4}">运营管理</a></li>

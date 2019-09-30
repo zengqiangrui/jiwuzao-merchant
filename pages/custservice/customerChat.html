@@ -15,7 +15,6 @@
 			.font-div {
 				display: flex;
 				flex-direction: column;
-
 			}
 		</style>
 	</head>
@@ -82,16 +81,16 @@
 						我的客户{{onlineNum}}/{{allGroup.length}}
 					</div>
 					<div class="person-main">
-						<div class="person-item">
+						<div class="person-item" @click="officialChat">
 							<div class="person-item-main">
-								<img class="person-item-avatar" src="../../img/icons/avatar-girl.png" />
+								<img class="person-item-avatar" src="../../img/icons/logo.png" />
 								<div class="font-div">
 									<p class="person-item-name">极物造官方</p>
-									<p class="person-item-name" style="font-size: 10px;font-weight: 200;">在线</p>
+									<p class="person-item-name" style="font-size: 10px;font-weight: 200;"></p>
 								</div>
 							</div>
 							<div class="person-item-handle">
-								<div class="red-dot">8</div>
+								<!-- <div class="red-dot"></div> -->
 							</div>
 						</div>
 						<div class="person-item" v-for="(item,index) in allGroup" @click="toChat(item)">
@@ -145,6 +144,7 @@
 				this.getAllGroup()
 			},
 			methods: {
+
 				getOnlineStatus(online) {
 					var res = ""
 					switch (online) {
@@ -161,6 +161,7 @@
 					var that = this
 					var request = post(true, major + "/chatControl/getAllGroup", {})
 					handleRequest(request, function(res) {
+						console.log('............', res);
 						that.allGroup = res.data
 						var list = res.data
 						var num = 0
@@ -169,6 +170,16 @@
 								num++;
 						}
 						that.onlineNum = num
+					})
+				},
+
+				officialChat() {
+					var that = this
+					var request = post(true, major + "/chatControl/getOfficial", {})
+					handleRequest(request, function(res) {
+						if(res.state == 'success'){
+							that.toChat(res.data)
+						}
 					})
 				},
 

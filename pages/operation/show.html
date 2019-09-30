@@ -34,6 +34,11 @@
 			<div class="money-contain">
 				<div class="layui-card">
 					<div class="layui-card-header head-container">
+						<p>营业额:<span style="color: red;">{{turnover}}</span>元</p>
+					</div>
+				</div>
+				<div class="layui-card">
+					<div class="layui-card-header head-container">
 						<p>当前可提现金额:<span style="color: red;">{{withdrawAbleCash}}</span>元</p>
 						<button class="layui-btn layui-btn-primary" @click="withdraw">提现</button>
 					</div>
@@ -84,6 +89,7 @@
 			withdrawAbleCash: 0,
 			allEarning: 0,
 			storeId: '',
+			turnover:0,
 			show_num: [],
 			list: []
 		}
@@ -97,10 +103,10 @@
 				var request = post(true, major + "/withdraw/getWithdrawAble", {})
 				handleRequest(request, function(res) {
 					if (res.state == 'success') {
-						console.log(',,..,.', res);
 						example.storeId = res.data.storeId
 						example.withdrawAbleCash = res.data.withdrawAbleCash
 						that.getAllEarning(res.data.storeId)
+						that.getStoreTurnover(res.data.storeId)
 					} else {
 						layer.msg('请求失败')
 					}
@@ -132,14 +138,25 @@
 					}
 					return res
 				},
+				getStoreTurnover(storeId){
+					var request = post(false, major + "/merchant/getStoreTurnover", {
+						"storeId": storeId
+					})
+					handleRequest(request, function(res) {
+						if (res.state == 'success'){
+							example.turnover = res.data.turnover
+						}
+					})
+				},
+				
 				getAllEarning(storeId) {
 					var request = post(false, major + "/withdraw/getAllEarning", {
 						"storeId": storeId
 					})
 					handleRequest(request, function(res) {
-						console.log(res);
-						if (res.state == 'success')
+						if (res.state == 'success'){
 							example.allEarning = res.data.allEarning
+						}
 					})
 				},
 				withdraw() {

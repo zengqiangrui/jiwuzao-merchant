@@ -21,7 +21,8 @@
 				padding: 10px;
 				display: flex;
 				align-items: center;
-				justify-content: flex-start
+				justify-content: flex-start;
+				background: #000000;
 			}
 
 			.choose-area button {
@@ -42,10 +43,11 @@
 	</head>
 	<body>
 		<div id="app">
-			<div class="layui-bg-cyan choose-area">
+			<div class="choose-area">
 				<button class="layui-btn layui-btn-primary" @click="showAll">查看全部</button>
 				<button class="layui-btn layui-btn-primary" @click="showWaitDelivery">查看待发货</button>
 				<button class="layui-btn layui-btn-primary" @click="showWaitReceive">查看待签收</button>
+				<button class="layui-btn layui-btn-primary" @click="showWaitAppraise">查看待评价</button>
 				<button class="layui-btn layui-btn-primary" @click="showFinish">查看已完成</button>
 				<button class="layui-btn layui-btn-primary">查看异常订单</button>
 			</div>
@@ -63,6 +65,7 @@
 						<td>收货地址</td>
 						<td>收货人</td>
 						<td>收货电话</td>
+						<td>发货时间</td>
 						<td>邮费</td>
 						<td>操作</td>
 					</tr>
@@ -74,14 +77,18 @@
 						<td>{{item.specString}}</td>
 						<td>{{item.buyCount}}</td>
 						<td>{{item.payTime | formatDate}}</td>
-						<td>{{item.orderStatus}}</td>
+						<td>{{item.orderStatus| formatStatus}}</td>
 						<td>{{item.finalPay}}</td>
 						<td>{{item.receiverCity}}</td>
 						<td>{{item.receiverAddress}}</td>
 						<td>{{item.receiverTrueName}}</td>
 						<td>{{item.receiverPhone}}</td>
+						<td>{{item.deliverTime | formatDate}}</td>
 						<td>{{item.postage}}</td>
-						<td><button type="button" v-if="item.orderStatus == 'waitDeliver'" @click="toDeliver(item)" class="layui-btn layui-btn-primary">发货</button></td>
+						<td>
+							<button type="button" v-if="item.orderStatus == 'waitDeliver'" @click="toDeliver(item)" class="layui-btn layui-btn-primary">发货</button>
+							<button type="button" v-if="item.orderStatus == 'waitReceive'" @click="showExpress(item)" class="layui-btn layui-btn-primary">物流信息</button>
+						</td>
 					</tr>
 				</tbody>
 			</table>
@@ -128,6 +135,11 @@
 				case "waitReceive":
 					page.currentPage = 0
 					page.orderStatus = "waitReceive"
+					request = post(true, major + "/order/getAllStoreOrderByStatus", page)
+					break;
+				case "waitAppraise":
+					page.currentPage = 0
+					page.orderStatus = "waitAppraise"
 					request = post(true, major + "/order/getAllStoreOrderByStatus", page)
 					break;
 				case "finish":
@@ -186,6 +198,10 @@
 					page.orderStatus = "waitReceive"
 					request = post(true, major + "/order/getAllStoreOrderByStatus", page)
 					break;
+				case "waitAppraise":
+					page.orderStatus = "waitAppraise"
+					request = post(true, major + "/order/getAllStoreOrderByStatus", page)
+					break;
 				case "finish":
 					page.orderStatus = "finish"
 					request = post(true, major + "/order/getAllStoreOrderByStatus", page)
@@ -227,6 +243,33 @@
 					let s = date.getSeconds();
 					s = s < 10 ? ('0' + s) : s;
 					return y + '-' + MM + '-' + d + ' ' + h + ':' + m + ':' + s;
+				},
+				formatStatus: function(value) {
+					var str = ""
+					switch (value) {
+						case "waitDeliver":
+							str = "待发货"
+							break;
+						case "waitReceive":
+							str = "待收货"
+							break;
+						case "waitPay":
+							str = "待支付"
+							break;
+						case "waitAppraise":
+							str = "待评价"
+							break;
+						case "finish":
+							str = "已完成"
+							break;
+						case "cancel":
+							str = "已取消"
+							break;
+						case "refund":
+							str = "已退款"
+							break;
+					}
+					return str
 				}
 			},
 			beforeMount() {},
@@ -250,17 +293,41 @@
 				showFinish() {
 					initData("finish")
 				},
+				showWaitAppraise() {
+					initData("waitAppraise")
+				},
 				toDeliver(item) {
-					storageSet('deliverOrder',item,'m',30)
+					storageSet('deliverOrder', item, 'm', 30)
 					location.href = 'deliver.html'
 				},
-				getDefaultAddress(){
+				getDefaultAddress() {
 					var user = storageGet('userOpen')
 					var uid = user.uid
-					var request = post(false,major+'/address/defaultAddress',{uid})
-					handleRequest(request,function(res){
-						console.log('..........',res);
-						storageSet('senderAddress',res.data)
+					var request = post(false, major + '/address/defaultAddress', {
+						uid
+					})
+					handleRequest(request, function(res) {
+						storageSet('senderAddress', res.data)
+					})
+				},
+				showExpress(item) {
+					console.log('showexpress..', item);
+					var request = post(true, major + "/express/getTraceByOrder", {
+						"goodsOrderNo": item.goodsOrderNo
+					})
+					handleRequest(request, (res) => {
+						console.log(res)
+						if (res.state == 'success') {
+							storageSet('expressTrace', res.data)
+							layer.open({
+								type: 2,
+								content: ['expressTrace.html'],
+								area: ['900px', '600px'],
+								offset: '50px'
+							})
+						} else {
+							layer.msg("暂时错误")
+						}
 					})
 				}
 			}
