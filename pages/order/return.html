@@ -3,7 +3,296 @@
 	<head>
 		<meta charset="utf-8">
 		<title></title>
+		<link rel="stylesheet" href="../../dist/css/layui.css" media="all">
+		<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.js"></script>
+		<script src="../../dist/layui.all.js" type="text/javascript" charset="utf-8"></script>
+		<script src="https://cdn.bootcss.com/vue/2.6.10/vue.min.js"></script>
+		<script src="../../js/environment.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/kboot.js" type="text/javascript" charset="utf-8"></script>
+		<style type="text/css">
+			tbody tr:hover {
+				cursor: pointer;
+			}
+
+			table {
+				text-align: center;
+			}
+
+			.active {
+				background: red;
+				color: white;
+			}
+
+			.choose-area {
+				padding: 10px;
+				display: flex;
+				align-items: center;
+				justify-content: flex-start;
+				background: #000000;
+			}
+
+			.choose-area button {
+				height: 30px;
+				line-height: 30px;
+			}
+
+			.no-order {
+				width: 100%;
+				height: 100%;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: center;
+				font-size: 20px;
+			}
+
+			.button-container {
+				display: flex;
+				flex-direction: row;
+				align-items: center;
+			}
+
+			.fail-reason {
+				overflow: hidden;
+				text-overflow: ellipsis;
+				/* word-break: break-all; */
+			}
+		</style>
 	</head>
 	<body>
+		<div id="app">
+			<div class="choose-area">
+				<button class="layui-btn layui-btn-primary" :class="{active:curTab==0}">退货信息</button>
+				<!-- <button class="layui-btn layui-btn-primary" :class="{active:curTab==1}" @click="showWaitConfirm">查看待确认</button> -->
+			</div>
+			<table class="layui-table" v-if="goods.length>0">
+				<thead>
+					<tr>
+						<td>商品名称</td>
+						<td>退货图片</td>
+						<td>商品订单号</td>
+						<td>退货订单号</td>
+						<td>退货承诺</td>
+						<td style="min-width: 250px;">退货原因</td>
+						<td>退货状态</td>
+						<td>退货人昵称</td>
+						<td>退货人联系方式</td>
+						<td>操作</td>
+					</tr>
+				</thead>
+				<tbody>
+					<tr v-for="(item,index) in returnList">
+						<td>{{item.goodsTitle}}</td>
+						<td><img style="width: 50px; height: 50px;" @click.stop.prevent="showImg(item.goodsImg)" :src="item.goodsImg"></td>
+						<td>{{item.goodsOrderNo}}</td>
+						<td>{{item.goodsReturnNo}}</td>
+						<td>{{item.returnPromise}}</td>
+						<td>{{item.returnReason}}</td>
+						<td>{{item.returnStatus | formatStatus}}
+							<div class="fail-reason" v-if="item.returnStatus=='FAIL'">
+								{{'原因:'+item.failReason}}
+							</div>
+						</td>
+						<td>{{item.userName}}</td>
+						<td>{{item.userPhone}}</td>
+						<td>
+							<div class="button-container">
+								<button type="button" v-if="item.returnStatus=='WAIT_CONFIRM'" class="layui-btn layui-btn-primary" @click="allowReturn(item.id)">同意</button>
+								<button type="button" v-if="item.returnStatus=='WAIT_CONFIRM'" class="layui-btn layui-btn-primary" @click="refuseReturn(item.id)">拒绝</button>
+								<button type="button" v-if="item.returnStatus == 'WAIT_RECEIVE'" class="layui-btn layui-btn-primary" @click="showExpress(item.id)">查看物流</button>
+								<button type="button" v-if="item.returnStatus == 'WAIT_RECEIVE'" class="layui-btn layui-btn-primary" @click="confirmReturnReceive(item.id)">确认收货</button>
+							</div>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<div v-if="goods.length===0" class="no-order">
+				<img src="../../img/icons/no-order.svg" style="width: 200px;height: 200px;padding: 100px;">
+				<p>暂无订单</p>
+			</div>
+			<div id="pager"></div>
+		</div>
 	</body>
+	<script type="text/javascript">
+		var vm = new Vue({
+			el: '#app',
+			data() {
+				return {
+					curTab: 0,
+					goods: [1],
+					returnList: [],
+					currentPage: 0,
+					pageSize: 10,
+					total: 0
+				}
+			},
+			filters: {
+				formatDate: function(value) {
+					if (!value)
+						return null
+					let date = new Date(value);
+					let y = date.getFullYear();
+					let MM = date.getMonth() + 1;
+					MM = MM < 10 ? ('0' + MM) : MM;
+					let d = date.getDate();
+					d = d < 10 ? ('0' + d) : d;
+					let h = date.getHours();
+					h = h < 10 ? ('0' + h) : h;
+					let m = date.getMinutes();
+					m = m < 10 ? ('0' + m) : m;
+					let s = date.getSeconds();
+					s = s < 10 ? ('0' + s) : s;
+					return y + '-' + MM + '-' + d + ' ' + h + ':' + m + ':' + s;
+				},
+				formatStatus(param) {
+					var str
+					switch (param) {
+						case 'WAIT_CONFIRM':
+							str = '待确认'
+							break;
+						case 'WAIT_DELIVER':
+							str = '待发货'
+							break;
+						case 'WAIT_RECEIVE':
+							str = '待收货'
+							break;
+						case 'WAIT_REFUND_CONFIRM':
+							str = '待退款确认'
+							break;
+						case 'PROCESSING_REFUND':
+							str = '处理退款中'
+							break;
+						case 'SUCCESS':
+							str = '成功'
+							break;
+						case 'FAIL':
+							str = '失败'
+							break;
+						default:
+							break;
+					}
+					return str
+				}
+			},
+			mounted() {
+				this.initList()
+			},
+			methods: {
+				showAll() {},
+				showWaitConfirm() {},
+				showImg(e) {
+					console.log('...', e)
+					openImage(e)
+				},
+				initList() {
+					var that = this
+					var request = post(true, major + "/return/getReturnListByStore", {
+						"currentPage": that.currentPage,
+						"pageSize": that.pageSize
+					})
+					handleRequest(request, function(res) {
+						that.returnList = res.data.content
+						that.total = res.data.total
+					})
+				},
+				allowReturn(e) {
+					var that = this
+					if (confirm("确认退货？")) {
+						var request = post(true, major + "/return/allowReturn", {
+							"id": e
+						})
+						handleRequest(request, function(res) {
+							if (res.state == 'success') {
+								that.initList()
+							}
+						})
+					}
+				},
+				refuseReturn(e) {
+					var that = this
+					var reason = prompt("请输入拒绝原因")
+					if (reason.length > 250) {
+						layer.msg("字数过长")
+					} else {
+						var request = post(true, major + "/return/refuseReturn", {
+							"id": e,
+							"reason": reason
+						})
+						handleRequest(request, function(res) {
+							if (res.state == 'success') {
+								that.initList()
+							}
+						})
+					}
+				},
+
+				confirmReturnReceive(id) {
+					var that =this
+					console.log('id', id);
+					// layer.confirm("是否已经收到退货，并确定退款？")
+					layer.confirm('是否已经收到退货？', {
+						icon: 3,
+						title: '提示'
+					}, function(index) {
+						//do something
+						var request = post(true, major + "/return/confirmReceive", {
+							"id": id
+						})
+						handleRequest(request, function(res) {
+							console.log('...', res);
+							if(res.state == 'success'){
+								that.initList()
+							}
+						})
+
+						layer.close(index);
+					});
+				},
+
+				showExpress(id) {
+					console.log('...', id);
+					var request = post(true, major + "/return/queryReturnExpress", {
+						"id": id
+					})
+					handleRequest(request, function(res) {
+						console.log("res.....", res);
+						if (res.state == 'success') {
+							storageSet('expressTrace', res.data)
+							layer.open({
+								type: 2,
+								content: ['expressTrace.html'],
+								area: ['900px', '600px'],
+								offset: 'lt'
+							})
+						} else {
+							layer.msg("暂时错误")
+						}
+					})
+				},
+
+
+
+				page() {
+					layui.use('laypage', function() {
+						var laypage = layui.laypage;
+						//执行一个laypage实例
+						laypage.render({
+							elem: 'pager', //注意，这里的 test1 是 ID，不用加 # 号
+							theme: "#283643",
+							count: res.data.total, //数据总数，从服务端得到
+							jump: function(obj, first) {
+								//obj包含了当前分页的所有参数，比如：
+								//首次不执行
+								if (!first) {
+									example.page.currentPage = obj.curr - 1
+									example.page.pageSize = obj.limit
+									updateData(value)
+								}
+							}
+						});
+					});
+				}
+			}
+		})
+	</script>
 </html>

@@ -1,4 +1,3 @@
-'
 <!DOCTYPE html>
 <html lang="en">
 	<head>
@@ -25,7 +24,7 @@
 				<h1 class="main-title hide">极物造</h1>
 			</div>
 
-			<div class="cont-main clearfix">
+			<div class="cont-main clearfix" style="display: none;" id="show-main">
 				<div class="index-tab">
 					<div class="index-slide-nav">
 						<a href="login.html" class="active">登录</a>
@@ -37,16 +36,14 @@
 				<div class="login form">
 					<div class="group">
 						<div class="group-ipt phone">
-							<input type="text" style="color: white;" name="phone" id="phone" class="ipt" placeholder="手机号"
-							 required>
+							<input type="text" style="color: white;" name="phone" id="phone" class="ipt" placeholder="手机号" required>
 						</div>
 						<div class="group-ipt password">
 							<input type="password" style="color: white;" name="password" id="password" class="ipt" placeholder="输入您的登录密码"
 							 required>
 						</div>
 						<div class="group-ipt verify">
-							<input type="text" style="color: white;" name="verifyCode" id="verify" class="ipt" placeholder="输入验证码"
-							 required>
+							<input type="text" style="color: white;" name="verifyCode" id="verify" class="ipt" placeholder="输入验证码" required>
 							<!-- <button class="imgcode layui-btn-primary">获取验证码</button> -->
 							<canvas id="canvas" class="imgcode" onclick="changeVerify()" width="120" height="50"></canvas>
 						</div>
@@ -60,7 +57,7 @@
 
 		<div class="footer">
 			<div style="width: 100%; text-align: center;">
-				<p style="color: #EEEEEE;font-size: 10px;"><a style="color: #EEEEEE;font-size: 10px;" href="http://www.miitbeian.gov.cn">渝ICP备18017599号
+				<p style="color: #EEEEEE;font-size: 10px;"><a style="color: #EEEEEE;font-size: 10px;" href="http://beian.miit.gov.cn">渝ICP备18017599号
 					</a>©2019 重庆懿妈荟科技发展有限公司 版权所有</p>
 			</div>
 		</div>
@@ -88,9 +85,22 @@
 				}
 			});
 
-			var	show_num = []
+			var show_num = []
 
 			$(function() {
+				console.log('initlogin................');
+				console.log(storageGet('accessToken'));
+				var token = storageGet('accessToken')
+				if (!token) {
+					$("#show-main").show()
+				} else {
+					var request = post(false, major + "/userBasic/checkLogin", {})
+					handleRequest(request,res=>{
+						if(res.state == 'success'){
+							location.href = "index.html";
+						}
+					})
+				}
 				draw(show_num);
 			})
 
@@ -120,7 +130,7 @@
 					'sha256': sha256(phone + 'login-kboot')
 				})
 				handleRequest(request, function(result) {
-					console.log('login...',result);
+					console.log('login...', result);
 					storageSet('phone', phone);
 					storageSet('accessToken', result.data, 'd', 7);
 					var uid = result.data.split(',')[0]

@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta charset="utf-8">
-		<title></title>
+		<title>订单详情</title>
 		<link rel="stylesheet" href="../../dist/css/layui.css" media="all">
 		<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.js"></script>
 		<script src="../../dist/layui.all.js" type="text/javascript" charset="utf-8"></script>
@@ -15,6 +15,11 @@
 
 			table {
 				text-align: center;
+			}
+
+			.active {
+				background: red;
+				color: white;
 			}
 
 			.choose-area {
@@ -44,12 +49,13 @@
 	<body>
 		<div id="app">
 			<div class="choose-area">
-				<button class="layui-btn layui-btn-primary" @click="showAll">查看全部</button>
-				<button class="layui-btn layui-btn-primary" @click="showWaitDelivery">查看待发货</button>
-				<button class="layui-btn layui-btn-primary" @click="showWaitReceive">查看待签收</button>
-				<button class="layui-btn layui-btn-primary" @click="showWaitAppraise">查看待评价</button>
-				<button class="layui-btn layui-btn-primary" @click="showFinish">查看已完成</button>
-				<button class="layui-btn layui-btn-primary">查看异常订单</button>
+				<button class="layui-btn layui-btn-primary" :class="{active:curTab==0}" @click="showAll">查看全部</button>
+				<button class="layui-btn layui-btn-primary" :class="{active:curTab==1}" @click="showWaitDelivery">查看待发货</button>
+				<button class="layui-btn layui-btn-primary" :class="{active:curTab==2}" @click="showWaitReceive">查看待签收</button>
+				<button class="layui-btn layui-btn-primary" :class="{active:curTab==3}" @click="showWaitAppraise">查看待评价</button>
+				<button class="layui-btn layui-btn-primary" :class="{active:curTab==4}" @click="showFinish">查看已完成</button>
+				<button class="layui-btn layui-btn-primary" :class="{active:curTab==5}" @click="showRefund">查看已退款</button>
+				<button class="layui-btn layui-btn-primary" :class="{active:curTab==6}" @click="curTab = 6">查看异常订单</button>
 			</div>
 			<table class="layui-table" v-if="goods.length>0">
 				<thead>
@@ -86,8 +92,8 @@
 						<td>{{item.deliverTime | formatDate}}</td>
 						<td>{{item.postage}}</td>
 						<td>
-							<button type="button" v-if="item.orderStatus == 'waitDeliver'" @click="toDeliver(item)" class="layui-btn layui-btn-primary">发货</button>
-							<button type="button" v-if="item.orderStatus == 'waitReceive'" @click="showExpress(item)" class="layui-btn layui-btn-primary">物流信息</button>
+							<button type="button" v-if="item.orderStatus == 'waitDeliver'" @click.stop.prevent="toDeliver(item)" class="layui-btn layui-btn-primary">发货</button>
+							<button type="button" v-if="item.orderStatus == 'waitReceive'" @click.stop.prevent="showExpress(item)" class="layui-btn layui-btn-primary">物流信息</button>
 						</td>
 					</tr>
 				</tbody>
@@ -105,6 +111,7 @@
 			goods: [],
 			pageSize: 10,
 			total: 0,
+			curTab: 0,
 			page: {
 				pageSize: 10,
 				currentPage: 0,
@@ -147,6 +154,12 @@
 					page.orderStatus = "finish"
 					request = post(true, major + "/order/getAllStoreOrderByStatus", page)
 					break;
+				case "refund":
+					page.currentPage = 0
+					page.orderStatus = "refund"
+					request = post(true, major + "/order/getAllStoreOrderByStatus", page)
+					break;
+
 				default:
 					break;
 			}
@@ -204,6 +217,10 @@
 					break;
 				case "finish":
 					page.orderStatus = "finish"
+					request = post(true, major + "/order/getAllStoreOrderByStatus", page)
+					break;
+				case "refund":
+					page.orderStatus = "refund"
 					request = post(true, major + "/order/getAllStoreOrderByStatus", page)
 					break;
 				default:
@@ -272,33 +289,57 @@
 					return str
 				}
 			},
-			beforeMount() {},
+			beforeMount() {
+				this.curTab = 1
+			},
 			mounted() {
 				initData("waitDeliver")
 				this.getDefaultAddress()
 			},
 			methods: {
 				showDetail(item) {
-
+					storageSet('goodsOrder', item)
+					layer.open({
+						type: 2,
+						content: ['orderDetail.html'],
+						title: "订单详情",
+						area: ['100%', '100%'],
+						offset: 'lt',
+						move: false
+					})
 				},
 				showAll() {
 					initData("all")
+					this.curTab = 0
 				},
 				showWaitDelivery() {
 					initData("waitDeliver")
+					this.curTab = 1
 				},
 				showWaitReceive() {
 					initData("waitReceive")
-				},
-				showFinish() {
-					initData("finish")
+					this.curTab = 2
 				},
 				showWaitAppraise() {
 					initData("waitAppraise")
+					this.curTab = 3
+				},
+				showFinish() {
+					initData("finish")
+					this.curTab = 4
+				},
+				showRefund() {
+					initData("refund")
+					this.curTab = 5
 				},
 				toDeliver(item) {
 					storageSet('deliverOrder', item, 'm', 30)
-					location.href = 'deliver.html'
+					layer.open({
+						type: 2,
+						area: ['100%', '100%'],
+						content: 'deliver.html',
+						offset: 'lt'
+					});
 				},
 				getDefaultAddress() {
 					var user = storageGet('userOpen')
@@ -311,19 +352,17 @@
 					})
 				},
 				showExpress(item) {
-					console.log('showexpress..', item);
 					var request = post(true, major + "/express/getTraceByOrder", {
 						"goodsOrderNo": item.goodsOrderNo
 					})
 					handleRequest(request, (res) => {
-						console.log(res)
 						if (res.state == 'success') {
 							storageSet('expressTrace', res.data)
 							layer.open({
 								type: 2,
 								content: ['expressTrace.html'],
 								area: ['900px', '600px'],
-								offset: '50px'
+								offset: 'lt'
 							})
 						} else {
 							layer.msg("暂时错误")

@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>订单详情页面</title>
+		<link rel="stylesheet" type="text/css" href="../../dist/css/layui.css" />
+		<script src="../../js/environment.js" type="text/javascript" charset="utf-8"></script>
+		<script src="https://cdn.bootcss.com/jquery/3.4.0/jquery.min.js"></script>
+		<script src="https://cdn.bootcss.com/vue/2.6.10/vue.min.js"></script>
+		<script src="../../js/util/date.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../dist/layui.all.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/kboot.js" type="text/javascript" charset="utf-8"></script>
+		<style type="text/css">
+			td:nth-child(2n-1) {
+				text-align: right;
+			}
+
+			#app {
+				padding: 20px;
+			}
+
+			.express {
+				margin-top: 20px;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="app">
+			<table class="layui-table">
+				<colgroup>
+					<col width="150">
+					<col width="200">
+				</colgroup>
+				<thead>
+					<tr>
+						<th width="10%" style="text-align: right;">name</th>
+						<th width="40%">value</th>
+						<th width="10%" style="text-align: right;">name</th>
+						<th width="40%">value</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>订单编号</td>
+						<td>{{goodsOrder.goodsOrderNo}}</td>
+						<td>订单状态</td>
+						<td>{{goodsOrder.orderStatus | formatStatus}}</td>
+					</tr>
+					<tr>
+						<td>商品名</td>
+						<td>{{goodsOrder.goodsTitle}}</td>
+						<td>商品图片</td>
+						<td><img :src="goodsOrder.cover" style="width: 100px;height: 100px;"></td>
+					</tr>
+					<tr>
+						<td>规格</td>
+						<td>{{goodsOrder.specString}}</td>
+						<td>商品价格</td>
+						<td>{{goodsOrder.specPrice}}</td>
+					</tr>
+					<tr>
+						<td>购买数量</td>
+						<td>{{goodsOrder.buyCount}}</td>
+						<td>下单时间</td>
+						<td>{{goodsOrder.createTime | formatDate}}</td>
+					</tr>
+					<tr>
+						<td>支付金额</td>
+						<td>{{goodsOrder.finalPay}}</td>
+						<td>支付时间</td>
+						<td>{{goodsOrder.payTime | formatDate}}</td>
+					</tr>
+					<tr>
+						<td>收货人</td>
+						<td>{{goodsOrder.receiverTrueName}}</td>
+						<td>收货地址</td>
+						<td>{{goodsOrder.receiverCity+" "+goodsOrder.receiverAddress}}</td>
+					</tr>
+					<tr>
+						<td>运费</td>
+						<td>{{goodsOrder.postage}}</td>
+						<td>联系电话</td>
+						<td>{{goodsOrder.receiverPhone}}</td>
+					</tr>
+				</tbody>
+			</table>
+			<div class="express" v-if="showExpress">
+				<button type="button" @click="queryExpress(goodsOrder.goodsOrderNo)" class="layui-btn layui-btn-normal">查看物流</button>
+				<ul class="layui-timeline" v-if="expressObj.traces.length>0">
+					<li @click="showdata()" class="layui-timeline-item" v-for="(item,index) in expressObj.traces">
+						<i class="layui-icon layui-timeline-axis">&#xe63f;</i>
+						<div class="layui-timeline-content layui-text">
+							<h3 class="layui-timeline-title">{{item.AcceptTime}}</h3>
+							<p>
+								{{item.AcceptStation}}
+							</p>
+						</div>
+					</li>
+					<li class="layui-timeline-item">
+						<i class="layui-icon layui-timeline-axis">&#xe63f;</i>
+						<div class="layui-timeline-content layui-text">
+							<div class="layui-timeline-title">快递单号:{{expressObj.expNo}}</div>
+							<p>快递公司：{{expressObj.expCompany}}</p>
+						</div>
+					</li>
+				</ul>
+			</div>
+			<div class="express" v-if="showReturn">
+				<button type="button" @click="queryReturnExpressObj(goodsOrder.goodsOrderNo)" class="layui-btn layui-btn-normal">退货信息</button>
+				<ul class="layui-timeline" v-if="returnExpressObj.traces.length>0">
+					<table class="layui-table">
+						<tr>
+							<td>退货原因</td>
+							<td>{{returnExpressObj.reason}}</td>
+							<td>退货图片</td>
+							<td><img :src="returnExpressObj.img" style="width: 100px;height: 100px;"></td>
+						</tr>
+					</table>
+					<li @click="showdata()" class="layui-timeline-item" v-for="(item,index) in returnExpressObj.traces">
+						<i class="layui-icon layui-timeline-axis">&#xe63f;</i>
+						<div class="layui-timeline-content layui-text">
+							<h3 class="layui-timeline-title">{{item.AcceptTime}}</h3>
+							<p>
+								{{item.AcceptStation}}
+							</p>
+						</div>
+					</li>
+					<li class="layui-timeline-item">
+						<i class="layui-icon layui-timeline-axis">&#xe63f;</i>
+						<div class="layui-timeline-content layui-text">
+							<div class="layui-timeline-title">快递单号:{{returnExpressObj.expNo}}</div>
+							<p>快递公司：{{returnExpressObj.expCompany}}</p>
+						</div>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript">
+		new Vue({
+			el: "#app",
+			data() {
+				return {
+					goodsOrder: {},
+					showExpress: false,
+					showReturn: false,
+					expressObj: {
+						traces: [],
+						expNo: "",
+						expCompany: ""
+					},
+					returnExpressObj: {
+						traces: [],
+						expNo: "",
+						expCompany: ""
+					}
+				}
+			},
+			filters: {
+				formatDate(value) {
+					return new Date(value).format("yyyy-MM-dd hh:mm:ss")
+				},
+				formatStatus: function(value) {
+					var str = ""
+					switch (value) {
+						case "waitDeliver":
+							str = "待发货"
+							break;
+						case "waitReceive":
+							str = "待收货"
+							break;
+						case "waitPay":
+							str = "待支付"
+							break;
+						case "waitAppraise":
+							str = "待评价"
+							break;
+						case "finish":
+							str = "已完成"
+							break;
+						case "cancel":
+							str = "已取消"
+							break;
+						case "refund":
+							str = "已退款"
+							break;
+					}
+					return str
+				}
+			},
+			mounted() {
+				console.log('hellowword');
+				this.initData("131313131")
+			},
+			methods: {
+				initData(goodsOrderNo) {
+					console.log('goodsOrder', storageGet('goodsOrder'));
+					console.log('initdata', goodsOrderNo);
+					const goodsOrder = storageGet('goodsOrder')
+					this.goodsOrder = goodsOrder
+					this.checkDeliver(goodsOrder)
+				},
+				checkDeliver(goodsOrder) {
+					const status = goodsOrder.orderStatus
+					switch (status) {
+						case 'waitReceive':
+						case 'finish':
+						case 'waitAppraise':
+							this.showExpress = true
+							break;
+						case 'refund':
+							this.showExpress = true
+							this.showReturn = true
+							break;
+					}
+				},
+				queryExpress(goodsOrderNo) {
+					var request = post(true, major + '/express/getTraceByOrder', {
+						"goodsOrderNo": goodsOrderNo
+					})
+					var that = this
+					handleRequest(request, res => {
+						console.log(res);
+						if (res.state == 'success') {
+							that.expressObj = res.data
+							if (res.data.traces.length == 0) {
+								layer.msg("暂无轨迹信息")
+							}
+						}
+					})
+				},
+				queryReturnExpressObj(goodsOrderNo) {
+					var that = this
+					var request = post(true, major + "/express/getReturnTraceByOrder", {
+						"goodsOrderNo": goodsOrderNo
+					})
+					handleRequest(request, function(res) {
+						console.log(res);
+						if (res.state == 'success') {
+							that.returnExpressObj = res.data
+							if (res.data.traces.length == 0) {
+								layer.msg("暂无轨迹信息")
+							}
+						}
+					})
+				}
+			}
+		})
+	</script>
+</html>

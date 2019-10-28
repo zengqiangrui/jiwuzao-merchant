@@ -453,7 +453,7 @@ function uploadImg(success, style) {
 					} else {
 						styleUrl = null
 					}
-					success(url, square, styleUrl)
+					// success(url, square, styleUrl)
 				}
 			})
 		})
@@ -481,16 +481,12 @@ function openImage(src) {
 	console.log(($(this)))
 	layer.photos({
 		photos: {
-			"title": "图片",
-			"id": 1,
-			"start": 0,
 			"data": [{
 				"alt": "图片",
 				"src": src,
 				"thumb": src
 			}]
 		},
-		anim: 5
 	})
 }
 

@@ -205,7 +205,7 @@
 						storageSet('goodsDetail', res.data, 'm', 10)
 						layer.open({
 							type: 2,
-							area: ['1200px', '600px'],
+							area: ['100%', '100%'],
 							content: '/jiwuzao-merchant/pages/goods/goodsDetail.html',
 							offset: 'lt'
 						});
@@ -219,7 +219,7 @@
 					handleRequest(request, function(res) {
 						if (res.state == "success") {
 							layer.msg("上架成功")
-							example.goods[index].putaway = true
+							that.goods[index].putaway = true
 							
 						}
 					})

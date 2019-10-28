@@ -13,6 +13,14 @@
 			#app {
 				padding: 20px
 			}
+			
+			.no-trace{
+				width: 100%;
+				height: 100%;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+			}
 		</style>
 	</head>
 	<body>
@@ -36,6 +44,9 @@
 					</div>
 				</li>
 			</ul>
+			<div class="no-trace" v-else>
+				暂无轨迹信息
+			</div>
 		</div>
 	</body>
 	<script type="text/javascript">

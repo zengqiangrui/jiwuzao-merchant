@@ -98,11 +98,8 @@
 
 	<body style="background:#000;">
 		<div id="app">
-
-
 			<ul>
 				<li v-if="!isMerchant"><a id="cl0" target="mainFrame" :class="{active:curTab===0}" href="/jiwuzao-merchant/pages/store/settle.html">我要入驻</a></li>
-
 				<li v-if="isMerchant"><a id="cl1" target="mainFrame" :class="{active:curTab===1}">店铺管理</a></li>
 				<div id="cl1-i" hidden="hidden" v-if="isMerchant">
 					<div class="div-inner">
@@ -129,7 +126,7 @@
 					<div class="div-inner">
 						<a @click="example.curTab=3" href="/jiwuzao-merchant/pages/order/address.html" target="mainFrame">商家地址</a>
 					</div>
-					
+
 					<div class="div-inner">
 						<a @click="example.curTab=3" href="/jiwuzao-merchant/pages/order/return.html" target="mainFrame">退货管理</a>
 					</div>

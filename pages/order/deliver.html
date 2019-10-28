@@ -183,6 +183,7 @@
 					layer.open({
 						type: 2,
 						area: ['1100px', '600px'],
+						offset: 'lt',
 						content: '/jiwuzao-merchant/pages/order/address.html',
 						cancel: function(res) {
 							that.getAddress()
@@ -191,7 +192,6 @@
 				},
 				getAddress() {
 					var address = storageGet('senderAddress')
-					console.log('dareaadf...', address);
 					var detail = address.provinces + " " + address.addressDetail
 					address.addressDetail = detail
 					this.senderAddress = address
@@ -203,7 +203,6 @@
 					})
 					handleRequest(request, function(res) {
 						if (res.state == 'success') {
-							console.log(',,,,', res);
 							that.receipt = res.data
 						}
 					})
