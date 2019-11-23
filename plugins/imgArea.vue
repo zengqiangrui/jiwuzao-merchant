@@ -18,7 +18,7 @@
 	}
 	module.exports = {
 		props: ["imgs"],
-		data: function() {
+		data() {
 			return example
 		},
 		mounted() {
@@ -33,6 +33,7 @@
 			addImg(index) {
 				var imgs = this.imgs
 				uploadImg(function(url) {
+					console.log('url........',url);
 					imgs[index].url = url
 					console.log("upimg",imgs[index].url)
 				})

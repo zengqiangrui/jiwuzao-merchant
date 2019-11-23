@@ -20,9 +20,11 @@
 			#app {
 				padding: 20px;
 			}
+
 			#introVideo {
 				cursor: pointer;
 			}
+
 			.video-mask {
 				width: 1000px;
 				height: 600px;
@@ -67,27 +69,27 @@
 						 autocomplete="off" class="layui-input input-price">
 					</div>
 				</div>
-				
+
 				<div class="layui-form-item">
 					<label class="layui-form-label">退换承诺<span class="redStar">*</span></label>
 					<div class="layui-input-inline">
 						<select id="goodsReturn" name="goodsReturn" lay-verify required="required">
-						  <option value="">请选择</option>
-						  <option value="CANNOT_RETURN">不可退换</option>
-						  <option value="CAN_RETURN">可退换</option>
+							<option value="">请选择</option>
+							<option value="CANNOT_RETURN">不可退换</option>
+							<option value="CAN_RETURN">可退换</option>
 						</select>
 					</div>
 					<label class="layui-form-label">发货时间<span class="redStar">*</span></label>
 					<div class="layui-input-inline">
 						<select id="deliveryTime" name="deliveryTime" lay-verify required="required">
-						  <option value="">请选择</option>
-						  <option value="ONE_DAY">一天内</option>
-						  <option value="TWO_DAY">两天内</option>
-						  <option value="TREE_DAY">三天内</option>
-						  <option value="FIVE_DAY">五天内</option>
-						  <option value="SEVEN_DAY">七天内</option>
-						  <option value="OTHERS">其他时间</option>
-						</select>  
+							<option value="">请选择</option>
+							<option value="ONE_DAY">一天内</option>
+							<option value="TWO_DAY">两天内</option>
+							<option value="TREE_DAY">三天内</option>
+							<option value="FIVE_DAY">五天内</option>
+							<option value="SEVEN_DAY">七天内</option>
+							<option value="OTHERS">其他时间</option>
+						</select>
 					</div>
 				</div>
 
@@ -118,6 +120,12 @@
 					<div class="layui-input-inline">
 						<select name="classify2" id="classify2" lay-verify="required" lay-filter="second">
 							<option class="secondOption" value="">2</option>
+						</select>
+					</div>
+					<label class="layui-form-label">三级分类</label>
+					<div class="layui-input-inline">
+						<select name="classify3" id="classify3" lay-verify="required" lay-filter="third">
+							<option class="thirdOption" value=""></option>
 						</select>
 					</div>
 				</div>
@@ -203,7 +211,7 @@
 			myVideo: "", //uri
 			hasVideo: false,
 			second: [],
-			categoryIndex: [null, null],
+			categoryIndex: [null, null, null],
 			category: [],
 			labelList: [{
 				placeholder: "标签1",
@@ -381,11 +389,27 @@
 		function addSecond() {
 			var select2 = document.getElementById("classify2");
 			var first = document.getElementById("classify1").value;
-			console.log(first)
 			select2.length = 1;
 			var second = example.category[first].second
 			for (let i in second) {
 				select2.add(new Option(second[i].name, i))
+			}
+			var form = layui.form
+			form.render()
+		}
+
+		function addThird() {
+			var select3 = document.getElementById("classify3");
+			select3.length = 1
+			var first = document.getElementById("classify1").value;
+			var second = document.getElementById("classify2").value;
+			var third = example.category[first].second[second].third
+			console.log('addthird..........', third);
+			if (!third) {
+				select3.add(new Option(example.category[first].second[second].name, 0))
+			}
+			for (let i in third) {
+				select3.add(new Option(third[i].name, i))
 			}
 		}
 
@@ -394,12 +418,17 @@
 			select2.length = 1
 		}
 
+		function clearThird() {
+			var select3 = document.getElementById("classify3")
+			select3.length = 1
+		}
+
 		function checkRequired() {
 			if (!example.title) {
 				layer.msg("必须输入商品标题")
 				return false
 			}
-			if (!example.categoryIndex[0] || !example.categoryIndex[1]) {
+			if (!example.categoryIndex[0] || !example.categoryIndex[1]||!example.categoryIndex[2]) {
 				layer.msg("商品分类没选完")
 				return false
 			}
@@ -419,15 +448,14 @@
 				layer.msg("详情图至少要有一张")
 				return false
 			}
-			if(!$("#goodsReturn").val()){
+			if (!$("#goodsReturn").val()) {
 				layer.msg("商品要填是否可退换")
 				return false
 			}
-			if(!$("#deliveryTime").val()){
+			if (!$("#deliveryTime").val()) {
 				layer.msg("商品要填发货时间")
 				return false
 			}
-			
 			return true
 		}
 
@@ -450,12 +478,12 @@
 					$(this).val(v.substr(0, v.length - 1));
 				}
 			});
-			
-			$("#defaultTips").hover(function(){
-				layer.tips("1","#defaultTips",{
-					time:3000
+
+			$("#defaultTips").hover(function() {
+				layer.tips("1", "#defaultTips", {
+					time: 3000
 				})
-			},function(){
+			}, function() {
 				layer.closeAll()
 			})
 
@@ -463,32 +491,29 @@
 	</script>
 	<script src="../../js/util/provinces.js" type="text/javascript" charset="utf-8"></script>
 	<script type="text/javascript">
-		
 		var vm = new Vue({
 			el: "#app",
 			components: {
-				'img-area': httpVueLoader('/jiwuzao-merchant/plugins/imgArea.vue'),
+				'img-area': httpVueLoader('../../plugins/imgArea.vue'),
 			},
 			data() {
 				return example;
 			},
 			beforeCreate() {
 				var goodsDetail = storageGet('goodsDetail')
-				if(goodsDetail){
+				if (goodsDetail) {
 					example.title = goodsDetail.title
 				}
 			},
-			beforeMount() {
-			},
-			created() {
-			},
+			beforeMount() {},
+			created() {},
 			mounted() {
-				for(let i in provinces){
+				for (let i in provinces) {
 					console.log(provinces[i].label)
 				}
 				//初始创建一级类目的下拉菜单
 				var request = post(false, major + "/goods/getCategory", {
-					"categoryId": 1
+					"categoryId": 3
 				})
 				handleRequest(request, function(res) {
 					console.log(res.data)
@@ -523,8 +548,18 @@
 					}
 					var data = {};
 					var index = this.categoryIndex
+					var goodsClassify = this.category[index[0]].value
+					var goodsSecondClassify = this.category[index[0]].value + "," + this.category[index[0]].second[index[1]].value
+					var goodsThirdClass = ""
+					try {
+						goodsThirdClass = this.category[index[0]].value + "," + this.category[index[0]].second[index[1]].value + "," +
+							this.category[index[0]].second[index[1]].third[index[2]].value
+					} catch (e) {
+						goodsThirdClass = ""
+					}
 					data.goodsClassify = this.category[index[0]].value
-					data.goodsClassDetail = this.category[index[0]].value + "," + this.category[index[0]].second[index[1]].value
+					data.goodsSecondClassify = this.category[index[0]].value + "," + this.category[index[0]].second[index[1]].value
+					data.goodsThirdClassify = goodsThirdClass
 					data.title = this.title
 					data.cover = this.cover[0].url
 					data.defaultPrice = this.defaultPrice
@@ -540,8 +575,8 @@
 					console.log('data', data)
 					var request = post(true, major + "/goods/addGoods", data)
 					handleRequest(request, function(res) {
-						if(res.state == 'success'){
-							location.href ="show.html"
+						if (res.state == 'success') {
+							location.href = "show.html"
 						}
 					})
 				}
@@ -553,20 +588,28 @@
 		layui.use(['layer', 'jquery', 'form'], function() {
 			var form = layui.form;
 			form.on('select(first)', function(data) {
-				console.log('layui', data)
 				if (data.value) {
 					example.categoryIndex[0] = data.value
 					example.second = example.category[data.value].second
 					addSecond()
 				} else {
-					clearSecond();
+					clearSecond()
+					clearThird()
 				}
 				form.render('select');
 			});
 			form.on('select(second)', function(data) {
-				console.log('second', data)
 				if (data.value) {
 					example.categoryIndex[1] = data.value
+					addThird()
+				} else {
+					clearThird()
+				}
+				form.render('select');
+			});
+			form.on('select(third)', function(data) {
+				if (data.value) {
+					example.categoryIndex[2] = data.value
 				}
 				form.render('select');
 			});

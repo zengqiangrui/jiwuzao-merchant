@@ -453,7 +453,7 @@ function uploadImg(success, style) {
 					} else {
 						styleUrl = null
 					}
-					// success(url, square, styleUrl)
+					success(url, square, styleUrl)
 				}
 			})
 		})

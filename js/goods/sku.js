@@ -6,8 +6,8 @@ $(function() {
 	$(document).on("change", '.setting_sku_price', function() {
 		var value = new Number($(this).val());
 		$(this).val(value.toFixed(2));
-		if (value > 9900.00) {
-			$(this).val('9900.00');
+		if (value > 9999999999.00) {
+			$(this).val('9999999999.00');
 		}
 		if (value <= 0) {
 			$(this).val(0.01);
